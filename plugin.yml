@@ -1,0 +1,4 @@
+name: MinecraftRoyale
+main: tk.minecraftroyale.Plugin
+version: 1.0-SNAPSHOT
+api-version: 1.14.2-R0.1-SNAPSHOT
