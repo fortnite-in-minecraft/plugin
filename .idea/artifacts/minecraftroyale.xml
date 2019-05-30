@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="minecraftroyale">
+    <output-path>$PROJECT_DIR$/out/artifacts/minecraftroyale</output-path>
+    <root id="archive" name="minecraftroyale.jar">
+      <element id="module-output" name="plugin" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>
