@@ -24,15 +24,25 @@ public class RoyaleWorlds {
         if ((world = worlds.get(worldNum)) != null) {
             return world;
         } else {
-            world = new WorldCreator(plugin.getConfig().getString("worlds.world" + worldNum + ".path")) // FIXME Can be null
-                    .copy(plugin.getServer().getWorld("world")) // FIXME Can be null
-                    .generateStructures(true)
-                    .type(WorldType.LARGE_BIOMES)
-                    .seed(plugin.getConfig().getLong("worlds.world" + worldNum + ".seed"))
-                    .createWorld();
+            String worldName = plugin.getConfig().getString("worlds.world" + worldNum + ".path");
+            if(worldName != null){
+                world = new WorldCreator(worldName);
+                Object oldWorld = plugin.getServer().getWorld("world")
+                if(oldWorld != null){
+                    world.copy(oldWorld);
+                }else{
+                    // TODO: warn about error
+                }
+                world.generateStructures(true)
+                        .type(WorldType.LARGE_BIOMES)
+                        .seed(plugin.getConfig().getLong("worlds.world" + worldNum + ".seed"))
+                        .createWorld();
 
-            worlds.put(worldNum, world);
-            return world;
+                worlds.put(worldNum, world);
+                return world;
+            }else{
+                // TODO: warn about error
+            }
         }
     }
 
