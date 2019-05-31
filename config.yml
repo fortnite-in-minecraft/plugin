@@ -22,4 +22,5 @@ worlds:
   world7:# extreme hills AMPLIFIED
     path: "world7"
     seed: 0
+    generatorName: ampliflied
 
