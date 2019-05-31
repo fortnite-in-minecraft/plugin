@@ -1,22 +1,26 @@
 worlds:
-  world1:
+  world1:# mesa
     path: "world1"
     seed: 0
-  world2:
+  world2:# plains
     path: "world2"
     seed: 0
-  world3:
+  world3:# bamboo jungle
     path: "world3"
     seed: 0
-  world4:
+  world4:# forest
     path: "world4"
     seed: 0
-  world5:
+  world5:# sky island
     path: "world5"
     seed: 0
-  world6:
+    enviornment: THE_END
+  world6:# cave world
     path: "world6"
     seed: 0
-  world7:
+    enviornment: NETHER
+  world7:# extreme hills AMPLIFIED
     path: "world7"
     seed: 0
+    generatorName: ampliflied
+
