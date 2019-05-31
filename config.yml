@@ -1,0 +1,22 @@
+worlds:
+  world1:
+    path: "world1"
+    seed: 0
+  world2:
+    path: "world2"
+    seed: 0
+  world3:
+    path: "world3"
+    seed: 0
+  world4:
+    path: "world4"
+    seed: 0
+  world5:
+    path: "world5"
+    seed: 0
+  world6:
+    path: "world6"
+    seed: 0
+  world7:
+    path: "world7"
+    seed: 0
