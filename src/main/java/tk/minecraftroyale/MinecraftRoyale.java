@@ -25,7 +25,6 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Enabling");
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 

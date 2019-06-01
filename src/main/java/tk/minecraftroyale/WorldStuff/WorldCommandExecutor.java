@@ -28,18 +28,15 @@ public class WorldCommandExecutor implements CommandExecutor {
             else if (sender instanceof Player) {
                 if (!minecraftRoyale.getDevCommands((Player) sender)) {
                     sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                    return true;
                 }
             }
 
             try {
                 World w = minecraftRoyale.royaleWorlds.getWorld(Integer.parseInt(args[0]));
                 if (w == null) {
-                    sender.sendMessage("Error: invalid round " + args[0]);
+                    sender.sendMessage("Error: A world for that round does not exist. You must first create it with /createworld.");
                 }
-            } catch (FileNotFoundException e) {
-                sender.sendMessage("Error: unable to locate world");
-            } catch (ConfigException e) {
-                sender.sendMessage("Error: bad config option at path: " + e.getPath());
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: not a number");
             }
@@ -57,15 +54,14 @@ public class WorldCommandExecutor implements CommandExecutor {
 
                 if (worldNum < 1 || worldNum > 7) throw new NumberFormatException(); // Transfers control to the catch block
 
-                try {
-                    worldSpawn = Objects.requireNonNull(minecraftRoyale.royaleWorlds.getWorld(worldNum)).getSpawnLocation();
-                } catch (FileNotFoundException e) {
-                    sender.sendMessage("Error: unable to locate world. This is a bug.");
-                    return true;
-                } catch (ConfigException e) {
-                    sender.sendMessage("Error: bad config option at path: " + e.getPath());
+                World world = minecraftRoyale.royaleWorlds.getWorld(worldNum);
+
+                if (world == null) {
+                    sender.sendMessage("Error: A world for that round does not exist. You must first create it with /createworld.");
                     return true;
                 }
+
+                worldSpawn = world.getSpawnLocation();
 
             } catch (NumberFormatException e) {
                 World w = Bukkit.getWorld(args[0]);
@@ -78,6 +74,31 @@ public class WorldCommandExecutor implements CommandExecutor {
             }
 
             ((Player) sender).teleport(worldSpawn);
+            return true;
+        } else if (cmd.getName().equalsIgnoreCase("createworld")) {
+            if (args.length != 1) return false;
+
+            String worldName;
+
+            try {
+                int worldNum = Integer.parseInt(args[0]);
+                if (worldNum < 1 || worldNum > 7) throw new NumberFormatException();
+
+                try {
+                    minecraftRoyale.royaleWorlds.generateWorld(worldNum, sender);
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage("Something went wrong. This is a bug.");
+                    minecraftRoyale.getLogger().severe(e.getStackTrace().toString());
+                } catch (FileNotFoundException e) {
+                    sender.sendMessage(e.getMessage());
+                    minecraftRoyale.getLogger().severe(e.getMessage());
+                } catch (ConfigException e) {
+                    sender.sendMessage("Error: invalid config option at path: " + e.getPath());
+                    minecraftRoyale.getLogger().severe("invalid config option at path: " + e.getPath());
+                }
+            } catch (NumberFormatException e) {
+                sender.sendMessage("Error: invalid round");
+            }
         }
 
         return false;
