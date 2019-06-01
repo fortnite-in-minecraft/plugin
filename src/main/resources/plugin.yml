@@ -22,3 +22,13 @@ commands:
     usage: /mrtp [worldname | roundnumber]
     permission: mr.tp
     permission-message: You do not have permission to do this.
+  createworld:
+    description: Creates a world
+    usage: /createworld [roundnumber]
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.
+  setupwborder:
+    description: Sets the world border
+    usage: /setupwborder [roundnumber]
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

@@ -1,12 +1,9 @@
 package tk.minecraftroyale.WorldStuff;
 
-import org.bukkit.Bukkit;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import tk.minecraftroyale.Exceptions.ConfigException;
 
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nullable;
@@ -85,8 +82,22 @@ public class RoyaleWorlds {
         worlds.put(round, world);
     }
 
-    // TODO create methods to set up borders for a world
+    public void setUpWorldBorder (int world){
+        World w = getWorld(world);
+        if(w == null){
+            throw new IllegalArgumentException();
+        }
+        setUpWorldBorder(w);
+    }
+    public void setUpWorldBorder(World world){
+        WorldBorder border = world.getWorldBorder();
+        border.setCenter(0, 0);
+        border.setCenter(0, 0);
+        border.setWarningTime(30); // 30 second warning
+        border.setWarningDistance(15);
+        border.setDamageBuffer(1);
+        border.setSize(plugin.getConfig().getInt("worldBorder.startDistance"));
+        border.setSize(plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("worldBorder.secondDistanceShrinkTime"));
 
-
-
+    }
 }

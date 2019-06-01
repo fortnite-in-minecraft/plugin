@@ -23,7 +23,16 @@ public class WorldCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
-        if (cmd.getName().equalsIgnoreCase("loadworld")) {
+        if(cmd.getName().equalsIgnoreCase("setupwborder")) {
+            try {
+                minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
+            } catch (NumberFormatException e) {
+                sender.sendMessage("Error: not a number");
+            } catch(IllegalArgumentException e){
+                sender.sendMessage("Error: not found");
+            }
+            return true;
+        }else if (cmd.getName().equalsIgnoreCase("loadworld")) {
             if (args.length != 1) return false;
             else if (sender instanceof Player) {
                 if (!minecraftRoyale.getDevCommands((Player) sender)) {

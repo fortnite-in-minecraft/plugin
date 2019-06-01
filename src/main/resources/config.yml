@@ -2,32 +2,35 @@ worlds:
   # mesa
   world1:
     path: "world1"
-    seed: 0
+    seed: 102043410
   # plains
   world2:
     path: "world2"
-    seed: 0
-  # bamboo jungle
+    seed: 1164102382
+  # jungle
   world3:
     path: "world3"
-    seed: 0
-  # forest
+    seed: -400391389
+  # ice spike
   world4:
     path: "world4"
-    seed: 0
+    seed: -1766999811
   # sky island
   world5:
     path: "world5"
-    seed: 0
+    seed: 1337420
     enviornment: THE_END
-  # cave world
+  # island
   world6:
     path: "world6"
-    seed: 0
-    enviornment: NETHER
+    seed: -1712572161
   # extreme hills AMPLIFIED
   world7:
     path: "world7"
-    seed: 0
+    seed: 2070558
     generatorName: ampliflied
-
+worldBorder:
+  startDistance: 12345
+  secondDistance: 1234
+  secondDistanceShrinkTime: 12345
+  finalDistance: 100
