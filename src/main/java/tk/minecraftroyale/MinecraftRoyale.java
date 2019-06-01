@@ -5,21 +5,27 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.minecraftroyale.Listeners.DeathListener;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 
-import java.util.Hashtable;
+import java.util.logging.Logger;
 
-public class Plugin extends JavaPlugin {
+
+public class MinecraftRoyale extends JavaPlugin {
 
     public RoyaleWorlds royaleWorlds;
+    public Logger logger = getLogger();
 
     @Override
     public void onEnable() {
+        getLogger().info("Enabling");
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
         this.getCommand("loadworld").setExecutor(new WorldCommandExecutor(this));
+        getServer().getPluginManager().registerEvents(new DeathListener(), this);
+
     }
 
     @Override
@@ -42,6 +48,4 @@ public class Plugin extends JavaPlugin {
             player.sendMessage("Development commands disabled.");
         }
     }
-
-
 }
