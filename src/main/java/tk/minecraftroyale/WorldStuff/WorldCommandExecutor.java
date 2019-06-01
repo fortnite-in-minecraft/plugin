@@ -13,6 +13,7 @@ import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nonnull;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
 
 public class WorldCommandExecutor implements CommandExecutor {
@@ -29,8 +30,13 @@ public class WorldCommandExecutor implements CommandExecutor {
                  sender.sendMessage("Error: must be ran by a player");
                  return true;
              }
-
-             (new InstallLootTables()).installLootTables(((Player) sender).getWorld());
+             try {
+                 (new InstallLootTables()).installLootTables(((Player) sender).getWorld(), sender);
+             }catch(IOException e){
+                 e.printStackTrace();
+                 sender.sendMessage("Internal I/O error");
+                 return true;
+             }
              sender.sendMessage("added loot tables");
              return true;
         }else if(cmd.getName().equalsIgnoreCase("setupwborder")) {
