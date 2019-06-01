@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import tk.minecraftroyale.MinecraftRoyale;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -16,18 +15,15 @@ public final class DeathListener implements Listener {
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent event){
-        getLogger().info("");
-        Object killer = event.getEntity().getKiller();
-        if(killer != null) {
-            if(killer instanceof Player) {
-                getLogger().info(event.getEntity().getDisplayName() + " was yote");
-                event.setDeathMessage(event.getEntity().getDisplayName() + " was yote by " + ((Player) killer).getDisplayName());
-            }else{
-                event.setDeathMessage("something2 " + event.getDeathMessage());
-            }
-        }else{
-            event.setDeathMessage("something " + event.getDeathMessage());
+    public void onDeath(PlayerDeathEvent event) {
+        Player killer = event.getEntity().getKiller();
+        if (killer != null) {
+            event.setDeathMessage(event.getEntity().getDisplayName() + " was yote by " + killer.getDisplayName());
+        } else {
+            // If the player wasn't killed by another player
+
+            event.setDeathMessage(event.getEntity().getDisplayName() + " was yote");
+
         }
     }
 }
