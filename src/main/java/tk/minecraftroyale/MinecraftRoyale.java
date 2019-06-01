@@ -9,6 +9,7 @@ import tk.minecraftroyale.Listeners.DeathListener;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 
+import javax.security.auth.login.LoginException;
 import java.util.logging.Logger;
 
 
@@ -20,6 +21,13 @@ public class MinecraftRoyale extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Enabling");
+        try {
+            Discord.main();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
