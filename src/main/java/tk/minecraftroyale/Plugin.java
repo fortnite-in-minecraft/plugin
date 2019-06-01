@@ -2,13 +2,19 @@ package tk.minecraftroyale;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Hashtable;
+import java.util.List;
 
 public class Plugin extends JavaPlugin {
 
@@ -19,18 +25,20 @@ public class Plugin extends JavaPlugin {
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
+        for (World w : Bukkit.getWorlds()) {
+            for (Player p : w.getPlayers()) {
+                setDevCommands(p, false);
+            }
+        }
         this.getCommand("loadworld").setExecutor(new WorldCommandExecutor(this));
+        this.getCommand("mrtp").setExecutor(new WorldCommandExecutor(this));
     }
 
     @Override
     public void onDisable() {}
 
     private void initDevCommandMetadata() {
-        for (World w : Bukkit.getWorlds()) {
-            for (Player p : w.getPlayers()) {
-                p.setMetadata("devCommandsEnabled", new FixedMetadataValue(this, false));
-            }
-        }
+
     }
 
     public void setDevCommands(Player player, boolean state) {
@@ -43,5 +51,21 @@ public class Plugin extends JavaPlugin {
         }
     }
 
+    public boolean getDevCommands(Player player) {
+        List<MetadataValue> vals = player.getMetadata("devCommandsEnabled");
+        for (MetadataValue val : vals) {
+            if (val.getOwningPlugin() == this) {
+                return val.asBoolean();
+            }
+        }
+        return false;
+    }
+
+
+//    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
+//        if (cmd.getName().equalsIgnoreCase("toggledevcommands")) {
+//
+//        }
+//    }
 
 }

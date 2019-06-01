@@ -2,15 +2,14 @@ name: MinecraftRoyale
 main: tk.minecraftroyale.Plugin
 version: 1.0-SNAPSHOT
 commands:
-  enabledevcommands:
+  toggledevcommands:
     description: Enables the use of development / debugging commands.
-    usage: /enabledevcommands
+    usage: /toggledevcommands
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
     aliases:
-      - enabledev
-      - ed
-      - edc
+      - devcommands
+      - devcmds
   loadworld:
     description: Loads (or creates) a world with the given round number.
     usage: /loadworld [round]
@@ -18,3 +17,8 @@ commands:
     permission-message: You do not have permission to use development commands.
     aliases:
       - lw
+  mrtp:
+    description: Teleports you to the spawn point of a world.
+    usage: /mrtp [worldname | roundnumber]
+    permission: mr.tp
+    permission-message: You do not have permission to do this.
