@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public class RoyaleWorlds {
 
-    private JavaPlugin plugin;
-    private HashMap<Integer, World> worlds = new HashMap<>();
+    private final JavaPlugin plugin;
+    private final HashMap<Integer, World> worlds = new HashMap<>();
 
     public RoyaleWorlds(JavaPlugin plugin) { this.plugin = plugin; }
 

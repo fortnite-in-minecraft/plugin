@@ -1,7 +1,7 @@
 package tk.minecraftroyale.Exceptions;
 
 public class ConfigException extends Exception {
-    private String path;
+    private final String path;
 
     public ConfigException(String path) {
         super("Invalid configuration field at path: " + path);

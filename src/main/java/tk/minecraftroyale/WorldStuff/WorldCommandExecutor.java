@@ -1,5 +1,6 @@
 package tk.minecraftroyale.WorldStuff;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -14,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.Objects;
 
 public class WorldCommandExecutor implements CommandExecutor {
-    private MinecraftRoyale minecraftRoyale;
+    private final MinecraftRoyale minecraftRoyale;
 
     public WorldCommandExecutor(MinecraftRoyale minecraftRoyale) {
         this.minecraftRoyale = minecraftRoyale;
@@ -27,7 +28,6 @@ public class WorldCommandExecutor implements CommandExecutor {
             else if (sender instanceof Player) {
                 if (!minecraftRoyale.getDevCommands((Player) sender)) {
                     sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
-                    return false;
                 }
             }
 
@@ -47,7 +47,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             if (args.length != 1) return false;
             else if (!(sender instanceof Player)) {
                 sender.sendMessage("Error: must be a player");
-                return false;
+                return true;
             }
 
             Location worldSpawn;
@@ -55,19 +55,29 @@ public class WorldCommandExecutor implements CommandExecutor {
             try {
                 int worldNum = Integer.parseInt(args[0]);
 
+                if (worldNum < 1 || worldNum > 7) throw new NumberFormatException(); // Transfers control to the catch block
+
                 try {
                     worldSpawn = Objects.requireNonNull(minecraftRoyale.royaleWorlds.getWorld(worldNum)).getSpawnLocation();
-                    ((Player) sender).teleport(worldSpawn);
-                    return true;
                 } catch (FileNotFoundException e) {
-                    sender.sendMessage("Error: unable to locate world");
+                    sender.sendMessage("Error: unable to locate world. This is a bug.");
+                    return true;
                 } catch (ConfigException e) {
                     sender.sendMessage("Error: bad config option at path: " + e.getPath());
+                    return true;
                 }
 
             } catch (NumberFormatException e) {
+                World w = Bukkit.getWorld(args[0]);
+                if (w == null) {
+                    sender.sendMessage("Error: world \"" + args[0] +  "\" not found");
+                    return true;
+                }
 
+                worldSpawn = w.getSpawnLocation();
             }
+
+            ((Player) sender).teleport(worldSpawn);
         }
 
         return false;

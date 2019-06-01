@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import static org.bukkit.Bukkit.getLogger;
 
+@SuppressWarnings("unused")
 public final class DeathListener implements Listener {
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
