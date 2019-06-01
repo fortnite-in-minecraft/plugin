@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import tk.minecraftroyale.Exceptions.ConfigException;
+import tk.minecraftroyale.Loot.InstallLootTables;
 import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nonnull;
@@ -23,7 +24,16 @@ public class WorldCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
-        if(cmd.getName().equalsIgnoreCase("setupwborder")) {
+         if (cmd.getName().equalsIgnoreCase("addloottables")) {
+             if(!(sender instanceof Player)){
+                 sender.sendMessage("Error: must be ran by a player");
+                 return true;
+             }
+
+             (new InstallLootTables()).installLootTables(((Player) sender).getWorld());
+             sender.sendMessage("added loot tables");
+             return true;
+        }else if(cmd.getName().equalsIgnoreCase("setupwborder")) {
             try {
                 minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
             } catch (NumberFormatException e) {

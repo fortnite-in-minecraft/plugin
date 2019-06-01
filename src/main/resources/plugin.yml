@@ -32,3 +32,8 @@ commands:
     usage: /setupwborder [roundnumber]
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  addloottables:
+    description: Adds the loot tables to this world.
+    usage: /addloottables
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

@@ -37,6 +37,8 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("loadworld")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("mrtp")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("createworld")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("setupwborder")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("addloottables")).setExecutor(new WorldCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
 
     }
