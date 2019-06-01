@@ -26,13 +26,6 @@ public class MinecraftRoyale extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Enabling");
-        try {
-            Discord.main();
-        } catch (LoginException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
