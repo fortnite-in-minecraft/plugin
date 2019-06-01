@@ -1,5 +1,5 @@
 name: MinecraftRoyale
-main: tk.minecraftroyale.Plugin
+main: tk.minecraftroyale.MinecraftRoyale
 version: 1.0-SNAPSHOT
 commands:
   toggledevcommands:
