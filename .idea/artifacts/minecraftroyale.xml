@@ -1,12 +1,10 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="minecraftroyale">
-    <output-path>$PROJECT_DIR$/target</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/minecraftroyale</output-path>
     <root id="archive" name="minecraftroyale.jar">
-      <element id="file-copy" path="$PROJECT_DIR$/token.txt" />
       <element id="module-output" name="plugin" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/config.yml" />
-      <element id="library" level="project" name="Maven: net.dv8tion:JDA:3.8.3_463" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/config.yml" />
     </root>
   </artifact>
 </component>
