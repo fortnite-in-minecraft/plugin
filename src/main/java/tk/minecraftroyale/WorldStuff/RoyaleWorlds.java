@@ -1,5 +1,6 @@
 package tk.minecraftroyale.WorldStuff;
 
+import com.sun.istack.internal.NotNull;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import tk.minecraftroyale.Exceptions.ConfigException;
@@ -23,7 +24,7 @@ public class RoyaleWorlds {
      * @return the world or null.
      */
     @Nullable
-    public World getWorld(int roundNum) throws IllegalArgumentException{
+    public World getWorld(int roundNum) throws IllegalArgumentException {
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
 
@@ -31,11 +32,11 @@ public class RoyaleWorlds {
         if ((world = worlds.get(roundNum)) != null) {
             return world;
         } else {
-            World w = Bukkit.getWorld("world" + roundNum);
-            if (w != null) {
-                worlds.put(roundNum, w);
+            world = Bukkit.getWorld("world" + roundNum);
+            if (world != null) {
+                worlds.put(roundNum, world);
             }
-            return w;
+            return world;
         }
     }
 
@@ -63,7 +64,7 @@ public class RoyaleWorlds {
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed"));
 
         new WorldGenThread(worldCreator, world -> {
-            addWorld(roundNum, world);
+            worlds.put(roundNum, world);
             if (sender != null) {
                 sender.sendMessage("World generation complete.");
             }
@@ -78,18 +79,15 @@ public class RoyaleWorlds {
         generateWorld(roundNum, null);
     }
 
-    public void addWorld(int round, World world) {
-        worlds.put(round, world);
-    }
-
-    public void setUpWorldBorder (int world){
+    void setUpWorldBorder(int world) {
         World w = getWorld(world);
         if(w == null){
             throw new IllegalArgumentException();
         }
         setUpWorldBorder(w);
     }
-    public void setUpWorldBorder(World world){
+
+    private void setUpWorldBorder(@NotNull World world){
         WorldBorder border = world.getWorldBorder();
         border.setCenter(0, 0);
         border.setCenter(0, 0);

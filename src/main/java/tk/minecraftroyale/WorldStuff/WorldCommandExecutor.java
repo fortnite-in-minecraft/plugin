@@ -174,12 +174,9 @@ public class WorldCommandExecutor implements CommandExecutor {
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage("Something went wrong. This is a bug.");
                     minecraftRoyale.getLogger().severe(e.getStackTrace().toString());
-                } catch (FileNotFoundException e) {
+                } catch (FileNotFoundException|ConfigException e) {
                     sender.sendMessage(e.getMessage());
                     minecraftRoyale.getLogger().severe(e.getMessage());
-                } catch (ConfigException e) {
-                    sender.sendMessage("Error: invalid config option at path: " + e.getPath());
-                    minecraftRoyale.getLogger().severe("invalid config option at path: " + e.getPath());
                 }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: invalid round");
