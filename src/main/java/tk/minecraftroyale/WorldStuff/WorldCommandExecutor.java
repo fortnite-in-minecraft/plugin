@@ -23,16 +23,7 @@ public class WorldCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
-        if(cmd.getName().equalsIgnoreCase("setupwborder")) {
-            try {
-                minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
-            } catch (NumberFormatException e) {
-                sender.sendMessage("Error: not a number");
-            } catch(IllegalArgumentException e){
-                sender.sendMessage("Error: not found");
-            }
-            return true;
-        }else if (cmd.getName().equalsIgnoreCase("loadworld")) {
+        if (cmd.getName().equalsIgnoreCase("loadworld")) {
             if (args.length != 1) return false;
             else if (sender instanceof Player) {
                 if (!minecraftRoyale.getDevCommands((Player) sender)) {
@@ -98,12 +89,9 @@ public class WorldCommandExecutor implements CommandExecutor {
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage("Something went wrong. This is a bug.");
                     minecraftRoyale.getLogger().severe(e.getStackTrace().toString());
-                } catch (FileNotFoundException e) {
+                } catch (FileNotFoundException|ConfigException e) {
                     sender.sendMessage(e.getMessage());
                     minecraftRoyale.getLogger().severe(e.getMessage());
-                } catch (ConfigException e) {
-                    sender.sendMessage("Error: invalid config option at path: " + e.getPath());
-                    minecraftRoyale.getLogger().severe("invalid config option at path: " + e.getPath());
                 }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: invalid round");
