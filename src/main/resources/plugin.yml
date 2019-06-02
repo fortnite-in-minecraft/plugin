@@ -37,3 +37,18 @@ commands:
     usage: /addloottables
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  airdrop:
+    description: Airdrops at the specified coordinates (0, 0 default)
+    usage: /airdrop <x z>
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.
+  addlootchest:
+    description: Makes a loot chest.
+    usage: /addlootchest
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.
+  addlootchests:
+    description: Makes a loot chest.
+    usage: /addlootchests [num]
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

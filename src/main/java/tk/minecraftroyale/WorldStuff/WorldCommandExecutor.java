@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import tk.minecraftroyale.Exceptions.ConfigException;
+import tk.minecraftroyale.Loot.AddALootChest;
+import tk.minecraftroyale.Loot.Airdrop;
 import tk.minecraftroyale.Loot.InstallLootTables;
 import tk.minecraftroyale.MinecraftRoyale;
 
@@ -25,7 +27,65 @@ public class WorldCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
-         if (cmd.getName().equalsIgnoreCase("addloottables")) {
+        if (cmd.getName().equalsIgnoreCase("airdrop")) {
+            if(!(sender instanceof Player)){
+                sender.sendMessage("Error: must be run by a player");
+                return true;
+            }
+            try {
+                if (args.length == 0) {
+                    Airdrop.airdrop(((Player) sender).getWorld());
+                    return true;
+                } else if (args.length == 2) {
+                    Airdrop.airdrop(((Player) sender).getWorld(), Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Error e){
+                e.printStackTrace();
+            }
+        }else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
+            if(!(sender instanceof Player)){
+                sender.sendMessage("Error: must be run by a player");
+                return true;
+            }
+            try {
+                if (args.length == 0) {
+                    int[] results = AddALootChest.addALootChest(((Player) sender).getWorld());
+                    sender.sendMessage("added loot chest at " + results[0] + ", " + results[1]);
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Error e){
+                e.printStackTrace();
+            }
+        }else if (cmd.getName().equalsIgnoreCase("addlootchests")) {
+            if(!(sender instanceof Player)){
+                sender.sendMessage("Error: must be run by a player");
+                return true;
+            }
+            try {
+                if (args.length == 1) {
+                    try {
+                        int num = Integer.parseInt(args[0]);
+                        sender.sendMessage("adding " + num + " loot chests...");
+                        for(int i = 0 ; i < num ; i++) {
+                            int[] results = AddALootChest.addALootChest(((Player) sender).getWorld());
+                            sender.sendMessage("added loot chest at " + results[0] + ", " + results[1]);
+                        }
+                        return true;
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage("Error: not a number");
+                    }
+                }else{
+                    return false;
+                }
+            }catch(Error e){
+                e.printStackTrace();
+            }
+        }else if (cmd.getName().equalsIgnoreCase("addloottables")) {
              if(!(sender instanceof Player)){
                  sender.sendMessage("Error: must be ran by a player");
                  return true;
