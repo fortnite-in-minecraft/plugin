@@ -7,7 +7,6 @@ import java.lang.reflect.Array;
 import java.util.Random;
 
 public class AddALootChest {
-    static final Random rand = new Random();
     public static int[] addALootChest(World world){
         WorldBorder border = world.getWorldBorder();
         double size = border.getSize();

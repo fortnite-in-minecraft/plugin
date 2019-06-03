@@ -91,7 +91,7 @@ public class WorldCommandExecutor implements CommandExecutor {
                  return true;
              }
              try {
-                 (new InstallLootTables()).installLootTables(((Player) sender).getWorld(), sender);
+                 InstallLootTables.installLootTables(((Player) sender).getWorld(), sender);
              }catch(IOException e){
                  e.printStackTrace();
                  sender.sendMessage("Internal I/O error");

@@ -11,7 +11,7 @@ import java.util.zip.ZipInputStream;
 import java.nio.file.Paths;
 
 public class InstallLootTables {
-    public void installLootTables(World w, CommandSender sender) throws IOException{
+    public static void installLootTables(World w, CommandSender sender) throws IOException{
         System.out.println(w.getWorldFolder());
         Path basePath = Paths.get(w.getWorldFolder().toString(), "datapacks");
         InstallLootTables.deleteFolder(Paths.get(basePath.toString(), "minecraftroyale").toFile());
