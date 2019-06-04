@@ -9,8 +9,10 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.minecraftroyale.Listeners.DeathListener;
+import tk.minecraftroyale.Scheduler.DispatchSaveConfig;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
+import tk.minecraftroyale.Scheduler.DispatchGameEnd;
 
 import javax.security.auth.login.LoginException;
 import java.util.logging.Logger;
@@ -44,6 +46,8 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
 
+        DispatchGameEnd.dispatchGameEnd();
+        DispatchSaveConfig.dispatchSaveConfig();
     }
 
     @Override

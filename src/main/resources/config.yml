@@ -34,3 +34,6 @@ worldBorder:
   secondDistance: 1234
   secondDistanceShrinkTime: 12345
   finalDistance: 100
+dates:
+  roundEnd: ""
+  roundDuration: 10
