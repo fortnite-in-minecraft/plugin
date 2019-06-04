@@ -3,6 +3,7 @@ package tk.minecraftroyale;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,6 +29,23 @@ public class MinecraftRoyale extends JavaPlugin {
 
     public RoyaleWorlds royaleWorlds;
 
+    public static void boostPlayerHealth(Player player){
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double amount = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.healthRegen");
+        double actualValue = Math.min(player.getHealth() + amount, maxHealth);
+        String str = "Your health has been boosted by " + (actualValue - player.getHealth() / 2) + " hearts for logging in today!";
+
+        JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("updating health for player " + player.getUniqueId() + "\n" + player.getHealth());
+        player.sendMessage(str);
+        player.setHealth(actualValue);
+        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("playerData." + player.getUniqueId() + ".regenHealth", false);
+    }
+
     private void setupMidnight(){
         Calendar now = new GregorianCalendar();
         Calendar next = new GregorianCalendar();
@@ -36,8 +54,9 @@ public class MinecraftRoyale extends JavaPlugin {
         next.set(Calendar.MILLISECOND, 0);
         next.set(Calendar.SECOND, 0);
 
-        next.set(Calendar.HOUR_OF_DAY, 4); // 4:00 AM
-        next.set(Calendar.MINUTE, 0);
+        next.set(Calendar.HOUR_OF_DAY, 12 + 5); // 4:00 AM
+        next.set(Calendar.MINUTE, 17);
+        next.set(Calendar.SECOND, 35);
 
 // If it's after 4:00 AM already we need to set the next execution to the next day
         if (now.after(next)) {
@@ -48,17 +67,22 @@ public class MinecraftRoyale extends JavaPlugin {
         if (now.before(next)) {
             // Ticks until execution
             long ticks = (next.getTimeInMillis() - now.getTimeInMillis()) / 1000 * 20;
-
+            System.out.println("updating in " + ticks + " ticks");
             // Now schedule the runnable
             new BukkitRunnable() {
-
                 @Override
                 public void run() {
-                    for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
-                        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("playerdata." + player.getUniqueId() + ".regenHealth", true);
+                    for(OfflinePlayer possiblyOfflinePlayer : Bukkit.getOfflinePlayers()){
+                        System.out.println("got offline player " + possiblyOfflinePlayer.getUniqueId() );
+                        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("playerData." + possiblyOfflinePlayer.getUniqueId() + ".regenHealth", true);
+                        JavaPlugin.getPlugin(MinecraftRoyale.class).saveConfig();
+                        if(possiblyOfflinePlayer.isOnline() && possiblyOfflinePlayer instanceof Player){
+                            Player player = (Player) possiblyOfflinePlayer;
+                            boostPlayerHealth(player);
+                        }
                     }
                 }
-            }.runTaskTimer(this, ticks, 24 * 60 * 60 * 20); // And repeat again in 24h
+            }.runTaskTimer(this, ticks - ticks, 24 * 60 * 60 * 20); // And repeat again in 24h
         } else {
             throw new RuntimeException("time machine broke");
         }
@@ -103,6 +127,8 @@ public class MinecraftRoyale extends JavaPlugin {
             }
 
         }.runTaskTimer(this, 0, 20 * 60 * 5);
+
+        setupMidnight();
     }
 
     @Override

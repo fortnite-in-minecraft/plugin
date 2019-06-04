@@ -39,9 +39,14 @@ timeConfig:
 dates:
   # unix epoch seconds
   roundEnd: 0
+gameSettings:
+  healthRegen: 2
 probability:
   # 1/n
   airdrop: 60
 playerData:
   notarealuid:
     regenHealth: true
+    isAlive: false
+    points: 10
+    gamePoints: 1
