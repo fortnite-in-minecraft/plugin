@@ -8,13 +8,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import tk.minecraftroyale.Listeners.DeathListener;
+import tk.minecraftroyale.Loot.Airdrop;
 import tk.minecraftroyale.Scheduler.DispatchSaveConfig;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.Scheduler.DispatchGameEnd;
 
 import javax.security.auth.login.LoginException;
+import java.util.Collection;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -50,6 +53,20 @@ public class MinecraftRoyale extends JavaPlugin {
         DispatchGameEnd.dispatchGameEnd();
         DispatchSaveConfig.dispatchSaveConfig();
         this.getConfig().options().copyDefaults(true);
+
+
+            // Create the task anonymously and schedule to run it once, after 20 ticks
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                // What you want to schedule goes here
+                JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("Checking airdrop...");
+                Object[] players = Bukkit.getOnlinePlayers().toArray();
+                if(players.length > 0) Airdrop.runAirdrop(((Player) (players[0])).getWorld());
+            }
+
+        }.runTaskTimer(this, 0, 20 * 60 * 5);
     }
 
     @Override

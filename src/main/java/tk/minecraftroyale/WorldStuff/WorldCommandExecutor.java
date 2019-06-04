@@ -39,7 +39,6 @@ public class WorldCommandExecutor implements CommandExecutor {
                 if (args.length == 0) {
                     drop = new Airdrop(((Player) sender).getWorld());
                 } else if (args.length == 2) {
-
                     drop = new Airdrop(new Location(player.getWorld(),
                             Integer.parseInt(args[0]),
                             player.getWorld().getHighestBlockYAt(Integer.parseInt(args[0]), Integer.parseInt(args[1])),
@@ -49,6 +48,7 @@ public class WorldCommandExecutor implements CommandExecutor {
                 }
 
                 drop.place();
+                return true;
             }catch(NumberFormatException e){
                 sender.sendMessage("Error: invalid coordinates");
             }
