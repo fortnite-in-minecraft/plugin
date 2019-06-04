@@ -125,14 +125,21 @@ public class WorldCommandExecutor implements CommandExecutor {
              sender.sendMessage("installed loot tables");
              return true;
         }else if(cmd.getName().equalsIgnoreCase("setupwborder")) {
-
             if (sender instanceof Player && !minecraftRoyale.getDevCommands((Player) sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
 
             try {
-                minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
+                if(args.length > 0) {
+                    minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
+                }else{
+                    if (sender instanceof Player) {
+                        minecraftRoyale.royaleWorlds.setUpWorldBorder(((Player) sender).getWorld());
+                    }else{
+                        return false;
+                    }
+                }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: not a number");
             } catch(IllegalArgumentException e){
