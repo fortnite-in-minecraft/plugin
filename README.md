@@ -1,2 +1,2 @@
-# minecraftRoyale
-It's the minecraftRoyale. Project files are for IDEA.
+# Plugin
+It's the plugin. Project files are for IDEA.
