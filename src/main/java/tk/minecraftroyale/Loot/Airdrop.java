@@ -1,20 +1,39 @@
 package tk.minecraftroyale.Loot;
 
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
-import org.bukkit.loot.LootTable;
-import org.bukkit.plugin.java.JavaPlugin;
-import tk.minecraftroyale.MinecraftRoyale;
 
-public class Airdrop {
-    public static void airdrop(World world) {
-        airdrop(world, 0, 0);
+/**
+ * Represents an airdrop.
+ */
+public class Airdrop extends LootChest {
+    private void announce() {
+        Bukkit.broadcastMessage("An airdrop has appeared! Search for it if you dare...");
     }
 
-    public static void airdrop(World world, int x, int z){
-        Block block = world.getHighestBlockAt(x, z);
-        CreateLootChest.createLootChest("airdrop", world, x, z);
+    public Airdrop(Location location) {
+        super(location);
+    }
+
+    public Airdrop(World world) {
+        super(world);
+    }
+
+    /**
+     * Same as {@link LootChest#place()}, but also announces in chat that
+     * an airdrop has been spawned.
+     */
+    @Override
+    public void place() {
+        super.place();
+        announce();
+    }
+
+    /**
+     * Calculates whether or not to spawn an airdrop. This is intended to be called every five minutes.
+     * @return whether or not an airdrop should be spawned.
+     */
+    public static boolean dropCheck() {
+        int n = Bukkit.getOnlinePlayers().size();
+        return Math.random() < (n / 60d);
     }
 }

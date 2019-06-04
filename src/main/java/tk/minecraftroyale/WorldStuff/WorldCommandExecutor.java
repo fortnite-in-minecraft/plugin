@@ -8,15 +8,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import tk.minecraftroyale.Exceptions.ConfigException;
-import tk.minecraftroyale.Loot.AddALootChest;
 import tk.minecraftroyale.Loot.Airdrop;
-import tk.minecraftroyale.Loot.InstallLootTables;
+import tk.minecraftroyale.Loot.LootChest;
 import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nonnull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
 
 public class WorldCommandExecutor implements CommandExecutor {
     private final MinecraftRoyale minecraftRoyale;
@@ -33,27 +31,41 @@ public class WorldCommandExecutor implements CommandExecutor {
                 return true;
             }
             try {
+                Player player = (Player) sender;
+
+                Airdrop drop;
                 if (args.length == 0) {
-                    Airdrop.airdrop(((Player) sender).getWorld());
-                    return true;
+                    drop = new Airdrop(((Player) sender).getWorld());
                 } else if (args.length == 2) {
-                    Airdrop.airdrop(((Player) sender).getWorld(), Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-                    return true;
+
+                    drop = new Airdrop(new Location(player.getWorld(),
+                            Integer.parseInt(args[0]),
+                            player.getWorld().getHighestBlockYAt(Integer.parseInt(args[0]), Integer.parseInt(args[1])),
+                            Integer.parseInt(args[1])));
                 }else{
                     return false;
                 }
-            }catch(Error e){
-                e.printStackTrace();
+
+                drop.place();
+            }catch(NumberFormatException e){
+                sender.sendMessage("Error: invalid coordinates");
             }
         }else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
             if(!(sender instanceof Player)){
                 sender.sendMessage("Error: must be run by a player");
                 return true;
             }
+
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
             try {
                 if (args.length == 0) {
-                    int[] results = AddALootChest.addALootChest(((Player) sender).getWorld());
-                    sender.sendMessage("added loot chest at " + results[0] + ", " + results[1]);
+                    LootChest lootChest = new LootChest(((Player) sender).getWorld());
+                    lootChest.place();
+                    sender.sendMessage(lootChest.getCommandResponse());
                     return true;
                 }else{
                     return false;
@@ -66,14 +78,21 @@ public class WorldCommandExecutor implements CommandExecutor {
                 sender.sendMessage("Error: must be run by a player");
                 return true;
             }
+
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
             try {
                 if (args.length == 1) {
                     try {
                         int num = Integer.parseInt(args[0]);
                         sender.sendMessage("adding " + num + " loot chests...");
                         for(int i = 0 ; i < num ; i++) {
-                            int[] results = AddALootChest.addALootChest(((Player) sender).getWorld());
-                            sender.sendMessage("added loot chest at " + results[0] + ", " + results[1]);
+                            LootChest lootChest = new LootChest(((Player) sender).getWorld());
+                            lootChest.place();
+                            sender.sendMessage(lootChest.getCommandResponse());
                         }
                         return true;
                     } catch (NumberFormatException e) {
@@ -85,21 +104,33 @@ public class WorldCommandExecutor implements CommandExecutor {
             }catch(Error e){
                 e.printStackTrace();
             }
-        }else if (cmd.getName().equalsIgnoreCase("addloottables")) {
+        }else if (cmd.getName().equalsIgnoreCase("installloottables")) {
              if(!(sender instanceof Player)){
                  sender.sendMessage("Error: must be ran by a player");
                  return true;
              }
+
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
              try {
-                 InstallLootTables.installLootTables(((Player) sender).getWorld(), sender);
+                 LootChest.installLootTables(((Player) sender).getWorld(), sender);
              }catch(IOException e){
                  e.printStackTrace();
                  sender.sendMessage("Internal I/O error");
                  return true;
              }
-             sender.sendMessage("added loot tables");
+             sender.sendMessage("installed loot tables");
              return true;
         }else if(cmd.getName().equalsIgnoreCase("setupwborder")) {
+
+            if (sender instanceof Player && !minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
             try {
                 minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
             } catch (NumberFormatException e) {
@@ -162,6 +193,11 @@ public class WorldCommandExecutor implements CommandExecutor {
             return true;
         } else if (cmd.getName().equalsIgnoreCase("createworld")) {
             if (args.length != 1) return false;
+
+            if (sender instanceof Player && !minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
 
             String worldName;
 

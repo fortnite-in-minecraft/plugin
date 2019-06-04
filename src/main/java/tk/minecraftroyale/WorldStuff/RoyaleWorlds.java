@@ -1,6 +1,6 @@
 package tk.minecraftroyale.WorldStuff;
 
-import com.sun.istack.internal.NotNull;
+import javax.annotation.Nonnull;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import tk.minecraftroyale.Exceptions.ConfigException;
@@ -87,7 +87,7 @@ public class RoyaleWorlds {
         setUpWorldBorder(w);
     }
 
-    private void setUpWorldBorder(@NotNull World world){
+    private void setUpWorldBorder(@Nonnull World world){
         WorldBorder border = world.getWorldBorder();
         border.setCenter(0, 0);
         border.setCenter(0, 0);

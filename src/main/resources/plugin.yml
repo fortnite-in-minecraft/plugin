@@ -32,11 +32,14 @@ commands:
     usage: /setupwborder [roundnumber]
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
-  addloottables:
+  installloottables:
     description: Adds the loot tables to this world.
     usage: /addloottables
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+    aliases:
+      - instloot
+      - addloottables
   airdrop:
     description: Airdrops at the specified coordinates (0, 0 default)
     usage: /airdrop <x z>
