@@ -13,7 +13,7 @@ public class DispatchGameEnd {
         long now = System.currentTimeMillis() / 1000l;
         long duration = plugin.getConfig().getLong("timeConfig.roundDuration");
         long timer;
-        if (unixSecondsToEndAt == 0) {
+        if (unixSecondsToEndAt - now < 1) {
             plugin.getLogger().info("updating");
             plugin.getConfig().getLong("timeConfig.roundDuration");
             plugin.getConfig().set("dates.roundEnd", now + duration);
