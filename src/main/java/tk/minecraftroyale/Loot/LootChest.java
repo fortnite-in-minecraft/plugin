@@ -2,6 +2,7 @@ package tk.minecraftroyale.Loot;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.loot.LootTable;
@@ -57,8 +58,9 @@ public class LootChest {
         Block block = location.getWorld().getHighestBlockAt(location.getBlockX(), location.getBlockZ());
         location = block.getLocation(); // To update the y-axis of the location
         block.setType(Material.CHEST);
-        ((Chest) block).setLootTable(lootTable);
-        ((Chest) block).update();
+        BlockState bs = block.getState();
+        ((Chest) bs).setLootTable(lootTable);
+        bs.update();
         Bukkit.getLogger().info("Spawned " + (this instanceof Airdrop ? "airdrop" : "loot chest") + " in world " +
                 location.getWorld().getName() + " at " +
                 location.getBlockX() + " " +
