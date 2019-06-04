@@ -42,3 +42,6 @@ dates:
 probability:
   # 1/n
   airdrop: 60
+playerData:
+  notarealuid:
+    regenHealth: true

@@ -1,6 +1,7 @@
 package tk.minecraftroyale;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,16 +18,51 @@ import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.Scheduler.DispatchGameEnd;
 
 import javax.security.auth.login.LoginException;
-import java.util.Collection;
+import java.time.chrono.MinguoChronology;
+import java.util.*;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Objects;
 
 
 public class MinecraftRoyale extends JavaPlugin {
 
     public RoyaleWorlds royaleWorlds;
+
+    private void setupMidnight(){
+        Calendar now = new GregorianCalendar();
+        Calendar next = new GregorianCalendar();
+
+// Set the next execution time
+        next.set(Calendar.MILLISECOND, 0);
+        next.set(Calendar.SECOND, 0);
+
+        next.set(Calendar.HOUR_OF_DAY, 4); // 4:00 AM
+        next.set(Calendar.MINUTE, 0);
+
+// If it's after 4:00 AM already we need to set the next execution to the next day
+        if (now.after(next)) {
+            next.add(Calendar.DATE, 1); // Add a day
+        }
+
+// This should always be true
+        if (now.before(next)) {
+            // Ticks until execution
+            long ticks = (next.getTimeInMillis() - now.getTimeInMillis()) / 1000 * 20;
+
+            // Now schedule the runnable
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
+                        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("playerdata." + player.getUniqueId() + ".regenHealth", true);
+                    }
+                }
+            }.runTaskTimer(this, ticks, 24 * 60 * 60 * 20); // And repeat again in 24h
+        } else {
+            throw new RuntimeException("time machine broke");
+        }
+    }
 
     @Override
     public void onEnable() {
