@@ -55,3 +55,8 @@ commands:
     usage: /addlootchests [num]
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  resetconfig:
+    description: Resets plugin config
+    usage: /resetconfig
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

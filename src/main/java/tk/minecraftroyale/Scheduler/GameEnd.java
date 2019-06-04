@@ -13,8 +13,8 @@ public class GameEnd extends BukkitRunnable {
 
     @Override
     public void run() {
-        // What you want to schedule goes here
-        plugin.getServer().broadcastMessage("test");
+        plugin.getServer().broadcastMessage("GAME OVER");
+        plugin.getConfig().set("timeConfig.roundDuration", null);
     }
 
 }

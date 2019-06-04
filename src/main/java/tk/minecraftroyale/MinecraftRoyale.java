@@ -37,6 +37,7 @@ public class MinecraftRoyale extends JavaPlugin {
         }
 
         Objects.requireNonNull(this.getCommand("loadworld")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("resetconfig")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("mrtp")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("createworld")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setupwborder")).setExecutor(new WorldCommandExecutor(this));
@@ -48,6 +49,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
         DispatchGameEnd.dispatchGameEnd();
         DispatchSaveConfig.dispatchSaveConfig();
+        this.getConfig().options().copyDefaults(true);
     }
 
     @Override

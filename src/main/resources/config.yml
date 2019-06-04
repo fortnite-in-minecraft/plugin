@@ -34,6 +34,8 @@ worldBorder:
   secondDistance: 1234
   secondDistanceShrinkTime: 12345
   finalDistance: 100
+timeConfig:
+  roundDuration: 20
 dates:
-  roundEnd: ""
-  roundDuration: 10
+  # unix epoch seconds
+  roundEnd: 0

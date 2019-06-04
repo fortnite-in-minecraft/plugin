@@ -7,12 +7,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import tk.minecraftroyale.Exceptions.ConfigException;
 import tk.minecraftroyale.Loot.Airdrop;
 import tk.minecraftroyale.Loot.LootChest;
 import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -50,6 +52,13 @@ public class WorldCommandExecutor implements CommandExecutor {
             }catch(NumberFormatException e){
                 sender.sendMessage("Error: invalid coordinates");
             }
+        }else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
+            JavaPlugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+            File configFile = new File(plugin.getDataFolder(), "config.yml");
+            configFile.delete();
+            plugin.saveDefaultConfig();
+            plugin.reloadConfig();
+            return true;
         }else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
             if(!(sender instanceof Player)){
                 sender.sendMessage("Error: must be run by a player");
