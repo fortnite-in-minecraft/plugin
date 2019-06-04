@@ -1,6 +1,8 @@
 package tk.minecraftroyale.Loot;
 
 import org.bukkit.*;
+import org.bukkit.plugin.java.JavaPlugin;
+import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +39,11 @@ public class Airdrop extends LootChest {
      */
     public static boolean dropCheck() {
         int n = Bukkit.getOnlinePlayers().size();
-        return Math.random() < (n / 60d);
+        double probability = 60d;
+        int configInt = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("probability.airdrop");
+        if(configInt > 0) probability = configInt;
+        JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("probability for airdrop: 1/" + configInt + " " + probability);
+        return Math.random() < (n / probability);
     }
 
     @Nullable

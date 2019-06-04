@@ -39,3 +39,6 @@ timeConfig:
 dates:
   # unix epoch seconds
   roundEnd: 0
+probability:
+  # 1/n
+  airdrop: 60
