@@ -1,6 +1,7 @@
 package tk.minecraftroyale;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -11,6 +12,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.*;
 import tk.minecraftroyale.Listeners.DeathListener;
 import tk.minecraftroyale.Loot.Airdrop;
 import tk.minecraftroyale.Scheduler.DispatchSaveConfig;
@@ -88,7 +90,20 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
-    @Override
+    public void updateScoreBoard(Player player) {
+
+        Scoreboard board = player.getScoreboard();
+        if (Bukkit.getOnlinePlayers().size() == 0) {
+            board.getTeam("onlineCounter").setPrefix(ChatColor.DARK_RED + "0" + ChatColor.RED + "/" + ChatColor.DARK_RED + Bukkit.getMaxPlayers());
+        } else {
+            board.getTeam("onlineCounter").setPrefix(ChatColor.DARK_RED + "" + Bukkit.getOnlinePlayers().size() + ChatColor.RED + "/" + ChatColor.DARK_RED + Bukkit.getMaxPlayers());
+        }
+        board.getTeam("moneyCounter").setPrefix(ChatColor.GREEN + "$" + getConfig().getInt("playerData." + player.getUniqueId() + ".points"));
+        player.setScoreboard(board);
+
+    }
+
+        @Override
     public void onEnable() {
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
@@ -96,8 +111,18 @@ public class MinecraftRoyale extends JavaPlugin {
         for (World w : Bukkit.getWorlds()) {
             for (Player p : w.getPlayers()) {
                 setDevCommands(p, false);
+                updateScoreBoard(p);
             }
         }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()) {
+                    updateScoreBoard(p);
+                }
+            }
+
+        }.runTaskTimer(this, 10, 10);
 
         Objects.requireNonNull(this.getCommand("loadworld")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("resetconfig")).setExecutor(new WorldCommandExecutor(this));
