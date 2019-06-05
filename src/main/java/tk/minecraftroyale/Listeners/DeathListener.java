@@ -37,12 +37,20 @@ public final class DeathListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer != null) {
-            event.setDeathMessage(event.getEntity().getDisplayName() + " was yote by " + killer.getDisplayName());
+            String path = "playerdata." + killer.getUniqueId() + ".points";
+            plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
+            int points = plugin.getConfig().getInt(path) + plugin.getConfig().getInt("gameSettings.points.normal");
+            // TODO: add points based on who has the most
+            plugin.getConfig().set(path, points);
+//          event.setDeathMessage(event.getDeathMessage() + " " + event.getEntity().getDisplayName() + " was yote by " + killer.getDisplayName());
         } else {
             // If the player wasn't killed by another player
 
-            event.setDeathMessage(event.getEntity().getDisplayName() + " was yote");
+//            event.setDeathMessage(event.getDeathMessage() + " " + event.getEntity().getDisplayName() + " was yote");
 
         }
     }
+
+
+//    PlayerEvent
 }

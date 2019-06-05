@@ -41,6 +41,8 @@ dates:
   roundEnd: 0
 gameSettings:
   healthRegen: 2
+  points:
+    normal: 10
 probability:
   # 1/n
   airdrop: 60
