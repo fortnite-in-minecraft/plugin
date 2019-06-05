@@ -37,7 +37,7 @@ public final class DeathListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer != null) {
-            String path = "playerdata." + killer.getUniqueId() + ".points";
+            String path = "playerData." + killer.getUniqueId() + ".points";
             plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
             int points = plugin.getConfig().getInt(path) + plugin.getConfig().getInt("gameSettings.points.normal");
             // TODO: add points based on who has the most
