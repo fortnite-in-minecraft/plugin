@@ -46,30 +46,23 @@ public class RoyaleWorlds {
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
 
-        World mainWorld = plugin.getServer().getWorld("world");
+//        World mainWorld = plugin.getServer().getWorld("world");
         String worldPathConfigPath = "worlds.world" + roundNum + ".path";
         String worldPath = plugin.getConfig().getString(worldPathConfigPath);
 
-        if (mainWorld == null) {
-            throw new FileNotFoundException("Unable to find world \"world\". The main world should be called this.");
-        }
+//        if (mainWorld == null) {
+//            throw new FileNotFoundException("Unable to find world \"world\". The main world should be called this.");
+//        }
 
         if (worldPath == null) {
             throw new ConfigException(worldPathConfigPath);
         }
 
-        WorldCreator worldCreator = new WorldCreator(worldPath)
-                .copy(mainWorld)
+        World newWorld = new WorldCreator(worldPath)
+//                .copy(mainWorld)
                 .generateStructures(true)
                 .type(WorldType.LARGE_BIOMES)
-                .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed"));
-
-        new WorldGenThread(worldCreator, world -> {
-            worlds.put(roundNum, world);
-            if (sender != null) {
-                sender.sendMessage("World generation complete.");
-            }
-        }).start();
+                .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
 
         if (sender != null) {
             sender.sendMessage("World generation started. You will be notified when it is complete.");

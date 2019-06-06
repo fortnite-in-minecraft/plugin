@@ -30,8 +30,8 @@ worlds:
     seed: 2070558
     generatorName: ampliflied
 worldBorder:
-  startDistance: 12345
-  secondDistance: 1234
+  startDistance: 5000
+  secondDistance: 1000
   secondDistanceShrinkTime: 12345
   finalDistance: 100
 timeConfig:
