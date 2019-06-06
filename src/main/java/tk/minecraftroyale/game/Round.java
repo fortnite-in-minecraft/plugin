@@ -29,6 +29,13 @@ public class Round {
         }
     }
 
+    private void endRound(){
+        for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
+            plugin.getConfig().get("playerData." + p.getUniqueId() + ".points");
+            // TODO: add code
+        }
+    }
+
     public World getWorld() {
         return world;
     }
