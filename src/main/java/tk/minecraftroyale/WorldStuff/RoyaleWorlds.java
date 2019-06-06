@@ -3,12 +3,15 @@ package tk.minecraftroyale.WorldStuff;
 import javax.annotation.Nonnull;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import tk.minecraftroyale.Exceptions.ConfigException;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.minecraftroyale.Loot.LootChest;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -42,7 +45,7 @@ public class RoyaleWorlds {
     }
 
 
-    public void generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, FileNotFoundException, ConfigException {
+    public void generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, IOException, ConfigException {
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
 
@@ -67,9 +70,24 @@ public class RoyaleWorlds {
         if (sender != null) {
             sender.sendMessage("World generation started. You will be notified when it is complete.");
         }
+
+        setUpWorldBorder(roundNum);
+
+        int num = plugin.getConfig().getInt("gameSettings.numLootChests");
+        Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
+        for(int i = 0 ; i < num; i++) {
+            LootChest lootChest = new LootChest(newWorld);
+            lootChest.place();
+            Bukkit.getLogger().info(lootChest.getCommandResponse());
+        }
+
+        try {
+            LootChest.installLootTables(Bukkit.getWorld("world" + roundNum), null);
+        } catch (IOException e) {
+        }
     }
 
-    public void generateWorld(int roundNum) throws IllegalArgumentException, FileNotFoundException, ConfigException {
+    public void generateWorld(int roundNum) throws IllegalArgumentException, IOException, ConfigException {
         generateWorld(roundNum, null);
     }
 

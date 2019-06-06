@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class WorldCommandExecutor implements CommandExecutor {
     private final MinecraftRoyale minecraftRoyale;
@@ -229,6 +230,8 @@ public class WorldCommandExecutor implements CommandExecutor {
                 } catch (FileNotFoundException|ConfigException e) {
                     sender.sendMessage(e.getMessage());
                     minecraftRoyale.getLogger().severe(e.getMessage());
+                } catch (IOException e) {
+                    Bukkit.getLogger().throwing("oh", "no", e);
                 }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: invalid round");
