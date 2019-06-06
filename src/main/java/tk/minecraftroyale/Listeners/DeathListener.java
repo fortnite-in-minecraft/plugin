@@ -31,7 +31,7 @@ public final class DeathListener implements Listener {
                 public void run() {
                     MinecraftRoyale.boostPlayerHealth(event.getPlayer());
 
-                    setScoreBoard(event.getPlayer());
+//                    setScoreBoard(event.getPlayer());
                 }
 
             }.runTaskLater(this.plugin, 10);

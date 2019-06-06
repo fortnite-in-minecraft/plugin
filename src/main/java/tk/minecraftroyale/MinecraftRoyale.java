@@ -37,7 +37,7 @@ public class MinecraftRoyale extends JavaPlugin {
         double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         double amount = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.healthRegen");
         double actualValue = Math.min(player.getHealth() + amount, maxHealth);
-        String str = "Your health has been boosted by " + (actualValue - player.getHealth() / 2) + " hearts for logging in today!";
+        String str = "Your health has been boosted by " + ((actualValue - player.getHealth()) / 2) + " hearts for logging in today!";
 
         JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("updating health for player " + player.getUniqueId() + "\n" + player.getHealth());
         player.sendMessage(str);
@@ -81,7 +81,7 @@ public class MinecraftRoyale extends JavaPlugin {
                         }
                     }
                 }
-            }.runTaskTimer(this, ticks - ticks, 24 * 60 * 60 * 20); // And repeat again in 24h
+            }.runTaskTimer(this, ticks - ticks, 24 * 60 * 60 * 20);
         } else {
             throw new RuntimeException("time machine broke");
         }
@@ -89,14 +89,6 @@ public class MinecraftRoyale extends JavaPlugin {
 
     public void updateScoreBoard(Player player) {
 
-        Scoreboard board = player.getScoreboard();
-        if (Bukkit.getOnlinePlayers().size() == 0) {
-            board.getTeam("onlineCounter").setPrefix(ChatColor.DARK_RED + "0" + ChatColor.RED + "/" + ChatColor.DARK_RED + Bukkit.getMaxPlayers());
-        } else {
-            board.getTeam("onlineCounter").setPrefix(ChatColor.DARK_RED + "" + Bukkit.getOnlinePlayers().size() + ChatColor.RED + "/" + ChatColor.DARK_RED + Bukkit.getMaxPlayers());
-        }
-        board.getTeam("moneyCounter").setPrefix(ChatColor.GREEN + "$" + getConfig().getInt("playerData." + player.getUniqueId() + ".points"));
-        player.setScoreboard(board);
 
     }
 
@@ -104,6 +96,23 @@ public class MinecraftRoyale extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
+
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        Scoreboard board = manager.getNewScoreboard();
+        Team team = board.registerNewTeam("teamname");
+        team.setPrefix("prefix");
+        team.setDisplayName("health");
+        Objective healthObjective = board.registerNewObjective("health", "health", "Health");
+        healthObjective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+
+        Objective pointsObjective = board.registerNewObjective("points", "dummy", "Points");
+        pointsObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        healthObjective.setRenderType(RenderType.HEARTS);
+
+        Objective healthObjectiveBelowName = board.registerNewObjective("health2", "health", "HP");
+        healthObjectiveBelowName.setDisplaySlot(DisplaySlot.BELOW_NAME);
+        healthObjectiveBelowName.setDisplayName("/ 20 HP");
+
 
         for (World w : Bukkit.getWorlds()) {
             for (Player p : w.getPlayers()) {
@@ -114,8 +123,13 @@ public class MinecraftRoyale extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for(Player p : Bukkit.getOnlinePlayers()) {
-                    updateScoreBoard(p);
+                for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+//                    if(!team.hasEntry()) team.addEntry(p.getDisplayName());
+
+                    Score score = pointsObjective.getScore(player.getName());
+                    score.setScore(getConfig().getInt("playerData." + player.getUniqueId() + ".points"));
+
+                    if(player instanceof Player && ((Player) player).getScoreboard() != board) ((Player) player).setScoreboard(board);
                 }
             }
 
