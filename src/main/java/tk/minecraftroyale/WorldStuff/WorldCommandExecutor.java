@@ -224,6 +224,7 @@ public class WorldCommandExecutor implements CommandExecutor {
 
                 try {
                     minecraftRoyale.royaleWorlds.generateWorld(worldNum, sender);
+                    return true;
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage("Something went wrong. This is a bug.");
                     minecraftRoyale.getLogger().severe(e.getStackTrace().toString());

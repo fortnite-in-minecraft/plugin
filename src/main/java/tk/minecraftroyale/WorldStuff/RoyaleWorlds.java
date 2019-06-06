@@ -8,6 +8,9 @@ import tk.minecraftroyale.Exceptions.ConfigException;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.minecraftroyale.Loot.LootChest;
+import tk.minecraftroyale.MinecraftRoyale;
+import tk.minecraftroyale.Scheduler.Time;
+import tk.minecraftroyale.game.Round;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
@@ -85,6 +88,9 @@ public class RoyaleWorlds {
             LootChest.installLootTables(Bukkit.getWorld("world" + roundNum), null);
         } catch (IOException e) {
         }
+
+        MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld);
+
     }
 
     public void generateWorld(int roundNum) throws IllegalArgumentException, IOException, ConfigException {

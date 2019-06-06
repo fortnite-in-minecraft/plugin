@@ -19,6 +19,7 @@ import tk.minecraftroyale.Loot.Airdrop;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.Scheduler.DispatchGameEnd;
+import tk.minecraftroyale.game.Round;
 
 import java.util.*;
 import javax.annotation.Nonnull;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
 public class MinecraftRoyale extends JavaPlugin {
 
     public RoyaleWorlds royaleWorlds;
+    public static Round currentRound;
 
     public static void boostPlayerHealth(Player player){
         try {
