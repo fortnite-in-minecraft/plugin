@@ -60,3 +60,8 @@ commands:
     usage: /resetconfig
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  endround:
+    description: Ends the round
+    usage: /endround
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

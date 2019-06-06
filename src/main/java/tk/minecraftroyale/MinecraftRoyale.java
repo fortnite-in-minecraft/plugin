@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.*;
 import tk.minecraftroyale.Listeners.DeathListener;
 import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.Loot.Airdrop;
+import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.Scheduler.DispatchGameEnd;
@@ -94,10 +95,24 @@ public class MinecraftRoyale extends JavaPlugin {
 
     }
 
+    public static Comparator<World> ageComparator = new Comparator<World>() {
+        @Override
+        public int compare(World w1, World w2) {
+            int w1Name = Integer.parseInt(w1.getName().substring(5));
+            int w2Name = Integer.parseInt(w2.getName().substring(5));
+            return w1Name - w2Name;
+        }
+    };
+
         @Override
     public void onEnable() {
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
+
+        List worlds = Bukkit.getWorlds();
+        worlds.sort(ageComparator);
+        World currentWorld = (World) worlds.get(0);
+        MinecraftRoyale.currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld);
 
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
@@ -146,6 +161,7 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("airdrop")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchest")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("endround")).setExecutor(new WorldCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
 

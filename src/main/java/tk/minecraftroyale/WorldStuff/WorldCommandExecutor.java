@@ -60,6 +60,13 @@ public class WorldCommandExecutor implements CommandExecutor {
             plugin.saveDefaultConfig();
             plugin.reloadConfig();
             return true;
+        }else if (cmd.getName().equalsIgnoreCase("endround")) {
+            try {
+                MinecraftRoyale.currentRound.endRound();
+            }catch(NullPointerException e){
+                e.printStackTrace();
+            }
+            return true;
         }else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
             if(!(sender instanceof Player)){
                 sender.sendMessage("Error: must be run by a player");
