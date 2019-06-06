@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 public class Airdrop extends LootChest {
     Location thisLocation;
     private void announce() {
+        // TODO Give players a special compass that points to the nearest airdrop instead of telling them the coordinates
         Bukkit.broadcastMessage("An airdrop has appeared! Search for it if you dare... " + super.getLocation().getBlockX() + "," + super.getLocation().getBlockY() + "," + super.getLocation().getBlockZ());
     }
 
@@ -42,7 +43,7 @@ public class Airdrop extends LootChest {
         double probability = 60d;
         int configInt = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("probability.airdrop");
         if(configInt > 0) probability = configInt;
-        JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("probability for airdrop: 1/" + configInt + " " + probability);
+        Bukkit.getLogger().info("probability for airdrop: 1/" + configInt + " " + probability);
         return Math.random() < (n / probability);
     }
 

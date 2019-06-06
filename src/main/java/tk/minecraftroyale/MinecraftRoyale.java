@@ -14,16 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 import tk.minecraftroyale.Listeners.DeathListener;
+import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.Loot.Airdrop;
-import tk.minecraftroyale.Scheduler.DispatchSaveConfig;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.Scheduler.DispatchGameEnd;
 
-import javax.security.auth.login.LoginException;
-import java.time.chrono.MinguoChronology;
 import java.util.*;
-import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
 
@@ -134,11 +131,16 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("addlootchest")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
 
         DispatchGameEnd.dispatchGameEnd();
-        DispatchSaveConfig.dispatchSaveConfig();
+
         this.getConfig().options().copyDefaults(true);
 
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            getLogger().info("Saving config");
+            saveConfig();
+        }, 0, 20 * 30);
 
             // Create the task anonymously and schedule to run it once, after 20 ticks
         new BukkitRunnable() {

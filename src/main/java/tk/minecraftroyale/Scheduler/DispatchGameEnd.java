@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import tk.minecraftroyale.MinecraftRoyale;
 
+@Deprecated
 public class DispatchGameEnd {
     public static void dispatchGameEnd() {
         MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);

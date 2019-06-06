@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Random;
 
 public class RoyaleWorlds {
 
@@ -79,7 +80,7 @@ public class RoyaleWorlds {
         generateWorld(roundNum, null);
     }
 
-    void setUpWorldBorder(int world) {
+    public void setUpWorldBorder(int world) {
         World w = getWorld(world);
         if(w == null){
             throw new IllegalArgumentException();
@@ -87,7 +88,7 @@ public class RoyaleWorlds {
         setUpWorldBorder(w);
     }
 
-    void setUpWorldBorder(@Nonnull World world){
+    public void setUpWorldBorder(@Nonnull World world){
         WorldBorder border = world.getWorldBorder();
         border.setCenter(0, 0);
         border.setCenter(0, 0);
@@ -97,5 +98,15 @@ public class RoyaleWorlds {
         border.setSize(plugin.getConfig().getInt("worldBorder.startDistance"));
         border.setSize(plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("worldBorder.secondDistanceShrinkTime"));
 
+    }
+
+    public static Location getRandomLocation(@Nonnull World world) {
+        Random rand = new Random();
+        int wbSize = (int) world.getWorldBorder().getSize();
+        int x = rand.nextInt(wbSize) - (wbSize / 2);
+        int z = rand.nextInt(wbSize) - (wbSize / 2);
+        int y = world.getHighestBlockYAt(x, z);
+
+        return new Location(world, x, y, z);
     }
 }
