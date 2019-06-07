@@ -16,6 +16,8 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static org.bukkit.Bukkit.getServer;
+
 /**
  * Represents a loot chest.
  */
@@ -130,7 +132,7 @@ public class LootChest {
             }
         }
 
-        Bukkit.dispatchCommand(sender, "minecraft:reload");
+        Bukkit.dispatchCommand(getServer().getConsoleSender(), "minecraft:reload");
     }
 
     private static void deleteFolder(File folder) {

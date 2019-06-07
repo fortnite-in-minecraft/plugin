@@ -3,26 +3,36 @@ package tk.minecraftroyale.game;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.MinecraftRoyale;
+import tk.minecraftroyale.Scheduler.GameEnd;
 import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 
 import java.util.ArrayList;
+import java.util.List;
+
 public class Round {
 
     private Time length;
     private World world;
     private MinecraftRoyale plugin;
+    private Runnable wborderShrinkPart2Callback;
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public Round(MinecraftRoyale plugin, Time length, World world) {
+    public Round(MinecraftRoyale plugin, Time length, World world, Runnable wborderShrinkPart2Callback) {
         this.plugin = plugin;
         this.length = length;
         this.world = world;
+        this.wborderShrinkPart2Callback = wborderShrinkPart2Callback;
     }
 
-    private void teleportAllToRoundWorld() {
+    public void teleportAllToRoundWorld() {
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             if (offlinePlayer.getPlayer() != null) {
                 offlinePlayer.getPlayer().teleport(RoyaleWorlds.getRandomLocation(world));
@@ -32,7 +42,40 @@ public class Round {
         }
     }
 
+    public void checkStatus(){
+        checkGeneric("roundEnd", () -> endRound());
+        checkGeneric("wborderShrinkPart2", () -> wborderShrinkPart2Callback.run());
+    }
 
+    @SuppressWarnings("Duplicates")
+    private void checkGeneric(String nameOfTheThingToCheck, Runnable callback){
+        MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+        @NotNull FileConfiguration config = plugin.getConfig();
+
+        long unixSecondsToEndAt = config.getLong("dates." + nameOfTheThingToCheck);
+        long now = System.currentTimeMillis() / 1000l;
+        long duration = config.getLong("timeConfig." + nameOfTheThingToCheck);
+        long timer;
+        if (unixSecondsToEndAt - now < 1) {
+            plugin.getLogger().info("updating");
+            config.getLong("timeConfig." + nameOfTheThingToCheck);
+            config.set("dates." + nameOfTheThingToCheck, now + duration);
+            timer = duration;
+        }else{
+            timer = unixSecondsToEndAt - now;
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                callback.run();
+            }
+
+        }.runTaskLater(plugin, timer * 20);
+
+
+        plugin.saveConfig();
+        plugin.getLogger().info(nameOfTheThingToCheck +" in " + timer + "s " + unixSecondsToEndAt + " - " + now);
+    }
 
     public void endRound(){
         ArrayList mostPoints = new ArrayList();
@@ -55,6 +98,13 @@ public class Round {
                 }
             }
             plugin.getConfig().set("playerData." + p.getUniqueId() + ".points", 0);
+
+            if(p.getPlayer() != null) p.getPlayer().getInventory().clear();
+            else{
+                List l = plugin.getConfig().getStringList("inventoriesToClear");
+                l.add(p.getUniqueId().toString());
+                plugin.getConfig().set("inventoriesToClear", l);
+            }
         }
 
         int maxPoints = (int) mostPoints.get(0);

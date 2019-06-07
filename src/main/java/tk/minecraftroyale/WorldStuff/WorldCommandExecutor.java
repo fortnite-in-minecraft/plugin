@@ -61,13 +61,16 @@ public class WorldCommandExecutor implements CommandExecutor {
             plugin.saveDefaultConfig();
             plugin.reloadConfig();
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("endround")) {
-            try {
-                if(MinecraftRoyale.currentRound != null) MinecraftRoyale.currentRound.endRound();
-                else plugin.getLogger().info("null!");
-            }catch(NullPointerException e){
-                e.printStackTrace();
+        }else if (cmd.getName().equalsIgnoreCase("dopostworldgenstuff")) {
+            if (MinecraftRoyale.currentRound == null) {
+                return false;
+            }else{
+                minecraftRoyale.royaleWorlds.doPostWorldGenStuff(sender, minecraftRoyale.currentRound.getWorld());
+                return true;
             }
+        }else if (cmd.getName().equalsIgnoreCase("endround")) {
+            if(MinecraftRoyale.currentRound != null) MinecraftRoyale.currentRound.endRound();
+            else plugin.getLogger().info("null!");
             return true;
         }else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
             if(!(sender instanceof Player)){
@@ -234,9 +237,6 @@ public class WorldCommandExecutor implements CommandExecutor {
                 try {
                     minecraftRoyale.royaleWorlds.generateWorld(worldNum, sender);
                     return true;
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage("Something went wrong. This is a bug.");
-                    minecraftRoyale.getLogger().severe(e.getStackTrace().toString());
                 } catch (FileNotFoundException|ConfigException e) {
                     sender.sendMessage(e.getMessage());
                     minecraftRoyale.getLogger().severe(e.getMessage());

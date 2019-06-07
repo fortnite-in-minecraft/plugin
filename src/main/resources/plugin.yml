@@ -65,3 +65,8 @@ commands:
     usage: /endround
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  dopostworldgenstuff:
+    description: Run post-worldgen stuff (worldborder, l00t chests, etc.)
+    usage: /dopostworldgenstuff
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

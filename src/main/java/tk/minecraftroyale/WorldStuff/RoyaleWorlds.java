@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import tk.minecraftroyale.Exceptions.ConfigException;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.minecraftroyale.JSONFileAppender;
 import tk.minecraftroyale.Loot.LootChest;
 import tk.minecraftroyale.MinecraftRoyale;
 import tk.minecraftroyale.Scheduler.Time;
@@ -20,10 +21,10 @@ import java.util.Random;
 
 public class RoyaleWorlds {
 
-    private final JavaPlugin plugin;
+    private final JavaPlugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     private static final HashMap<Integer, World> worlds = new HashMap<>();
 
-    public RoyaleWorlds(JavaPlugin plugin) { this.plugin = plugin; }
+    public RoyaleWorlds(JavaPlugin plugin) { }
 
     /**
      * Gets a world from a round number if it exists. Does not create it if it doesn't, instead returning null.
@@ -70,11 +71,16 @@ public class RoyaleWorlds {
                 .type(WorldType.LARGE_BIOMES)
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
 
+        doPostWorldGenStuff(sender, newWorld);
+    }
+
+    public void doPostWorldGenStuff(CommandSender sender, World newWorld){
+
         if (sender != null) {
-            sender.sendMessage("World generation started. You will be notified when it is complete.");
+//            sender.sendMessage("World generation started. You will be notified when it is complete.");
         }
 
-        setUpWorldBorder(roundNum);
+        setUpWorldBorder(newWorld);
 
         int num = plugin.getConfig().getInt("gameSettings.numLootChests");
         Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
@@ -85,12 +91,12 @@ public class RoyaleWorlds {
         }
 
         try {
-            LootChest.installLootTables(Bukkit.getWorld("world" + roundNum), null);
+            LootChest.installLootTables(newWorld, null);
         } catch (IOException e) {
         }
 
-        MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld);
-
+        MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));
+        MinecraftRoyale.currentRound.teleportAllToRoundWorld();
     }
 
     public void generateWorld(int roundNum) throws IllegalArgumentException, IOException, ConfigException {
@@ -105,15 +111,29 @@ public class RoyaleWorlds {
         setUpWorldBorder(w);
     }
 
-    public void setUpWorldBorder(@Nonnull World world){
+    public void setUpWorldBorder(@Nonnull World world) {
+        setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
+    }
+
+    public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
+        if(secondRound){
+            plugin.getLogger().info("secondRound true");
+            setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
+        }else{
+            setUpWorldBorder(world);
+        }
+    }
+
+    public void setUpWorldBorder(@Nonnull World world, int firstDist, int secondDistance, long time){
         WorldBorder border = world.getWorldBorder();
         border.setCenter(0, 0);
         border.setCenter(0, 0);
         border.setWarningTime(30); // 30 second warning
         border.setWarningDistance(15);
         border.setDamageBuffer(1);
-        border.setSize(plugin.getConfig().getInt("worldBorder.startDistance"));
-        border.setSize(plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("worldBorder.secondDistanceShrinkTime"));
+        plugin.getLogger().info("set wborder to " + firstDist + ", " + secondDistance + " after " + time + " seconds in world " + world.getName());
+        border.setSize(firstDist);
+        border.setSize(secondDistance, time);
 
     }
 

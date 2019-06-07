@@ -2,7 +2,6 @@ package tk.minecraftroyale.Listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,19 +13,28 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 import tk.minecraftroyale.MinecraftRoyale;
 
+import java.util.List;
+
 import static org.bukkit.Bukkit.getLogger;
 
 @SuppressWarnings("unused")
 public final class DeathListener implements Listener {
-    static final Plugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+    static final private Plugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         MinecraftRoyale.appender.logLine("Player " + event.getPlayer().getDisplayName() + " logged in with UUID " + event.getPlayer().getUniqueId());
         getLogger().info(event.getPlayer().getDisplayName() + " logged in");
         Object obj = plugin.getConfig().get("playerData." + event.getPlayer().getUniqueId() + ".regenHealth");
         plugin.getLogger().info("found player's regen health: " + obj);
+
+        List inventoriesToClear = plugin.getConfig().getStringList("inventoriesToClear");
+        if(inventoriesToClear.contains(event.getPlayer().getUniqueId())){
+            inventoriesToClear.remove(event.getPlayer().getUniqueId());
+            plugin.getConfig().set("inventoriesToClear", inventoriesToClear);
+            event.getPlayer().getInventory().clear();
+        }
+
         if(obj != null && (Boolean) obj){
-            //noinspection ConstantConditions
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -35,7 +43,7 @@ public final class DeathListener implements Listener {
 //                    setScoreBoard(event.getPlayer());
                 }
 
-            }.runTaskLater(this.plugin, 10);
+            }.runTaskLater(DeathListener.plugin, 10);
         }
     }
 
@@ -59,7 +67,7 @@ public final class DeathListener implements Listener {
 
     public void setScoreBoard(Player player) {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective obj = board.registerNewObjective("ServerName", "dummy");
+        @SuppressWarnings("deprecation") Objective obj = board.registerNewObjective("ServerName", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName("Test Server ");
         Score onlineName = obj.getScore(ChatColor.GRAY + "» Online");

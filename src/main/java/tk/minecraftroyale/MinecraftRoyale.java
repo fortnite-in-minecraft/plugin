@@ -1,7 +1,6 @@
 package tk.minecraftroyale;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -19,7 +18,6 @@ import tk.minecraftroyale.Loot.Airdrop;
 import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
-import tk.minecraftroyale.Scheduler.DispatchGameEnd;
 import tk.minecraftroyale.game.Round;
 
 import java.util.*;
@@ -120,8 +118,9 @@ public class MinecraftRoyale extends JavaPlugin {
 
         List worlds = Bukkit.getWorlds();
         worlds.sort(ageComparator);
-        World currentWorld = (World) worlds.get(0);
-        MinecraftRoyale.currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld);
+        World currentWorld = (World) worlds.stream().filter(w -> !((World) w).getName().contains("nether") && !((World) w).getName().contains("end")).toArray()[0];
+        currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
+        currentRound.checkStatus();
 
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
@@ -171,10 +170,9 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("addlootchest")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("endround")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
-
-        DispatchGameEnd.dispatchGameEnd();
 
         this.getConfig().options().copyDefaults(true);
 
