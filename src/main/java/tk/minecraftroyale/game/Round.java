@@ -9,14 +9,13 @@ import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 
 import java.util.ArrayList;
-import java.util.List;
-
 public class Round {
 
     private Time length;
     private World world;
     private MinecraftRoyale plugin;
 
+    @org.jetbrains.annotations.Contract(pure = true)
     public Round(MinecraftRoyale plugin, Time length, World world) {
         this.plugin = plugin;
         this.length = length;

@@ -21,7 +21,8 @@ public final class DeathListener implements Listener {
     static final Plugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        getLogger().info(event.getPlayer().getName() + " logged in");
+        MinecraftRoyale.appender.logLine("Player " + event.getPlayer().getDisplayName() + " logged in with UUID " + event.getPlayer().getUniqueId());
+        getLogger().info(event.getPlayer().getDisplayName() + " logged in");
         Object obj = plugin.getConfig().get("playerData." + event.getPlayer().getUniqueId() + ".regenHealth");
         plugin.getLogger().info("found player's regen health: " + obj);
         if(obj != null && (Boolean) obj){
@@ -40,19 +41,18 @@ public final class DeathListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
+        Player victim = event.getEntity();
         Player killer = event.getEntity().getKiller();
-        if (killer != null) {
+        if (killer == null) {
+            MinecraftRoyale.appender.playerDeath(victim.getDisplayName(), victim.getUniqueId().toString(), event.getDeathMessage());
+        }else{
+            MinecraftRoyale.appender.playerKill(victim.getDisplayName(), victim.getUniqueId().toString(), killer.getDisplayName(), killer.getUniqueId().toString(), event.getDeathMessage());
             String path = "playerData." + killer.getUniqueId() + ".points";
             plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
             int points = plugin.getConfig().getInt(path) + plugin.getConfig().getInt("gameSettings.points.normal");
             // TODO: add points based on who has the most
             plugin.getConfig().set(path, points);
 //          event.setDeathMessage(event.getDeathMessage() + " " + event.getEntity().getDisplayName() + " was yote by " + killer.getDisplayName());
-        } else {
-            // If the player wasn't killed by another player
-
-//            event.setDeathMessage(event.getDeathMessage() + " " + event.getEntity().getDisplayName() + " was yote");
-
         }
     }
 

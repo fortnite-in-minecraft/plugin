@@ -30,6 +30,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
     public RoyaleWorlds royaleWorlds;
     public static Round currentRound;
+    public static final JSONFileAppender appender = new JSONFileAppender();
 
     public static void boostPlayerHealth(Player player){
         try {
@@ -112,6 +113,8 @@ public class MinecraftRoyale extends JavaPlugin {
 
         @Override
     public void onEnable() {
+        appender.logLine("Enabled!");
+
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
