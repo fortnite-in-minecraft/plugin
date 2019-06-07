@@ -28,6 +28,8 @@ public class WorldCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
+
+        JavaPlugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
         if (cmd.getName().equalsIgnoreCase("airdrop")) {
             if(!(sender instanceof Player)){
                 sender.sendMessage("Error: must be run by a player");
@@ -54,7 +56,6 @@ public class WorldCommandExecutor implements CommandExecutor {
                 sender.sendMessage("Error: invalid coordinates");
             }
         }else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
-            JavaPlugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
             File configFile = new File(plugin.getDataFolder(), "config.yml");
             configFile.delete();
             plugin.saveDefaultConfig();
@@ -62,7 +63,8 @@ public class WorldCommandExecutor implements CommandExecutor {
             return true;
         }else if (cmd.getName().equalsIgnoreCase("endround")) {
             try {
-                MinecraftRoyale.currentRound.endRound();
+                if(MinecraftRoyale.currentRound != null) MinecraftRoyale.currentRound.endRound();
+                else plugin.getLogger().info("null!");
             }catch(NullPointerException e){
                 e.printStackTrace();
             }

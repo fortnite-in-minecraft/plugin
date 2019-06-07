@@ -18,6 +18,7 @@ public class Round {
     private MinecraftRoyale plugin;
 
     public Round(MinecraftRoyale plugin, Time length, World world) {
+        this.plugin = plugin;
         this.length = length;
         this.world = world;
     }
@@ -39,6 +40,7 @@ public class Round {
         // mostPoints[0] = int maxPoints
         // mostPoints[1..] = OfflinePlayer winningPlayers
         for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
+            plugin.getLogger().info("getting data for " + p.getUniqueId());
             int points = plugin.getConfig().getInt("playerData." + p.getUniqueId() + ".points");
             if(mostPoints.size() < 2){
                 mostPoints.add(points);
@@ -60,8 +62,11 @@ public class Round {
         mostPoints.remove(0);
 
         plugin.getLogger().info("Winning points: " + maxPoints);
-        String str = String.valueOf(mostPoints.stream().reduce((a, b) -> "" + ((OfflinePlayer) a).getName() + ", " + ((OfflinePlayer) b).getName()));
-        plugin.getLogger().info(str);
+        String str = String.valueOf(
+                mostPoints.stream().reduce((a, b) -> "" + a + ", " + ((OfflinePlayer) b).getName())
+                        .get()
+        );
+        Bukkit.broadcastMessage("WINNERS: " + str);
 
         for(Object winner : mostPoints){
             int oldGamePoints = plugin.getConfig().getInt("playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints");

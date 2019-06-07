@@ -98,8 +98,14 @@ public class MinecraftRoyale extends JavaPlugin {
     public static Comparator<World> ageComparator = new Comparator<World>() {
         @Override
         public int compare(World w1, World w2) {
-            int w1Name = Integer.parseInt(w1.getName().substring(5));
-            int w2Name = Integer.parseInt(w2.getName().substring(5));
+            int w1Name = 0;
+            try{
+                w1Name = Integer.parseInt(w1.getName().substring(5));
+            }catch(NumberFormatException e){}
+            int w2Name = 0;
+            try{
+                w2Name = Integer.parseInt(w2.getName().substring(5));
+            }catch(NumberFormatException e){}
             return w1Name - w2Name;
         }
     };
