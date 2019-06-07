@@ -50,6 +50,7 @@ public class RoyaleWorlds {
 
 
     public void generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, IOException, ConfigException {
+        if(sender  != null) sender.sendMessage("LAG time");
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
 
