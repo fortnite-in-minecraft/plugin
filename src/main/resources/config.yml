@@ -34,8 +34,8 @@ worldBorder:
   secondDistance: 100
   finalDistance: 10
 timeConfig:
-  wborderShrinkPart2: 15
-  roundEnd: 20
+  wborderShrinkPart2: 75
+  roundEnd: 90
 dates:
   # unix epoch seconds
   roundEnd: 0
