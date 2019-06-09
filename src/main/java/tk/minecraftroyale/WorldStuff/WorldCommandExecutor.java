@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
 
 public class WorldCommandExecutor implements CommandExecutor {
     private final MinecraftRoyale minecraftRoyale;

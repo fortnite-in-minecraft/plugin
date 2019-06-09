@@ -72,7 +72,7 @@ public class RoyaleWorlds {
                 .type(WorldType.LARGE_BIOMES)
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
 
-        doPostWorldGenStuff(sender, newWorld);
+        // doPostWorldGenStuff(sender, newWorld);
     }
 
     public void doPostWorldGenStuff(CommandSender sender, World newWorld){
