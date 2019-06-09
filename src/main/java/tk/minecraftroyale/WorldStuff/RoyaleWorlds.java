@@ -100,6 +100,7 @@ public class RoyaleWorlds {
         MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
         Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
+        plugin.getConfig().set("gameSettings.isInProgress", true);
     }
 
     public void generateWorld(int roundNum) throws IllegalArgumentException, IOException, ConfigException {

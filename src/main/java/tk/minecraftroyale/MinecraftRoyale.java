@@ -112,14 +112,16 @@ public class MinecraftRoyale extends JavaPlugin {
     public static World getCurrentWorld() {
         int roundNumber = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.currentRound");
         Bukkit.getLogger().info("current roundNumber " + roundNumber);
-        if(roundNumber == 0){
+        if(roundNumber == 0 && Bukkit.getWorld("world") != null){
             return Bukkit.getWorld("world");
-        }else if(roundNumber >= 1 && roundNumber <= 7){
+        }else if(roundNumber >= 1 && roundNumber <= 7 && Bukkit.getWorld("world" + roundNumber) != null){
             return Bukkit.getWorld("world" + roundNumber);
         }else{
             List<World> worlds = Bukkit.getWorlds();
             worlds.sort(ageComparator);
-            return (World) worlds.stream().filter(w -> !w.getName().contains("nether") && !w.getName().contains("end")).toArray()[0];
+            World finalWorld = (World) worlds.stream().filter(w -> !w.getName().contains("nether") && !w.getName().contains("end")).toArray()[0];
+            if(finalWorld != null) return finalWorld;
+            return Bukkit.getWorld("world");
         }
     }
 
@@ -130,16 +132,17 @@ public class MinecraftRoyale extends JavaPlugin {
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
-        // TODO: isRoundInProgress var???
-        World currentWorld = MinecraftRoyale.getCurrentWorld();
-        currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
-        currentRound.checkStatus();
+        if(getConfig().getBoolean("gameSettings.isInProgress")) {
+            World currentWorld = MinecraftRoyale.getCurrentWorld();
+            currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
+            currentRound.checkStatus();
+        }
 
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
         Team team = board.registerNewTeam("teamname");
         team.setPrefix("prefix");
-        team.setDisplayName("health");
+        team.setDisplayName("health") ;
         Objective healthObjective = board.registerNewObjective("health", "health", "Health");
         healthObjective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 

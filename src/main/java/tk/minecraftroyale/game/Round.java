@@ -121,6 +121,8 @@ public class Round {
             int oldGamePoints = plugin.getConfig().getInt("playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints");
             plugin.getConfig().set("playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints", oldGamePoints + 1);
         }
+
+        plugin.getConfig().set("gameSettings.isInProgress", false);
     }
 
     public World getWorld() {
