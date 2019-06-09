@@ -75,8 +75,7 @@ public class RoyaleWorlds {
         // doPostWorldGenStuff(sender, newWorld);
     }
 
-    public void doPostWorldGenStuff(CommandSender sender, World newWorld){
-
+    public void doPostWorldGenStuff(CommandSender sender, World newWorld, int roundNum){
         if (sender != null) {
 //            sender.sendMessage("World generation started. You will be notified when it is complete.");
         }
@@ -95,6 +94,8 @@ public class RoyaleWorlds {
             LootChest.installLootTables(newWorld, null);
         } catch (IOException e) {
         }
+
+        plugin.getConfig().set("gameSettings.currentRound", roundNum);
 
         MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();

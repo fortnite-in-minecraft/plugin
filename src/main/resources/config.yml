@@ -41,6 +41,7 @@ dates:
   roundEnd: 0
   wborderShrinkPart2: 0
 gameSettings:
+  currentRound: 0
   numLootChests: 10
   healthRegen: 2
   points:

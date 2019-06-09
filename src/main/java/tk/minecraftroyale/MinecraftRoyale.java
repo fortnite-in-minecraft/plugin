@@ -109,16 +109,29 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     };
 
-        @Override
+    public static World getCurrentWorld() {
+        int roundNumber = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.currentRound");
+        Bukkit.getLogger().info("current roundNumber " + roundNumber);
+        if(roundNumber == 0){
+            return Bukkit.getWorld("world");
+        }else if(roundNumber >= 1 && roundNumber <= 7){
+            return Bukkit.getWorld("world" + roundNumber);
+        }else{
+            List<World> worlds = Bukkit.getWorlds();
+            worlds.sort(ageComparator);
+            return (World) worlds.stream().filter(w -> !w.getName().contains("nether") && !w.getName().contains("end")).toArray()[0];
+        }
+    }
+
+    @Override
     public void onEnable() {
         appender.logLine("Enabled!");
 
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
-        List worlds = Bukkit.getWorlds();
-        worlds.sort(ageComparator);
-        World currentWorld = (World) worlds.stream().filter(w -> !((World) w).getName().contains("nether") && !((World) w).getName().contains("end")).toArray()[0];
+        // TODO: isRoundInProgress var???
+        World currentWorld = MinecraftRoyale.getCurrentWorld();
         currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
         currentRound.checkStatus();
 

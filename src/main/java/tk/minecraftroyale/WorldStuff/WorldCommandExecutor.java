@@ -64,7 +64,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             if (MinecraftRoyale.currentRound == null) {
                 return false;
             }else{
-                minecraftRoyale.royaleWorlds.doPostWorldGenStuff(sender, minecraftRoyale.currentRound.getWorld());
+                minecraftRoyale.royaleWorlds.doPostWorldGenStuff(sender, minecraftRoyale.currentRound.getWorld(), plugin.getConfig().getInt("gameSettings.currentRound"));
                 return true;
             }
         }else if (cmd.getName().equalsIgnoreCase("endround")) {
