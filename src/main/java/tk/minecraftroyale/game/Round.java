@@ -6,11 +6,9 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.MinecraftRoyale;
-import tk.minecraftroyale.Scheduler.GameEnd;
 import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 
@@ -94,17 +92,23 @@ public class Round {
         @NotNull FileConfiguration config = plugin.getConfig();
 
         long now = System.currentTimeMillis() / 1000l;
-        long secondsAgoWeStarted = now - unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
-        long secondsLeftStartedAt = secondsLeftThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
-        long secondsLeft = secondsLeftStartedAt - secondsAgoWeStarted;
-        config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
+        if(unixSecondsThatTheThingWasStartedAt == null || unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck) == null){
+            Bukkit.broadcastMessage("the whole game is over.");
+        }else {
+            long secondsAgoWeStarted = now - unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
+            long secondsLeftStartedAt = secondsLeftThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
+            long secondsLeft = secondsLeftStartedAt - secondsAgoWeStarted;
+            config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
 
 
-        plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft);
-        plugin.saveConfig();
+            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft);
+            plugin.saveConfig();
+        }
     }
 
     public void endRound(){
+        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
+
         ArrayList mostPoints = new ArrayList();
         // mostPoints[0] = int maxPoints
         // mostPoints[1..] = OfflinePlayer winningPlayers
@@ -150,6 +154,24 @@ public class Round {
         }
 
         plugin.getConfig().set("gameSettings.isInProgress", false);
+
+
+        secondsLeftThatTheThingWasStartedAt.clear();
+        unixSecondsThatTheThingWasStartedAt.clear();
+        plugin.getConfig().set("secondsLeft.roundEnd", 0);
+        plugin.getConfig().set("secondsLeft.wborderShrinkPart2", 0);
+
+        plugin.getServer().broadcastMessage("GAME (round) OVER");
+        int currentRound = Integer.parseInt(MinecraftRoyale.currentRound.getWorld().getName().substring(5));
+        if(currentRound == 7){
+            plugin.getLogger().info("GAME OVER!!!");
+        }else{
+            currentRound ++;
+            World newWorld = Bukkit.getWorld("world" + currentRound);
+            if(newWorld != null){
+                ((MinecraftRoyale) plugin).royaleWorlds.doPostWorldGenStuff(null, newWorld, currentRound);
+            }
+        }
     }
 
     public World getWorld() {

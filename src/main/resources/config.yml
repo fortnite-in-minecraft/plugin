@@ -31,12 +31,12 @@ worlds:
     generatorName: ampliflied
 worldBorder:
   startDistance: 50
-  startDistanceTime: 30
+  startDistanceTime: 10
   secondDistance: 10
   finalDistance: 5
 timeConfig:
-  wborderShrinkPart2: 35
-  roundEnd: 40
+  wborderShrinkPart2: 15
+  roundEnd: 20
 dates:
   # unix epoch seconds
   roundEnd: 0

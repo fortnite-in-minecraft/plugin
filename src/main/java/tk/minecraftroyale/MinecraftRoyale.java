@@ -127,12 +127,7 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
-    public static BukkitRunnable runner =  new BukkitRunnable() {
-        @Override
-        public void run() {
-            currentRound.autosaveStatus();
-        }
-    };
+    public BukkitRunnable runner;
 
     @Override
     public void onEnable() {
@@ -145,7 +140,13 @@ public class MinecraftRoyale extends JavaPlugin {
             World currentWorld = MinecraftRoyale.getCurrentWorld();
             currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
             currentRound.checkStatus();
-            try{runner.cancel();}catch(IllegalStateException e){}
+            try{if(runner != null)runner.cancel();}catch(IllegalStateException e){}
+            runner = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    currentRound.autosaveStatus();
+                }
+            };
             runner.runTaskTimer(this, 1, 10);
         }
 
@@ -233,10 +234,10 @@ public class MinecraftRoyale extends JavaPlugin {
                     } catch (IOException | ConfigException e) {
                         e.printStackTrace();
                     }
-                    w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
                 }
+                if(w != null) w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
             }
-            getConfig().set("hasGeneratedWorlds", true);
+            //getConfig().set("hasGeneratedWorlds", true);
         }
     }
 

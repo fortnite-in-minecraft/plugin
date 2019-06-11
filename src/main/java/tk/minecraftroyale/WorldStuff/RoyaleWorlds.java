@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import tk.minecraftroyale.Exceptions.ConfigException;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +22,7 @@ import java.util.Random;
 
 public class RoyaleWorlds {
 
-    private final JavaPlugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+    private final MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     private static final HashMap<Integer, World> worlds = new HashMap<>();
 
     public RoyaleWorlds(JavaPlugin plugin) { }
@@ -77,6 +78,7 @@ public class RoyaleWorlds {
     }
 
     public void doPostWorldGenStuff(CommandSender sender, World newWorld, int roundNum){
+        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
         if (sender != null) {
 //            sender.sendMessage("World generation started. You will be notified when it is complete.");
         }
@@ -102,8 +104,14 @@ public class RoyaleWorlds {
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
         MinecraftRoyale.currentRound.checkStatus();
 
-        try{MinecraftRoyale.runner.cancel();}catch(IllegalStateException e){}
-        MinecraftRoyale.runner.runTaskTimer(plugin, 1, 10);
+
+        plugin.runner = new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.currentRound.autosaveStatus();
+            }
+        };
+        plugin.runner.runTaskTimer(plugin, 1, 10);
 
         Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
         plugin.getConfig().set("gameSettings.isInProgress", true);
