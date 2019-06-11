@@ -99,6 +99,11 @@ public class RoyaleWorlds {
 
         MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
+        MinecraftRoyale.currentRound.checkStatus();
+
+        try{MinecraftRoyale.runner.cancel();}catch(IllegalStateException e){}
+        MinecraftRoyale.runner.runTaskTimer(plugin, 1, 10);
+
         Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
         plugin.getConfig().set("gameSettings.isInProgress", true);
     }
@@ -116,12 +121,13 @@ public class RoyaleWorlds {
     }
 
     public void setUpWorldBorder(@Nonnull World world) {
-        setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
+        setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("worldBorder.startDistanceTime"));
     }
 
     public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
         if(secondRound){
             plugin.getLogger().info("secondRound true");
+            Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
             setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
         }else{
             setUpWorldBorder(world);

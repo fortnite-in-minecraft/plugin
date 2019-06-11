@@ -125,6 +125,13 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
+    public static BukkitRunnable runner =  new BukkitRunnable() {
+        @Override
+        public void run() {
+            currentRound.autosaveStatus();
+        }
+    };
+
     @Override
     public void onEnable() {
         appender.logLine("Enabled!");
@@ -136,6 +143,8 @@ public class MinecraftRoyale extends JavaPlugin {
             World currentWorld = MinecraftRoyale.getCurrentWorld();
             currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
             currentRound.checkStatus();
+            try{runner.cancel();}catch(IllegalStateException e){}
+            runner.runTaskTimer(this, 1, 10);
         }
 
         ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -175,6 +184,7 @@ public class MinecraftRoyale extends JavaPlugin {
             }
 
         }.runTaskTimer(this, 10, 10);
+
 
         Objects.requireNonNull(this.getCommand("loadworld")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("resetconfig")).setExecutor(new WorldCommandExecutor(this));

@@ -15,6 +15,7 @@ import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Round {
@@ -23,6 +24,8 @@ public class Round {
     private World world;
     private MinecraftRoyale plugin;
     private Runnable wborderShrinkPart2Callback;
+    private HashMap<String, Long> unixSecondsThatTheThingWasStartedAt;
+    private HashMap<String, Long> secondsLeftThatTheThingWasStartedAt;
 
     @org.jetbrains.annotations.Contract(pure = true)
     public Round(MinecraftRoyale plugin, Time length, World world, Runnable wborderShrinkPart2Callback) {
@@ -30,6 +33,8 @@ public class Round {
         this.length = length;
         this.world = world;
         this.wborderShrinkPart2Callback = wborderShrinkPart2Callback;
+        unixSecondsThatTheThingWasStartedAt = new HashMap<>();
+        secondsLeftThatTheThingWasStartedAt = new HashMap<>();
     }
 
     public void teleportAllToRoundWorld() {
@@ -47,23 +52,32 @@ public class Round {
         checkGeneric("wborderShrinkPart2", () -> wborderShrinkPart2Callback.run());
     }
 
+    public void autosaveStatus(){
+        autosaveGeneric("roundEnd");
+        autosaveGeneric("wborderShrinkPart2");
+    }
+
     @SuppressWarnings("Duplicates")
     private void checkGeneric(String nameOfTheThingToCheck, Runnable callback){
         MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
         @NotNull FileConfiguration config = plugin.getConfig();
 
-        long unixSecondsToEndAt = config.getLong("dates." + nameOfTheThingToCheck);
+        long secondsLeft = config.getLong("secondsLeft." + nameOfTheThingToCheck);
         long now = System.currentTimeMillis() / 1000l;
-        long duration = config.getLong("timeConfig." + nameOfTheThingToCheck);
-        long timer;
-        if (unixSecondsToEndAt - now < 1) {
-            plugin.getLogger().info("updating");
-            config.getLong("timeConfig." + nameOfTheThingToCheck);
-            config.set("dates." + nameOfTheThingToCheck, now + duration);
-            timer = duration;
+        long durationOfTheThing = config.getLong("timeConfig." + nameOfTheThingToCheck);
+        long timer = 100;
+
+        if(secondsLeft > 0){
+            timer = secondsLeft;
+            secondsLeftThatTheThingWasStartedAt.put(nameOfTheThingToCheck, secondsLeft);
         }else{
-            timer = unixSecondsToEndAt - now;
+            timer = durationOfTheThing;
+            secondsLeftThatTheThingWasStartedAt.put(nameOfTheThingToCheck, durationOfTheThing);
         }
+
+        plugin.getLogger().info("checkGeneric: " + nameOfTheThingToCheck + " secondsLeft " + secondsLeft + ", now " + now + ", durationOfTheThing " + durationOfTheThing + ", timer " +  timer);
+        unixSecondsThatTheThingWasStartedAt.put(nameOfTheThingToCheck, now);
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -73,8 +87,21 @@ public class Round {
         }.runTaskLater(plugin, timer * 20);
 
 
+        autosaveGeneric(nameOfTheThingToCheck);
+    }
+
+    private void autosaveGeneric(String nameOfTheThingToCheck){
+        @NotNull FileConfiguration config = plugin.getConfig();
+
+        long now = System.currentTimeMillis() / 1000l;
+        long secondsAgoWeStarted = now - unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
+        long secondsLeftStartedAt = secondsLeftThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
+        long secondsLeft = secondsLeftStartedAt - secondsAgoWeStarted;
+        config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
+
+
+        plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft);
         plugin.saveConfig();
-        plugin.getLogger().info(nameOfTheThingToCheck +" in " + timer + "s " + unixSecondsToEndAt + " - " + now);
     }
 
     public void endRound(){
