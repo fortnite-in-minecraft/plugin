@@ -12,6 +12,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
+import tk.minecraftroyale.Exceptions.ConfigException;
 import tk.minecraftroyale.Listeners.DeathListener;
 import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.Loot.Airdrop;
@@ -20,6 +21,7 @@ import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.game.Round;
 
+import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
 
@@ -221,6 +223,21 @@ public class MinecraftRoyale extends JavaPlugin {
         }.runTaskTimer(this, 0, 20 * 60 * 5);
 
         setupMidnight();
+
+        if(!getConfig().getBoolean("hasGeneratedWorlds")){
+            for(int i = 1; i <= 7; i ++) {
+                World w = Bukkit.getWorld("world" + i);
+                if (w == null) {
+                    try {
+                        w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
+                    } catch (IOException | ConfigException e) {
+                        e.printStackTrace();
+                    }
+                    w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
+                }
+            }
+            getConfig().set("hasGeneratedWorlds", true);
+        }
     }
 
     @Override

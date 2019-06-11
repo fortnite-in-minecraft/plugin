@@ -49,7 +49,7 @@ public class RoyaleWorlds {
     }
 
 
-    public void generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, IOException, ConfigException {
+    public World generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, IOException, ConfigException {
         if(sender  != null) sender.sendMessage("LAG time");
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
@@ -73,6 +73,7 @@ public class RoyaleWorlds {
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
 
         // doPostWorldGenStuff(sender, newWorld);
+        return newWorld;
     }
 
     public void doPostWorldGenStuff(CommandSender sender, World newWorld, int roundNum){
