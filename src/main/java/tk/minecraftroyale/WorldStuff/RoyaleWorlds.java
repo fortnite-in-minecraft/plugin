@@ -2,6 +2,7 @@ package tk.minecraftroyale.WorldStuff;
 
 import javax.annotation.Nonnull;
 import org.bukkit.*;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -102,8 +103,13 @@ public class RoyaleWorlds {
         } catch (IOException e) {
         }
 
+
         newWorld.setGameRule(GameRule.NATURAL_REGENERATION, false);
-        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, true);
+
+        // disables F3 coordinates!
+//        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, true);
+
+        newWorld.setTime(0);
 
         plugin.getConfig().set("gameSettings.currentRound", roundNum);
 

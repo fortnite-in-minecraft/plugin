@@ -250,6 +250,8 @@ public class MinecraftRoyale extends JavaPlugin {
     @Override
     public void onDisable() {
         handler.interrupt();
+        royaleWorlds.manager.deleteBar();
+        royaleWorlds.manager = null;
     }
 
     private void setDevCommands(Player player, boolean state) {
