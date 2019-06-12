@@ -21,6 +21,7 @@ import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.game.Round;
 
+
 import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
@@ -30,6 +31,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
     public RoyaleWorlds royaleWorlds;
     public static Round currentRound;
+    private LogHandler handler;
     public static final JSONFileAppender appender = new JSONFileAppender();
 
     public static void boostPlayerHealth(Player player){
@@ -131,8 +133,10 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Bukkit.getLogger().addHandler(new LogHandler());
-        this.getLogger().addHandler(new LogHandler());
+        //Bukkit.getLogger().addHandler(new LogHandler());
+        //this.getLogger().getParent().addHandler(new LogHandler());
+        handler = new LogHandler();
+        handler.start();
         appender.logLine("Enabled!");
 
         saveDefaultConfig();
@@ -244,7 +248,9 @@ public class MinecraftRoyale extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        handler.interrupt();
+    }
 
     private void setDevCommands(Player player, boolean state) {
         player.setMetadata("devCommandsEnabled", new FixedMetadataValue(this, state));

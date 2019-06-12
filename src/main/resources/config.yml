@@ -1,8 +1,9 @@
 jsonlog: "../socket"
 logMessagesOfInterest:
-  - cactus
-  - carrot
-  - logged
+  - "too quickly"
+  - "[Matrix]"
+  - "issued server command:"
+  - "overloaded"
 worlds:
   # mesa
   world1:
