@@ -3,10 +3,7 @@ package tk.minecraftroyale;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.logging.LogRecord;
 
@@ -22,8 +19,11 @@ public class LogHandler extends Thread {
     public void run() {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader("logs/latest.log"));
-        } catch (FileNotFoundException e) {
+            File file = new File("logs/latest.log");
+            FileReader fileReader = new FileReader("logs/latest.log");
+            reader = new BufferedReader(fileReader);
+            reader.skip (file.length());
+        } catch (IOException e) {
             e.printStackTrace();
         }
         String line;
@@ -40,8 +40,7 @@ public class LogHandler extends Thread {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
-                else {
+                }else {
                     FileConfiguration c = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig();
 
                     List<String> stringList =c.getStringList("logMessagesOfInterest");
@@ -49,6 +48,12 @@ public class LogHandler extends Thread {
                     for(String str : stringList) {
                         if(line.contains(str) && !line.contains("[\"logLine\"")) shouldLog = true;
                     }
+
+                    List<String> stringBlacklist = c.getStringList("logMessagesBlacklist");
+                    for(String str : stringBlacklist) {
+                        if(line.contains(str)) shouldLog = false;
+                    }
+
                     if (shouldLog) {
                         MinecraftRoyale.appender.logLine(line);
                     }

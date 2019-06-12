@@ -37,8 +37,8 @@ public class JSONFileAppender {
         process(str);
     }
 
-    public void anticheatOffense(String playerName, String playerUid, String desc){
-        String str = "[\"anticheatOffense\", {player: {user: " + new JsonPrimitive(playerName) + ", uid: " + new JsonPrimitive(playerUid) + "}, cause: " + new JsonPrimitive(desc) + "}]";
+    public void roundInfo(int roundNum, String data){
+        String str = "[\"roundInfo\", {\"roundNumber\": " + roundNum + ", \"event\": " + new JsonPrimitive(data) + "}]";
         process(str);
     }
 

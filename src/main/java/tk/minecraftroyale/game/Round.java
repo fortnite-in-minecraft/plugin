@@ -114,6 +114,7 @@ public class Round {
     }
 
     public void endRound(){
+        plugin.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
         try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
 
         ArrayList mostPoints = new ArrayList();

@@ -81,7 +81,7 @@ public class RoyaleWorlds {
 
     public void doPostWorldGenStuff(CommandSender sender, World newWorld, int roundNum){
         if(manager != null) manager.deleteBar();
-        manager = new BossbarManager(roundNum, "the round end");
+        manager = new BossbarManager(roundNum, "the round ends");
         try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
         if (sender != null) {
 //            sender.sendMessage("World generation started. You will be notified when it is complete.");
@@ -118,6 +118,7 @@ public class RoyaleWorlds {
         plugin.runner.runTaskTimer(plugin, 1, 10);
 
         Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
+        plugin.appender.roundInfo(roundNum, " is starting");
         plugin.getConfig().set("gameSettings.isInProgress", true);
     }
 
@@ -141,6 +142,7 @@ public class RoyaleWorlds {
         if(secondRound){
             plugin.getLogger().info("secondRound true");
             Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
+            plugin.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), "\'s worldborder is shrinking for the final time");
             setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
         }else{
             setUpWorldBorder(world);

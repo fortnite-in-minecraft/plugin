@@ -1,4 +1,8 @@
 jsonlog: "../socket"
+logMessagesBlacklist:
+  - "[Matrix] Enabling Matrix"
+  - "[Matrix] Disabling Matrix"
+  - "[Matrix] Loading Matrix"
 logMessagesOfInterest:
   - "too quickly"
   - "[Matrix]"
