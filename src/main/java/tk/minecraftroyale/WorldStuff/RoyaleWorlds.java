@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import tk.minecraftroyale.BossbarManager;
 import tk.minecraftroyale.Exceptions.ConfigException;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +25,7 @@ public class RoyaleWorlds {
 
     private final MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     private static final HashMap<Integer, World> worlds = new HashMap<>();
+    public BossbarManager manager;
 
     public RoyaleWorlds(JavaPlugin plugin) { }
 
@@ -78,6 +80,8 @@ public class RoyaleWorlds {
     }
 
     public void doPostWorldGenStuff(CommandSender sender, World newWorld, int roundNum){
+        if(manager != null) manager.deleteBar();
+        manager = new BossbarManager(roundNum, "the round end");
         try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
         if (sender != null) {
 //            sender.sendMessage("World generation started. You will be notified when it is complete.");

@@ -98,11 +98,18 @@ public class Round {
             long secondsAgoWeStarted = now - unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
             long secondsLeftStartedAt = secondsLeftThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
             long secondsLeft = secondsLeftStartedAt - secondsAgoWeStarted;
+            long totalTime = config.getLong("timeConfig." + nameOfTheThingToCheck);
             config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
 
 
-            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft);
+            //plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
             plugin.saveConfig();
+
+
+
+            if(nameOfTheThingToCheck == "roundEnd" && plugin.royaleWorlds.manager != null){
+                plugin.royaleWorlds.manager.setProgress(1 - ((double) secondsLeft) / totalTime);
+            }
         }
     }
 
@@ -167,6 +174,7 @@ public class Round {
             plugin.getLogger().info("GAME OVER!!!");
         }else{
             currentRound ++;
+            plugin.getLogger().info("currentRound " + currentRound);
             World newWorld = Bukkit.getWorld("world" + currentRound);
             if(newWorld != null){
                 ((MinecraftRoyale) plugin).royaleWorlds.doPostWorldGenStuff(null, newWorld, currentRound);

@@ -19,7 +19,7 @@ import static org.bukkit.Bukkit.getLogger;
 
 @SuppressWarnings("unused")
 public final class DeathListener implements Listener {
-    static final private Plugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+    static final private MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         MinecraftRoyale.appender.logLine("Player " + event.getPlayer().getDisplayName() + " logged in with UUID " + event.getPlayer().getUniqueId());
@@ -34,6 +34,14 @@ public final class DeathListener implements Listener {
             event.getPlayer().getInventory().clear();
         }
 
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+            }
+        }.runTaskLater(DeathListener.plugin, 10);
+
         if(obj != null && (Boolean) obj){
             new BukkitRunnable() {
                 @Override
@@ -45,6 +53,8 @@ public final class DeathListener implements Listener {
 
             }.runTaskLater(DeathListener.plugin, 10);
         }
+
+
     }
 
     @EventHandler
