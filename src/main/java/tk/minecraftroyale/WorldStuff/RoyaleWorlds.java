@@ -102,6 +102,9 @@ public class RoyaleWorlds {
         } catch (IOException e) {
         }
 
+        newWorld.setGameRule(GameRule.NATURAL_REGENERATION, false);
+        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, true);
+
         plugin.getConfig().set("gameSettings.currentRound", roundNum);
 
         MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));

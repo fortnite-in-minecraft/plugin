@@ -1,5 +1,6 @@
 package tk.minecraftroyale.Listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Consumer;
+
+import static java.lang.System.nanoTime;
 
 public class PlayerLoginListener implements Listener {
     private static HashMap<UUID, ArrayList<Consumer<Player>>> loginCallbacks = new HashMap<>();
@@ -26,6 +29,7 @@ public class PlayerLoginListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
+        long startTime = nanoTime();
         for (UUID uuid : loginCallbacks.keySet()) {
             if (uuid.equals(event.getPlayer().getUniqueId())) {
                 for (Consumer<Player> callback : loginCallbacks.get(uuid)) {
@@ -34,5 +38,6 @@ public class PlayerLoginListener implements Listener {
                 loginCallbacks.remove(uuid);
             }
         }
+        Bukkit.getLogger().info("onLogin took " + ((nanoTime() - startTime) / 1000000d) + "ms");
     }
 }
