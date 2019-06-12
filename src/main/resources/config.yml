@@ -1,3 +1,8 @@
+jsonlog: "../socket"
+logMessagesOfInterest:
+  - cactus
+  - carrot
+  - logged
 worlds:
   # mesa
   world1:

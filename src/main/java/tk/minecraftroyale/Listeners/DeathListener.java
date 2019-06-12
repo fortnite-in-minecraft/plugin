@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -11,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
+import tk.minecraftroyale.LogHandler;
 import tk.minecraftroyale.MinecraftRoyale;
 
 import java.util.List;
@@ -20,7 +22,7 @@ import static org.bukkit.Bukkit.getLogger;
 @SuppressWarnings("unused")
 public final class DeathListener implements Listener {
     static final private MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onLogin(PlayerLoginEvent event) {
         MinecraftRoyale.appender.logLine("Player " + event.getPlayer().getDisplayName() + " logged in with UUID " + event.getPlayer().getUniqueId());
         getLogger().info(event.getPlayer().getDisplayName() + " logged in");
@@ -38,7 +40,7 @@ public final class DeathListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+                if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
             }
         }.runTaskLater(DeathListener.plugin, 10);
 
@@ -57,7 +59,7 @@ public final class DeathListener implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent event) {
         Player victim = event.getEntity();
         Player killer = event.getEntity().getKiller();
@@ -65,12 +67,16 @@ public final class DeathListener implements Listener {
             MinecraftRoyale.appender.playerDeath(victim.getDisplayName(), victim.getUniqueId().toString(), event.getDeathMessage());
         }else{
             MinecraftRoyale.appender.playerKill(victim.getDisplayName(), victim.getUniqueId().toString(), killer.getDisplayName(), killer.getUniqueId().toString(), event.getDeathMessage());
+
             String path = "playerData." + killer.getUniqueId() + ".points";
             plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
-            int points = plugin.getConfig().getInt(path) + plugin.getConfig().getInt("gameSettings.points.normal");
+            int oldPoints = plugin.getConfig().getInt(path);
+            int newPoints = oldPoints + plugin.getConfig().getInt("gameSettings.points.normal");
+            MinecraftRoyale.appender.pointChange(victim.getDisplayName(), victim.getUniqueId().toString(), oldPoints, newPoints, event.getDeathMessage());
+
             // TODO: add points based on who has the most
-            plugin.getConfig().set(path, points);
-//          event.setDeathMessage(event.getDeathMessage() + " " + event.getEntity().getDisplayName() + " was yote by " + killer.getDisplayName());
+
+            plugin.getConfig().set(path, newPoints);
         }
     }
 

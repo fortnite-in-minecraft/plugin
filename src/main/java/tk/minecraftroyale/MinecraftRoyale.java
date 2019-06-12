@@ -131,6 +131,8 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Bukkit.getLogger().addHandler(new LogHandler());
+        this.getLogger().addHandler(new LogHandler());
         appender.logLine("Enabled!");
 
         saveDefaultConfig();
