@@ -108,6 +108,9 @@ public class RoyaleWorlds {
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
         MinecraftRoyale.currentRound.checkStatus();
 
+        for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
+            plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".isDead", false);
+        }
 
         plugin.runner = new BukkitRunnable() {
             @Override

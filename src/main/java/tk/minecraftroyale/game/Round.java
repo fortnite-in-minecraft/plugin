@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import tk.minecraftroyale.ClearInventory;
 import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.MinecraftRoyale;
 import tk.minecraftroyale.Scheduler.Time;
@@ -40,7 +41,7 @@ public class Round {
             if (offlinePlayer.getPlayer() != null) {
                 offlinePlayer.getPlayer().teleport(RoyaleWorlds.getRandomLocation(world));
             } else {
-                PlayerLoginListener.addLoginCallback(offlinePlayer, (player) -> player.teleport(RoyaleWorlds.getRandomLocation(world)));
+//                PlayerLoginListener.addLoginCallback(offlinePlayer, (player) -> player.teleport(RoyaleWorlds.getRandomLocation(world)));
             }
         }
     }
@@ -138,7 +139,7 @@ public class Round {
             }
             plugin.getConfig().set("playerData." + p.getUniqueId() + ".points", 0);
 
-            if(p.getPlayer() != null) p.getPlayer().getInventory().clear();
+            if(p.getPlayer() != null) ClearInventory.clearInventory(p.getPlayer());
             else{
                 List l = plugin.getConfig().getStringList("inventoriesToClear");
                 l.add(p.getUniqueId().toString());

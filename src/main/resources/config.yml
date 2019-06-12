@@ -64,7 +64,7 @@ probability:
 playerData:
   notarealuid:
     regenHealth: true
-    isAlive: false
+    isDead: false
     points: 10
     gamePoints: 1
 inventoriesToClear:

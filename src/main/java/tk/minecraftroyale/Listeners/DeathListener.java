@@ -12,8 +12,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
+import tk.minecraftroyale.ClearInventory;
 import tk.minecraftroyale.LogHandler;
 import tk.minecraftroyale.MinecraftRoyale;
+import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 
 import java.util.List;
 
@@ -33,16 +35,25 @@ public final class DeathListener implements Listener {
         if(inventoriesToClear.contains(event.getPlayer().getUniqueId())){
             inventoriesToClear.remove(event.getPlayer().getUniqueId());
             plugin.getConfig().set("inventoriesToClear", inventoriesToClear);
-            event.getPlayer().getInventory().clear();
+            ClearInventory.clearInventory(event.getPlayer());
         }
 
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+                if(plugin.royaleWorlds.manager != null && event.getPlayer() != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+
+
+                if(plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
+                    plugin.getLogger().info("kicking a player that is not already dead");
+                    event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
+                }else{
+                    event.getPlayer().spigot().respawn();
+                    event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+                }
             }
-        }.runTaskLater(DeathListener.plugin, 10);
+        }.runTaskLater(plugin, 10);
 
         if(obj != null && (Boolean) obj){
             new BukkitRunnable() {
@@ -52,11 +63,8 @@ public final class DeathListener implements Listener {
 
 //                    setScoreBoard(event.getPlayer());
                 }
-
-            }.runTaskLater(DeathListener.plugin, 10);
+            }.runTaskLater(plugin, 10);
         }
-
-
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -78,6 +86,15 @@ public final class DeathListener implements Listener {
 
             plugin.getConfig().set(path, newPoints);
         }
+
+        plugin.getConfig().set("playerData." + victim.getUniqueId().toString() + ".isDead", true);
+        plugin.saveConfig();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                victim.kickPlayer(event.getDeathMessage());
+            }
+        }.runTaskLater(plugin, 2);
     }
 
 
