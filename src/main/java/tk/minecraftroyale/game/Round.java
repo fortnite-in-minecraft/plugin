@@ -115,6 +115,7 @@ public class Round {
     }
 
     public void endRound(){
+        plugin.getLogger().info("world name " + world.getName());
         plugin.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
         try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
 

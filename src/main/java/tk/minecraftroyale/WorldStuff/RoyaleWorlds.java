@@ -118,7 +118,7 @@ public class RoyaleWorlds {
         for(Player player : Bukkit.getOnlinePlayers()){
             plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".hasJoined", true);
         }
-
+        try{if(plugin.runner != null)plugin.runner.cancel();}catch(IllegalStateException e){}
         plugin.runner = new BukkitRunnable() {
             @Override
             public void run() {
