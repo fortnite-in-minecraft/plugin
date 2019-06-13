@@ -6,9 +6,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Contract;
 import tk.minecraftroyale.ClearInventory;
-import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.MinecraftRoyale;
 import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
@@ -26,7 +25,7 @@ public class Round {
     private HashMap<String, Long> unixSecondsThatTheThingWasStartedAt;
     private HashMap<String, Long> secondsLeftThatTheThingWasStartedAt;
 
-    @org.jetbrains.annotations.Contract(pure = true)
+    @Contract(pure = true)
     public Round(MinecraftRoyale plugin, Time length, World world, Runnable wborderShrinkPart2Callback) {
         this.plugin = plugin;
         this.length = length;
@@ -59,7 +58,7 @@ public class Round {
     @SuppressWarnings("Duplicates")
     private void checkGeneric(String nameOfTheThingToCheck, Runnable callback){
         MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
-        @NotNull FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = plugin.getConfig();
 
         long secondsLeft = config.getLong("secondsLeft." + nameOfTheThingToCheck);
         long now = System.currentTimeMillis() / 1000l;
@@ -90,7 +89,7 @@ public class Round {
     }
 
     private void autosaveGeneric(String nameOfTheThingToCheck){
-        @NotNull FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = plugin.getConfig();
 
         long now = System.currentTimeMillis() / 1000l;
         if(unixSecondsThatTheThingWasStartedAt == null || unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck) == null){
