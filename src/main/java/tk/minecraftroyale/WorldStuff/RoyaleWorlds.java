@@ -73,7 +73,7 @@ public class RoyaleWorlds {
         World newWorld = new WorldCreator(worldPath)
 //                .copy(mainWorld)
                 .generateStructures(true)
-                .type(WorldType.LARGE_BIOMES)
+//                .type(WorldType.LARGE_BIOMES)
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
 
         // doPostWorldGenStuff(sender, newWorld);
