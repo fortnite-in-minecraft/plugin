@@ -39,4 +39,8 @@ public class ClearInventory {
     private static void resetXP(Player player){
         player.setTotalExperience(0);
     }
+
+    private static void resetHunger(Player player){
+        player.setFoodLevel(20);
+    }
 }
