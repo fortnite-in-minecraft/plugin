@@ -90,13 +90,6 @@ public class RoyaleWorlds {
 
         setUpWorldBorder(newWorld);
 
-        int num = plugin.getConfig().getInt("gameSettings.numLootChests");
-        Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
-        for(int i = 0 ; i < num; i++) {
-            LootChest lootChest = new LootChest(newWorld);
-            lootChest.place();
-            Bukkit.getLogger().info(lootChest.getCommandResponse());
-        }
 
         try {
             LootChest.installLootTables(newWorld, null);
@@ -107,7 +100,7 @@ public class RoyaleWorlds {
         newWorld.setGameRule(GameRule.NATURAL_REGENERATION, false);
 
         // disables F3 coordinates!
-//        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, true);
+        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, true);
 
         newWorld.setTime(0);
 

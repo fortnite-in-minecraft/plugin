@@ -246,6 +246,14 @@ public class MinecraftRoyale extends JavaPlugin {
                 if (w == null) {
                     try {
                         w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
+                        w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
+                        int num = this.getConfig().getInt("gameSettings.numLootChests");
+                        Bukkit.getLogger().info("adding " + this.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
+                        for(int i2 = 0 ; i2 < num; i2++) {
+                            LootChest lootChest = new LootChest(w);
+                            lootChest.place();
+                            Bukkit.getLogger().info(lootChest.getCommandResponse());
+                        }
                     } catch (IOException | ConfigException e) {
                         e.printStackTrace();
                     }

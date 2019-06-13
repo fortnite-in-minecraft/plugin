@@ -53,7 +53,7 @@ public final class DeathListener implements Listener {
                 if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
 
 
-                if(plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
+                if(plugin.getConfig().getBoolean("gameSettings.isInProgress") && plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
                     plugin.getLogger().info("kicking a player that is not already dead");
                     event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                 }else{

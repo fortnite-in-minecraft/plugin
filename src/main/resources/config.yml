@@ -40,13 +40,13 @@ worlds:
     seed: 2070558
     generatorName: ampliflied
 worldBorder:
-  startDistance: 500
-  startDistanceTime: 100
-  secondDistance: 100
-  finalDistance: 50
+  startDistance: 5000
+  startDistanceTime: 1250
+  secondDistance: 1000
+  finalDistance: 500
 timeConfig:
-  wborderShrinkPart2: 150
-  roundEnd: 200
+  wborderShrinkPart2: 1500
+  roundEnd: 2000
 dates:
   # unix epoch seconds
   roundEnd: 0

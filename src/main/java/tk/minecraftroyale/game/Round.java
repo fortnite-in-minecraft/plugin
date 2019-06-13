@@ -174,6 +174,9 @@ public class Round {
         int currentRound = Integer.parseInt(MinecraftRoyale.currentRound.getWorld().getName().substring(5));
         if(currentRound == 7){
             plugin.getLogger().info("GAME OVER!!!");
+            plugin.getConfig().set("gameSettings.isInProgress", false);
+            MinecraftRoyale.currentRound = null;
+            plugin.getConfig().set("gameSettings.currentRound", 0);
         }else{
             currentRound ++;
             plugin.getLogger().info("currentRound " + currentRound);
