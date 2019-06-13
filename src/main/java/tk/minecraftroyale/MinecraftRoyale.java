@@ -16,6 +16,7 @@ import tk.minecraftroyale.Exceptions.ConfigException;
 import tk.minecraftroyale.Listeners.DeathListener;
 import tk.minecraftroyale.Listeners.PlayerLoginListener;
 import tk.minecraftroyale.Loot.Airdrop;
+import tk.minecraftroyale.Loot.LootChest;
 import tk.minecraftroyale.Scheduler.Time;
 import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
 import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
@@ -25,6 +26,8 @@ import tk.minecraftroyale.game.Round;
 import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
+
+import static org.bukkit.Bukkit.getServer;
 
 
 public class MinecraftRoyale extends JavaPlugin {
@@ -133,6 +136,12 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        try {
+            LootChest.installLootTables(Bukkit.getWorld("world"), null);
+            Bukkit.dispatchCommand(getServer().getConsoleSender(), "minecraft:reload");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //Bukkit.getLogger().addHandler(new LogHandler());
         //this.getLogger().getParent().addHandler(new LogHandler());
         handler = new LogHandler();
@@ -250,8 +259,12 @@ public class MinecraftRoyale extends JavaPlugin {
     @Override
     public void onDisable() {
         handler.interrupt();
-        royaleWorlds.manager.deleteBar();
+        if(royaleWorlds.manager != null) royaleWorlds.manager.deleteBar();
         royaleWorlds.manager = null;
+        for(Player p : Bukkit.getOnlinePlayers()){
+            p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+
+        }
     }
 
     private void setDevCommands(Player player, boolean state) {

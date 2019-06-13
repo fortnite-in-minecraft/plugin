@@ -35,6 +35,6 @@ public class BossbarManager {
 
     public void setProgress(double progress){
         Bukkit.getLogger().info("setting progress to " + progress);
-        theBar.setProgress(progress);
+        theBar.setProgress(Math.min(progress, 1));
     }
 }

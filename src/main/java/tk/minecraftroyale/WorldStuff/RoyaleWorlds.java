@@ -119,6 +119,11 @@ public class RoyaleWorlds {
 
         for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
             plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".isDead", false);
+            plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".hasJoined", false);
+        }
+
+        for(Player player : Bukkit.getOnlinePlayers()){
+            plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".hasJoined", true);
         }
 
         plugin.runner = new BukkitRunnable() {
@@ -179,8 +184,18 @@ public class RoyaleWorlds {
         int wbSize = (int) world.getWorldBorder().getSize();
         int x = rand.nextInt(wbSize) - (wbSize / 2);
         int z = rand.nextInt(wbSize) - (wbSize / 2);
-        int y = world.getHighestBlockYAt(x, z);
-
-        return new Location(world, x, y, z);
+        Location finalLoc = null;
+        Location loc;
+        for (int y2 = 250; y2 > 1; y2--) {
+            for (int y = y2; y < 255; y--) {
+                loc = new Location(world, x, y, z);
+                if (loc.getBlock().getType() == Material.AIR && loc.add(0, 1, 0).getBlock().getType() == Material.AIR) {
+                    finalLoc = loc;
+                } else {
+                    return finalLoc;
+                }
+            }
+        }
+        return null;
     }
 }

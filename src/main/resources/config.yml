@@ -40,13 +40,13 @@ worlds:
     seed: 2070558
     generatorName: ampliflied
 worldBorder:
-  startDistance: 50
-  startDistanceTime: 10
-  secondDistance: 10
-  finalDistance: 5
+  startDistance: 500
+  startDistanceTime: 100
+  secondDistance: 100
+  finalDistance: 50
 timeConfig:
-  wborderShrinkPart2: 15
-  roundEnd: 20
+  wborderShrinkPart2: 150
+  roundEnd: 200
 dates:
   # unix epoch seconds
   roundEnd: 0
@@ -54,7 +54,7 @@ dates:
 gameSettings:
   isInProgress: false
   currentRound: 0
-  numLootChests: 10
+  numLootChests: 40
   healthRegen: 2
   points:
     normal: 10

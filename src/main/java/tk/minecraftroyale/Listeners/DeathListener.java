@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.Plugin;
@@ -24,6 +25,13 @@ import static org.bukkit.Bukkit.getLogger;
 @SuppressWarnings("unused")
 public final class DeathListener implements Listener {
     static final private MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+    @EventHandler
+    public void onPvp(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player && !plugin.getConfig().getBoolean("gameSettings.isInProgress")){
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onLogin(PlayerLoginEvent event) {
         MinecraftRoyale.appender.logLine("Player " + event.getPlayer().getDisplayName() + " logged in with UUID " + event.getPlayer().getUniqueId());
@@ -42,7 +50,7 @@ public final class DeathListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(plugin.royaleWorlds.manager != null && event.getPlayer() != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+                if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
 
 
                 if(plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
@@ -50,7 +58,10 @@ public final class DeathListener implements Listener {
                     event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                 }else{
                     event.getPlayer().spigot().respawn();
-                    event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+                    if(!plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId() + ".hasJoined")){
+                        event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+                        plugin.getConfig().set("playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
+                    }
                 }
             }
         }.runTaskLater(plugin, 10);
