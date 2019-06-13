@@ -2,6 +2,7 @@ package tk.minecraftroyale.WorldStuff;
 
 import javax.annotation.Nonnull;
 import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -177,18 +178,36 @@ public class RoyaleWorlds {
         int wbSize = (int) world.getWorldBorder().getSize();
         int x = rand.nextInt(wbSize) - (wbSize / 2);
         int z = rand.nextInt(wbSize) - (wbSize / 2);
-        Location finalLoc = null;
-        Location loc;
-        for (int y2 = 250; y2 > 1; y2--) {
-            for (int y = y2; y < 255; y--) {
-                loc = new Location(world, x, y, z);
-                if (loc.getBlock().getType() == Material.AIR && loc.add(0, 1, 0).getBlock().getType() == Material.AIR) {
-                    finalLoc = loc;
-                } else {
-                    return finalLoc;
-                }
-            }
+
+        // Load the chunk. Chunks aren't cubic (yet ;)), so we can safely load the chunk from the location at bedrock.
+        world.getChunkAt(new Location(world, x, 0, z)).load(true);
+
+        // Get the location at the top
+        Location location = world.getHighestBlockAt(x, z).getLocation();
+
+        // Make sure it's actually a safe location, by checking if the block above it is air, and
+        // making sure the block itself isn't lava (surface lava pools are annoying).
+        if (world.getBlockAt(location).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) {
+
+            // Recurse to try again. When a safe location is found, it will resolve up the stack and be returned from the initial call.
+            return getRandomLocation(world);
         }
-        return null;
+
+        return location;
+
+        // Max's code; left for reference
+//        Location finalLoc = null;
+//        Location loc;
+//        for (int y2 = 250; y2 > 1; y2--) {
+//            for (int y = y2; y < 255; y--) {
+//                loc = new Location(world, x, y, z);
+//                if (loc.getBlock().getType() == Material.AIR && loc.add(0, 1, 0).getBlock().getType() == Material.AIR) {
+//                    finalLoc = loc;
+//                } else {
+//                    return finalLoc;
+//                }
+//            }
+//        }
+//        return null;
     }
 }
