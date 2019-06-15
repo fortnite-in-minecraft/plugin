@@ -1,4 +1,4 @@
-package tk.minecraftroyale.WorldStuff;
+package tk.minecraftroyale.worldStuff;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,9 +8,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import tk.minecraftroyale.Exceptions.ConfigException;
-import tk.minecraftroyale.Loot.Airdrop;
-import tk.minecraftroyale.Loot.LootChest;
+import tk.minecraftroyale.exceptions.ConfigException;
+import tk.minecraftroyale.loot.Airdrop;
+import tk.minecraftroyale.loot.LootChest;
 import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nonnull;

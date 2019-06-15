@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Listeners;
+package tk.minecraftroyale.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,14 +9,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 import tk.minecraftroyale.ClearInventory;
-import tk.minecraftroyale.LogHandler;
 import tk.minecraftroyale.MinecraftRoyale;
-import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
+import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Listeners;
+package tk.minecraftroyale.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

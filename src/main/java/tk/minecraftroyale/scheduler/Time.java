@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Scheduler;
+package tk.minecraftroyale.scheduler;
 
 public class Time {
     public static long ticksFromSeconds(long seconds) { return seconds * 20; }

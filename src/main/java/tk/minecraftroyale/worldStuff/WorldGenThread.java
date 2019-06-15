@@ -1,13 +1,10 @@
-package tk.minecraftroyale.WorldStuff;
+package tk.minecraftroyale.worldStuff;
 
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.plugin.java.JavaPlugin;
-import tk.minecraftroyale.Exceptions.ConfigException;
 import tk.minecraftroyale.MinecraftRoyale;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 

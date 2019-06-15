@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -12,22 +13,21 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
-import tk.minecraftroyale.Exceptions.ConfigException;
-import tk.minecraftroyale.Listeners.DeathListener;
-import tk.minecraftroyale.Listeners.PlayerLoginListener;
-import tk.minecraftroyale.Loot.Airdrop;
-import tk.minecraftroyale.Loot.LootChest;
-import tk.minecraftroyale.Scheduler.Time;
-import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
-import tk.minecraftroyale.WorldStuff.WorldCommandExecutor;
+import tk.minecraftroyale.command.DynamicCommandExecutor;
+import tk.minecraftroyale.exceptions.ConfigException;
+import tk.minecraftroyale.listeners.DeathListener;
+import tk.minecraftroyale.listeners.PlayerLoginListener;
+import tk.minecraftroyale.loot.Airdrop;
+import tk.minecraftroyale.loot.LootChest;
+import tk.minecraftroyale.scheduler.Time;
+import tk.minecraftroyale.worldStuff.RoyaleWorlds;
+import tk.minecraftroyale.worldStuff.WorldCommandExecutor;
 import tk.minecraftroyale.game.Round;
 
 
 import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
-
-import static org.bukkit.Bukkit.getServer;
 
 
 public class MinecraftRoyale extends JavaPlugin {
@@ -203,7 +203,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
         }.runTaskTimer(this, 10, 10);
 
-
+        // TODO Rewrite these with the new command system
         Objects.requireNonNull(this.getCommand("loadworld")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("resetconfig")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("mrtp")).setExecutor(new WorldCommandExecutor(this));
@@ -215,6 +215,11 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("endround")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
+
+        for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {
+            Objects.requireNonNull(getCommand(commandName)).setExecutor(DynamicCommandExecutor.getInstance());
+        }
+
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
 
@@ -241,6 +246,7 @@ public class MinecraftRoyale extends JavaPlugin {
         setupMidnight();
 
         if(!getConfig().getBoolean("hasGeneratedWorlds")){
+            getLogger().info("Generating worlds");
             for(int i = 1; i <= 7; i ++) {
                 World w = Bukkit.getWorld("world" + i);
                 if (w == null) {
@@ -250,6 +256,7 @@ public class MinecraftRoyale extends JavaPlugin {
                         int num = this.getConfig().getInt("gameSettings.numLootChests");
                         Bukkit.getLogger().info("adding " + this.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
                         for(int i2 = 0 ; i2 < num; i2++) {
+                            getLogger().info("Spawning new loot chest");
                             LootChest lootChest = new LootChest(w);
                             lootChest.place();
                             Bukkit.getLogger().info(lootChest.getCommandResponse());
@@ -260,7 +267,9 @@ public class MinecraftRoyale extends JavaPlugin {
                 }
                 if(w != null) w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
             }
-            //getConfig().set("hasGeneratedWorlds", true);
+            getLogger().info("Done generating worlds");
+            getConfig().set("hasGeneratedWorlds", true);
+            saveConfig();
         }
     }
 
@@ -275,8 +284,8 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
-    private void setDevCommands(Player player, boolean state) {
-        player.setMetadata("devCommandsEnabled", new FixedMetadataValue(this, state));
+    public static void setDevCommands(Player player, boolean state) {
+        player.setMetadata("devCommandsEnabled", new FixedMetadataValue(JavaPlugin.getPlugin(MinecraftRoyale.class), state));
 
         if (state) {
             player.sendMessage("Development commands enabled.");
@@ -285,30 +294,17 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean getDevCommands(Player player) {
-        List<MetadataValue> vals = player.getMetadata("devCommandsEnabled");
-        for (MetadataValue val : vals) {
-            if (val.getOwningPlugin() == this) {
-                return val.asBoolean();
+    public static boolean getDevCommands(CommandSender sender) {
+
+        // Console should always have access to dev commands
+        if (!(sender instanceof Player)) return true;
+
+        List<MetadataValue> metadataValues = ((Player) sender).getMetadata("devCommandsEnabled");
+        for (MetadataValue metadataValue : metadataValues) {
+            if (metadataValue.getOwningPlugin() == JavaPlugin.getPlugin(MinecraftRoyale.class)) {
+                return metadataValue.asBoolean();
             }
         }
         return false;
     }
-
-
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
-        if (cmd.getName().equalsIgnoreCase("toggledevcommands")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("Error: must be a player");
-                return true;
-            }
-
-            setDevCommands((Player) sender, !getDevCommands((Player) sender));
-            return true;
-        }
-
-        return false;
-    }
-
 }

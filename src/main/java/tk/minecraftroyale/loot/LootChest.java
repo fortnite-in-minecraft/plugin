@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Loot;
+package tk.minecraftroyale.loot;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;

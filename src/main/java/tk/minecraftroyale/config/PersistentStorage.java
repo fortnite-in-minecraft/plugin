@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Config;
+package tk.minecraftroyale.config;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;

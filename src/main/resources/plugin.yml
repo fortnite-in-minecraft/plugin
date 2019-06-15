@@ -72,3 +72,8 @@ commands:
       - roundenable
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  test:
+    description: test command
+    usage: /test
+    permission: wb.test
+    permission-message: You do not have permission to use development commands.

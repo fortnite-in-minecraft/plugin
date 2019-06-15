@@ -1,24 +1,21 @@
-package tk.minecraftroyale.WorldStuff;
+package tk.minecraftroyale.worldStuff;
 
 import javax.annotation.Nonnull;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.boss.BossBar;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import tk.minecraftroyale.BossbarManager;
-import tk.minecraftroyale.Exceptions.ConfigException;
+import tk.minecraftroyale.exceptions.ConfigException;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import tk.minecraftroyale.JSONFileAppender;
-import tk.minecraftroyale.Loot.LootChest;
+import tk.minecraftroyale.loot.LootChest;
 import tk.minecraftroyale.MinecraftRoyale;
-import tk.minecraftroyale.Scheduler.Time;
+import tk.minecraftroyale.scheduler.Time;
 import tk.minecraftroyale.game.Round;
 
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;

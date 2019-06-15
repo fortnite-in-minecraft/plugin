@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Scheduler;
+package tk.minecraftroyale.scheduler;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;

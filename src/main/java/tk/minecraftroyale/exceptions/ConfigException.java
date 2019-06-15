@@ -1,4 +1,4 @@
-package tk.minecraftroyale.Exceptions;
+package tk.minecraftroyale.exceptions;
 
 public class ConfigException extends Exception {
     private final String path;

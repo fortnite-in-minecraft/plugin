@@ -9,8 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Contract;
 import tk.minecraftroyale.ClearInventory;
 import tk.minecraftroyale.MinecraftRoyale;
-import tk.minecraftroyale.Scheduler.Time;
-import tk.minecraftroyale.WorldStuff.RoyaleWorlds;
+import tk.minecraftroyale.scheduler.Time;
+import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
