@@ -25,7 +25,7 @@ public final class DeathListener implements Listener {
     static final private MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     @EventHandler
     public void onPvp(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player && !plugin.getConfig().getBoolean("gameSettings.isInProgress")){
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player && !plugin.getConfig().getBoolean("state.isInProgress")){
             event.setCancelled(true);
         }
     }
@@ -34,13 +34,13 @@ public final class DeathListener implements Listener {
     public void onLogin(PlayerLoginEvent event) {
         MinecraftRoyale.appender.logLine("Player " + event.getPlayer().getDisplayName() + " logged in with UUID " + event.getPlayer().getUniqueId());
         getLogger().info(event.getPlayer().getDisplayName() + " logged in");
-        Object obj = plugin.getConfig().get("playerData." + event.getPlayer().getUniqueId() + ".regenHealth");
+        Object obj = plugin.getConfig().get("state.playerData." + event.getPlayer().getUniqueId() + ".regenHealth");
         plugin.getLogger().info("found player's regen health: " + obj);
 
-        List inventoriesToClear = plugin.getConfig().getStringList("inventoriesToClear");
+        List inventoriesToClear = plugin.getConfig().getStringList("state.inventoriesToClear");
         if(inventoriesToClear.contains(event.getPlayer().getUniqueId())){
             inventoriesToClear.remove(event.getPlayer().getUniqueId());
-            plugin.getConfig().set("inventoriesToClear", inventoriesToClear);
+            plugin.getConfig().set("state.inventoriesToClear", inventoriesToClear);
             ClearInventory.clearInventory(event.getPlayer());
         }
 
@@ -51,14 +51,14 @@ public final class DeathListener implements Listener {
                 if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
 
 
-                if(plugin.getConfig().getBoolean("gameSettings.isInProgress") && plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
+                if(plugin.getConfig().getBoolean("state.isInProgress") && plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
                     plugin.getLogger().info("kicking a player that is not already dead");
                     event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                 }else{
                     event.getPlayer().spigot().respawn();
-                    if(!plugin.getConfig().getBoolean("playerData." + event.getPlayer().getUniqueId() + ".hasJoined")){
+                    if(!plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined")){
                         event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
-                        plugin.getConfig().set("playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
+                        plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
                     }
                 }
             }
@@ -85,7 +85,7 @@ public final class DeathListener implements Listener {
         }else{
             MinecraftRoyale.appender.playerKill(victim.getDisplayName(), victim.getUniqueId().toString(), killer.getDisplayName(), killer.getUniqueId().toString(), event.getDeathMessage());
 
-            String path = "playerData." + killer.getUniqueId() + ".points";
+            String path = "state.playerData." + killer.getUniqueId() + ".points";
             plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
             int oldPoints = plugin.getConfig().getInt(path);
             int newPoints = oldPoints + plugin.getConfig().getInt("gameSettings.points.normal");
@@ -96,7 +96,7 @@ public final class DeathListener implements Listener {
             plugin.getConfig().set(path, newPoints);
         }
 
-        plugin.getConfig().set("playerData." + victim.getUniqueId().toString() + ".isDead", true);
+        plugin.getConfig().set("state.playerData." + victim.getUniqueId().toString() + ".isDead", true);
         plugin.saveConfig();
         new BukkitRunnable() {
             @Override
@@ -127,7 +127,7 @@ public final class DeathListener implements Listener {
 
         Team moneyCounter = board.registerNewTeam("moneyCounter");
         moneyCounter.addEntry(ChatColor.RED + "" + ChatColor.WHITE);
-        moneyCounter.setPrefix(ChatColor.GREEN + "$" + plugin.getConfig().getInt("playerData." + player.getUniqueId() + ".points"));
+        moneyCounter.setPrefix(ChatColor.GREEN + "$" + plugin.getConfig().getInt("state.playerData." + player.getUniqueId() + ".points"));
         obj.getScore(ChatColor.RED + "" + ChatColor.WHITE).setScore(12);
         player.setScoreboard(board);
 

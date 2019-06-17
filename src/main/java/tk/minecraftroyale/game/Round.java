@@ -123,7 +123,7 @@ public class Round {
         // mostPoints[1..] = OfflinePlayer winningPlayers
         for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
             plugin.getLogger().info("getting data for " + p.getUniqueId());
-            int points = plugin.getConfig().getInt("playerData." + p.getUniqueId() + ".points");
+            int points = plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".points");
             if(mostPoints.size() < 2){
                 mostPoints.add(points);
                 mostPoints.add(p);
@@ -137,13 +137,13 @@ public class Round {
                     mostPoints.add(p);
                 }
             }
-            plugin.getConfig().set("playerData." + p.getUniqueId() + ".points", 0);
+            plugin.getConfig().set("state.playerData." + p.getUniqueId() + ".points", 0);
 
             if(p.getPlayer() != null) ClearInventory.clearInventory(p.getPlayer());
             else{
-                List l = plugin.getConfig().getStringList("inventoriesToClear");
+                List l = plugin.getConfig().getStringList("state.inventoriesToClear");
                 l.add(p.getUniqueId().toString());
-                plugin.getConfig().set("inventoriesToClear", l);
+                plugin.getConfig().set("state.inventoriesToClear", l);
             }
         }
 
@@ -158,11 +158,11 @@ public class Round {
         Bukkit.broadcastMessage("WINNERS: " + str);
 
         for(Object winner : mostPoints){
-            int oldGamePoints = plugin.getConfig().getInt("playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints");
-            plugin.getConfig().set("playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints", oldGamePoints + 1);
+            int oldGamePoints = plugin.getConfig().getInt("state.playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints");
+            plugin.getConfig().set("state.playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints", oldGamePoints + 1);
         }
 
-        plugin.getConfig().set("gameSettings.isInProgress", false);
+        plugin.getConfig().set("state.isInProgress", false);
 
 
         secondsLeftThatTheThingWasStartedAt.clear();
@@ -174,9 +174,9 @@ public class Round {
         int currentRound = Integer.parseInt(MinecraftRoyale.currentRound.getWorld().getName().substring(5));
         if(currentRound == 7){
             plugin.getLogger().info("GAME OVER!!!");
-            plugin.getConfig().set("gameSettings.isInProgress", false);
+            plugin.getConfig().set("state.isInProgress", false);
             MinecraftRoyale.currentRound = null;
-            plugin.getConfig().set("gameSettings.currentRound", 0);
+            plugin.getConfig().set("state.currentRound", 0);
         }else{
             currentRound ++;
             plugin.getLogger().info("currentRound " + currentRound);

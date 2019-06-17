@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PersistentStorage {
-    private static File playerDataFolder = new File(JavaPlugin.getPlugin(MinecraftRoyale.class).getDataFolder(), "playerData");
+    private static File playerDataFolder = new File(JavaPlugin.getPlugin(MinecraftRoyale.class).getDataFolder(), "state.playerData");
     private static HashMap<UUID, FileConfiguration> loadedConfigs = new HashMap<>();
     private static HashMap<UUID, File> configFiles = new HashMap<>();
 

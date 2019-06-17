@@ -102,19 +102,19 @@ public class RoyaleWorlds {
 
         newWorld.setTime(0);
 
-        plugin.getConfig().set("gameSettings.currentRound", roundNum);
+        plugin.getConfig().set("state.currentRound", roundNum);
 
         MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
         MinecraftRoyale.currentRound.checkStatus();
 
         for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
-            plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".isDead", false);
-            plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".hasJoined", false);
+            plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".isDead", false);
+            plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", false);
         }
 
         for(Player player : Bukkit.getOnlinePlayers()){
-            plugin.getConfig().set("playerData." + player.getUniqueId().toString() + ".hasJoined", true);
+            plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", true);
         }
         try{if(plugin.runner != null)plugin.runner.cancel();}catch(IllegalStateException e){}
         plugin.runner = new BukkitRunnable() {
@@ -127,7 +127,7 @@ public class RoyaleWorlds {
 
         Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
         plugin.appender.roundInfo(roundNum, " is starting");
-        plugin.getConfig().set("gameSettings.isInProgress", true);
+        plugin.getConfig().set("state.isInProgress", true);
     }
 
     public void generateWorld(int roundNum) throws IllegalArgumentException, IOException, ConfigException {

@@ -47,13 +47,9 @@ worldBorder:
 timeConfig:
   wborderShrinkPart2: 750
   roundEnd: 1000
-dates:
-  # unix epoch seconds
-  roundEnd: 0
-  wborderShrinkPart2: 0
 gameSettings:
-  isInProgress: false
-  currentRound: 0
+  # isInProgress: false#
+  # currentRound: 0#
   numLootChests: 40
   healthRegen: 2
   points:
@@ -61,11 +57,14 @@ gameSettings:
 probability:
   # 1/n
   airdrop: 60
-playerData:
-  notarealuid:
-    regenHealth: true
-    isDead: false
-    points: 10
-    gamePoints: 1
-inventoriesToClear:
-  -
+state:
+  currentRound: 0
+  isInProgress: false
+  inventoriesToClear:
+    -
+  playerData:
+    notarealuid:
+      regenHealth: true
+      isDead: false
+      points: 10
+      gamePoints: 1

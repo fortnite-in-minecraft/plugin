@@ -51,7 +51,7 @@ public class MinecraftRoyale extends JavaPlugin {
         JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("updating health for player " + player.getUniqueId() + "\n" + player.getHealth());
         player.sendMessage(str);
         player.setHealth(actualValue);
-        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("playerData." + player.getUniqueId() + ".regenHealth", false);
+        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("state.playerData." + player.getUniqueId() + ".regenHealth", false);
     }
 
     private void setupMidnight(){
@@ -82,7 +82,7 @@ public class MinecraftRoyale extends JavaPlugin {
                 public void run() {
                     for(OfflinePlayer possiblyOfflinePlayer : Bukkit.getOfflinePlayers()){
                         System.out.println("got offline player " + possiblyOfflinePlayer.getUniqueId() );
-                        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("playerData." + possiblyOfflinePlayer.getUniqueId() + ".regenHealth", true);
+                        JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("state.playerData." + possiblyOfflinePlayer.getUniqueId() + ".regenHealth", true);
                         JavaPlugin.getPlugin(MinecraftRoyale.class).saveConfig();
                         if(possiblyOfflinePlayer.isOnline() && possiblyOfflinePlayer instanceof Player){
                             Player player = (Player) possiblyOfflinePlayer;
@@ -117,7 +117,7 @@ public class MinecraftRoyale extends JavaPlugin {
     };
 
     public static World getCurrentWorld() {
-        int roundNumber = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.currentRound");
+        int roundNumber = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("state.currentRound");
         Bukkit.getLogger().info("current roundNumber " + roundNumber);
         if(roundNumber == 0 && Bukkit.getWorld("world") != null){
             return Bukkit.getWorld("world");
@@ -151,7 +151,7 @@ public class MinecraftRoyale extends JavaPlugin {
         saveDefaultConfig();
         royaleWorlds = new RoyaleWorlds(this);
 
-        if(getConfig().getBoolean("gameSettings.isInProgress")) {
+        if(getConfig().getBoolean("state.isInProgress")) {
             World currentWorld = MinecraftRoyale.getCurrentWorld();
             currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
             currentRound.checkStatus();
@@ -195,7 +195,7 @@ public class MinecraftRoyale extends JavaPlugin {
 //                    if(!team.hasEntry()) team.addEntry(p.getDisplayName());
 
                     Score score = pointsObjective.getScore(player.getName());
-                    score.setScore(getConfig().getInt("playerData." + player.getUniqueId() + ".points"));
+                    score.setScore(getConfig().getInt("state.playerData." + player.getUniqueId() + ".points"));
 
                     if(player instanceof Player && ((Player) player).getScoreboard() != board) ((Player) player).setScoreboard(board);
                 }
