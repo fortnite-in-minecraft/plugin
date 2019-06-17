@@ -14,7 +14,7 @@ import tk.minecraftroyale.loot.Airdrop;
 public class SingleAirdrop extends CommandBase {
 
     @Override
-    public boolea run(CommandSender sender, String[] args) {
+    public boolean run(CommandSender sender, String[] args) {
         try {
             Player player = (Player) sender;
             Airdrop drop;
