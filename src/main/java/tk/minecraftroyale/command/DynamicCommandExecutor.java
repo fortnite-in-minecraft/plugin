@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.reflections.Reflections;
 import tk.minecraftroyale.MinecraftRoyale;
 import tk.minecraftroyale.command.commands.CommandBase;
@@ -80,7 +81,10 @@ public class DynamicCommandExecutor implements CommandExecutor {
 
             // If the command name matches
             if (cmd.getName().equalsIgnoreCase(commands.get(command).value())) {
-                if (commands.get(command).development() && !MinecraftRoyale.getDevCommands(sender)) {
+                if (commands.get(command).playerOnly() && !(sender instanceof Player)) {
+                    sender.sendMessage("Error: must be run by a player");
+                    return true;
+                } else if (commands.get(command).development() && !MinecraftRoyale.getDevCommands(sender)) {
                     sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                     return true;
                 }

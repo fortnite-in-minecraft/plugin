@@ -48,7 +48,6 @@ public class LootChest {
     public LootChest(World world) {
         Random rand = new Random();
         int wbSize = (int) world.getWorldBorder().getSize();
-        Bukkit.getLogger().info("got world border " + wbSize);
         int x = rand.nextInt(wbSize) - (wbSize / 2);
         int z = rand.nextInt(wbSize) - (wbSize / 2);
         int y = world.getHighestBlockYAt(x, z);

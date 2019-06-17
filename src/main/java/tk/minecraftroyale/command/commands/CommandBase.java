@@ -21,7 +21,8 @@ public abstract class CommandBase {
      * name is meant to be specified via an annotation.
      * @param sender Whatever sent the command.
      * @param args The arguments that were sent.
-     * @return Whether or not the command was valid.
+     * @return Whether or not the command was valid. If {@code false} is returned, the usage string for the command
+     * will be sent to the user.
      */
     public abstract boolean run(@Nonnull CommandSender sender, @Nonnull String[] args);
 }

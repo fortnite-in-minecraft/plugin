@@ -56,6 +56,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             }
         }else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
             File configFile = new File(plugin.getDataFolder(), "config.yml");
+            //noinspection ResultOfMethodCallIgnored
             configFile.delete();
             plugin.saveDefaultConfig();
             plugin.reloadConfig();

@@ -210,12 +210,12 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("createworld")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setupwborder")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addloottables")).setExecutor(new WorldCommandExecutor(this));
-        Objects.requireNonNull(this.getCommand("airdrop")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchest")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("endround")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
 
+        // Set the command executor for all commands that have been implemented with the new system
         for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {
             Objects.requireNonNull(getCommand(commandName)).setExecutor(DynamicCommandExecutor.getInstance());
         }
@@ -230,18 +230,12 @@ public class MinecraftRoyale extends JavaPlugin {
             saveConfig();
         }, 0, 20 * 30);
 
-            // Create the task anonymously and schedule to run it once, after 20 ticks
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                // What you want to schedule goes here
-                JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("Checking airdrop...");
-                Object[] players = Bukkit.getOnlinePlayers().toArray();
-                if(players.length > 0) Airdrop.runAirdrop(((Player) (players[0])).getWorld());
-            }
-
-        }.runTaskTimer(this, 0, 20 * 60 * 5);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            JavaPlugin.getPlugin(MinecraftRoyale.class).getLogger().info("Checking airdrop...");
+            Object[] players = Bukkit.getOnlinePlayers().toArray();
+            if(players.length > 0)
+                Airdrop.runAirdrop(((Player) (players[0])).getWorld());
+        }, 0, 20 * 60 * 5);
 
         setupMidnight();
 
@@ -294,6 +288,7 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean getDevCommands(CommandSender sender) {
 
         // Console should always have access to dev commands

@@ -15,5 +15,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Command {
     String value();
+    boolean playerOnly() default false;
     boolean development() default false;
 }
