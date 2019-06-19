@@ -7,6 +7,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.loot.LootTable;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import tk.minecraftroyale.MinecraftRoyale;
 
 import java.io.*;
@@ -90,7 +91,7 @@ public class LootChest {
      * @param sender whoever sent the command, so we can make them reload the world.
      * @throws IOException if something goes wrong when accessing {@code resources/minecraftroyale.zip}.
      */
-    public static void installLootTables(World w, CommandSender sender) throws IOException {
+    public static void installLootTables(@NotNull World w, CommandSender sender) throws IOException {
         System.out.println(w.getWorldFolder());
         Path basePath = Paths.get(w.getWorldFolder().toString(), "datapacks");
         deleteFolder(Paths.get(basePath.toString(), "minecraftroyale").toFile());

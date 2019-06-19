@@ -136,12 +136,8 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        try {
-            LootChest.installLootTables(Bukkit.getWorld("world"), null);
-            Bukkit.dispatchCommand(getServer().getConsoleSender(), "minecraft:reload");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //            LootChest.installLootTables(Bukkit.getWorld("world"), null);
+        Bukkit.dispatchCommand(getServer().getConsoleSender(), "minecraft:reload");
         //Bukkit.getLogger().addHandler(new LogHandler());
         //this.getLogger().getParent().addHandler(new LogHandler());
         handler = new LogHandler();
@@ -239,32 +235,39 @@ public class MinecraftRoyale extends JavaPlugin {
 
         setupMidnight();
 
-        if(!getConfig().getBoolean("hasGeneratedWorlds")){
-            getLogger().info("Generating worlds");
-            for(int i = 1; i <= 7; i ++) {
-                World w = Bukkit.getWorld("world" + i);
-                if (w == null) {
-                    try {
-                        w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
-                        w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
-                        int num = this.getConfig().getInt("gameSettings.numLootChests");
-                        Bukkit.getLogger().info("adding " + this.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
-                        for(int i2 = 0 ; i2 < num; i2++) {
-                            getLogger().info("Spawning new loot chest");
-                            LootChest lootChest = new LootChest(w);
-                            lootChest.place();
-                            Bukkit.getLogger().info(lootChest.getCommandResponse());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+                if(!getConfig().getBoolean("hasGeneratedWorlds")){
+                    getLogger().info("Generating worlds");
+                    for(int i = 1; i <= 7; i ++) {
+                        World w = Bukkit.getWorld("world" + i);
+                        if (w == null) {
+                            try {
+                                w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
+                                w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
+                                int num = plugin.getConfig().getInt("gameSettings.numLootChests");
+                                Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
+                                for(int i2 = 0 ; i2 < num; i2++) {
+                                    getLogger().info("Spawning new loot chest");
+                                    LootChest lootChest = new LootChest(w);
+                                    lootChest.place();
+                                    Bukkit.getLogger().info(lootChest.getCommandResponse());
+                                }
+                            } catch (IOException | ConfigException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } catch (IOException | ConfigException e) {
-                        e.printStackTrace();
+                        if(w != null) w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
                     }
+                    getLogger().info("Done generating worlds");
+                    getConfig().set("hasGeneratedWorlds", true);
+                    saveConfig();
                 }
-                if(w != null) w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
             }
-            getLogger().info("Done generating worlds");
-            getConfig().set("hasGeneratedWorlds", true);
-            saveConfig();
-        }
+
+        }.runTaskLater(this, 2);
     }
 
     @Override
