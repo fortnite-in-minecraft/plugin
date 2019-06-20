@@ -184,7 +184,8 @@ public class RoyaleWorlds {
 
         // Make sure it's actually a safe location, by checking if the block above it is air, and
         // making sure the block itself isn't lava (surface lava pools are annoying).
-        if (world.getBlockAt(location).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) {
+        // also avoid oceans because they are disadvantageous.
+        if (world.getBlockAt(location).getType() == Material.WATER || world.getBlockAt(location).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) {
 
             // Recurse to try again. When a safe location is found, it will resolve up the stack and be returned from the initial call.
             return getRandomLocation(world);
