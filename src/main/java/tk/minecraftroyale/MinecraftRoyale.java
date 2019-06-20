@@ -5,8 +5,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -14,8 +12,8 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
-import tk.minecraftroyale.command.DynamicCommandExecutor;
 import tk.minecraftroyale.exceptions.ConfigException;
+import tk.minecraftroyale.game.Round;
 import tk.minecraftroyale.listeners.DeathListener;
 import tk.minecraftroyale.listeners.PlayerLoginListener;
 import tk.minecraftroyale.loot.Airdrop;
@@ -23,14 +21,11 @@ import tk.minecraftroyale.loot.LootChest;
 import tk.minecraftroyale.scheduler.Time;
 import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 import tk.minecraftroyale.worldStuff.WorldCommandExecutor;
-import tk.minecraftroyale.game.Round;
-
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import javax.annotation.Nonnull;
 
 
 public class MinecraftRoyale extends JavaPlugin {
@@ -46,7 +41,7 @@ public class MinecraftRoyale extends JavaPlugin {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double maxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
         double amount = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.healthRegen");
         double actualValue = Math.min(player.getHealth() + amount, maxHealth);
         String str = "Your health has been boosted by " + ((actualValue - player.getHealth()) / 2) + " hearts for logging in today!";
@@ -93,30 +88,27 @@ public class MinecraftRoyale extends JavaPlugin {
                         }
                     }
                 }
-            }.runTaskTimer(this, ticks - ticks, 24 * 60 * 60 * 20);
+            }.runTaskTimer(this, ticks, 24 * 60 * 60 * 20);
         } else {
             throw new RuntimeException("time machine broke");
         }
     }
 
-    public void updateScoreBoard(Player player) {
+    private void updateScoreBoard() {
 
 
     }
 
-    public static Comparator<World> ageComparator = new Comparator<World>() {
-        @Override
-        public int compare(World w1, World w2) {
-            int w1Name = 0;
-            try{
-                w1Name = Integer.parseInt(w1.getName().substring(5));
-            }catch(NumberFormatException e){}
-            int w2Name = 0;
-            try{
-                w2Name = Integer.parseInt(w2.getName().substring(5));
-            }catch(NumberFormatException e){}
-            return w1Name - w2Name;
-        }
+    private static Comparator<World> ageComparator = (w1, w2) -> {
+        int w1Name = 0;
+        try{
+            w1Name = Integer.parseInt(w1.getName().substring(5));
+        }catch(NumberFormatException ignored){}
+        int w2Name = 0;
+        try{
+            w2Name = Integer.parseInt(w2.getName().substring(5));
+        }catch(NumberFormatException ignored){}
+        return w1Name - w2Name;
     };
 
     public static World getCurrentWorld() {
@@ -152,9 +144,9 @@ public class MinecraftRoyale extends JavaPlugin {
 
         if(getConfig().getBoolean("state.isInProgress")) {
             World currentWorld = MinecraftRoyale.getCurrentWorld();
-            currentRound = new Round(this, new Time(0, 0, 0l, this.getConfig().getLong("timeConfig.roundDuration"), 0l), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
+            currentRound = new Round(this, new Time(0, 0, 0L, this.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
             currentRound.checkStatus();
-            try{if(runner != null)runner.cancel();}catch(IllegalStateException e){}
+            try{if(runner != null)runner.cancel();}catch(IllegalStateException ignored){}
             runner = new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -184,7 +176,7 @@ public class MinecraftRoyale extends JavaPlugin {
         for (World w : Bukkit.getWorlds()) {
             for (Player p : w.getPlayers()) {
                 setDevCommands(p, false);
-                updateScoreBoard(p);
+                updateScoreBoard();
             }
         }
         new BukkitRunnable() {
@@ -193,7 +185,7 @@ public class MinecraftRoyale extends JavaPlugin {
                 for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 //                    if(!team.hasEntry()) team.addEntry(p.getDisplayName());
 
-                    Score score = pointsObjective.getScore(player.getName());
+                    Score score = pointsObjective.getScore(Objects.requireNonNull(player.getName()));
                     score.setScore(getConfig().getInt("state.playerData." + player.getUniqueId() + ".points"));
 
                     if(player instanceof Player && ((Player) player).getScoreboard() != board) ((Player) player).setScoreboard(board);

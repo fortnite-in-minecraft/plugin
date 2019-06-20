@@ -70,7 +70,7 @@ public final class DeathListener implements Listener {
                 @Override
                 public void run() {
                     MinecraftRoyale.boostPlayerHealth(event.getPlayer());
-
+                    //TODO: what???
 //                    setScoreBoard(event.getPlayer());
                 }
             }.runTaskLater(plugin, 3);

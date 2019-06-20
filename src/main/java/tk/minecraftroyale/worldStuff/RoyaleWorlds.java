@@ -6,6 +6,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import tk.minecraftroyale.BossbarManager;
 import tk.minecraftroyale.exceptions.ConfigException;
 
@@ -190,7 +191,9 @@ public class RoyaleWorlds {
         // Make sure it's actually a safe location, by checking if the block above it is air, and
         // making sure the block itself isn't lava (surface lava pools are annoying).
         // also avoid oceans because they are disadvantageous.
-        if((world.getBlockAt(oneBlockBelow).getType() == Material.KELP || world.getBlockAt(oneBlockBelow).getType() == Material.KELP_PLANT || world.getBlockAt(oneBlockBelow).getType() == Material.WATER || world.getBlockAt(oneBlockBelow).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) && numTimesRetried < 100) {
+        plugin.getLogger().info("type " + world.getBlockAt(oneBlockBelow).getType().name());
+        @NotNull Material material = world.getBlockAt(oneBlockBelow).getType();
+        if((material == Material.TALL_SEAGRASS || material == Material.SEAGRASS || material == Material.KELP || material == Material.KELP_PLANT || material == Material.WATER || material == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) && numTimesRetried < 100) {
             // Recurse to try again. When a safe location is found, it will resolve up the stack and be returned from the initial call.
             return getRandomLocation(world, numTimesRetried + 1);
         }
@@ -199,7 +202,7 @@ public class RoyaleWorlds {
             plugin.getLogger().warning("Could not find valid location in world " + world.getName());
         }
 
-        return location.add(0, 1, 0);
+        return location.add(0.5, 0, 0.5);
 
         // Max's code; left for reference
 //        Location finalLoc = null;
