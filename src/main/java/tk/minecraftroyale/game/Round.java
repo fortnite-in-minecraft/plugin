@@ -39,14 +39,13 @@ public class Round {
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             if (offlinePlayer.getPlayer() != null) {
                 offlinePlayer.getPlayer().teleport(RoyaleWorlds.getRandomLocation(world));
-            } else {
-//                PlayerLoginListener.addLoginCallback(offlinePlayer, (player) -> player.teleport(RoyaleWorlds.getRandomLocation(world)));
-            }
+            }  //                PlayerLoginListener.addLoginCallback(offlinePlayer, (player) -> player.teleport(RoyaleWorlds.getRandomLocation(world)));
+
         }
     }
 
     public void checkStatus(){
-        checkGeneric("roundEnd", () -> endRound());
+        checkGeneric("roundEnd", this::endRound);
         checkGeneric("wborderShrinkPart2", () -> wborderShrinkPart2Callback.run());
     }
 
@@ -61,9 +60,9 @@ public class Round {
         FileConfiguration config = plugin.getConfig();
 
         long secondsLeft = config.getLong("secondsLeft." + nameOfTheThingToCheck);
-        long now = System.currentTimeMillis() / 1000l;
+        long now = System.currentTimeMillis() / 1000L;
         long durationOfTheThing = config.getLong("timeConfig." + nameOfTheThingToCheck);
-        long timer = 100;
+        long timer;
 
         if(secondsLeft > 0){
             timer = secondsLeft;
@@ -91,7 +90,7 @@ public class Round {
     private void autosaveGeneric(String nameOfTheThingToCheck){
         FileConfiguration config = plugin.getConfig();
 
-        long now = System.currentTimeMillis() / 1000l;
+        long now = System.currentTimeMillis() / 1000L;
         if(unixSecondsThatTheThingWasStartedAt == null || unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck) == null){
             Bukkit.broadcastMessage("the whole game is over.");
         }else {
@@ -107,7 +106,7 @@ public class Round {
 
 
 
-            if(nameOfTheThingToCheck == "roundEnd" && plugin.royaleWorlds.manager != null){
+            if(nameOfTheThingToCheck.equals("roundEnd") && plugin.royaleWorlds.manager != null){
                 plugin.royaleWorlds.manager.setProgress(1 - ((double) secondsLeft) / totalTime);
             }
         }
@@ -115,8 +114,8 @@ public class Round {
 
     public void endRound(){
         plugin.getLogger().info("world name " + world.getName());
-        plugin.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
-        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
+        MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
+        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException ignored){}
 
         ArrayList mostPoints = new ArrayList();
         // mostPoints[0] = int maxPoints
@@ -141,7 +140,7 @@ public class Round {
 
             if(p.getPlayer() != null) ClearInventory.clearInventory(p.getPlayer());
             else{
-                List l = plugin.getConfig().getStringList("state.inventoriesToClear");
+                List<String> l = plugin.getConfig().getStringList("state.inventoriesToClear");
                 l.add(p.getUniqueId().toString());
                 plugin.getConfig().set("state.inventoriesToClear", l);
             }
@@ -182,12 +181,12 @@ public class Round {
             plugin.getLogger().info("currentRound " + currentRound);
             World newWorld = Bukkit.getWorld("world" + currentRound);
             if(newWorld != null){
-                ((MinecraftRoyale) plugin).royaleWorlds.doPostWorldGenStuff(null, newWorld, currentRound);
+                plugin.royaleWorlds.doPostWorldGenStuff(newWorld, currentRound);
             }
         }
     }
 
-    public World getWorld() {
+    private World getWorld() {
         return world;
     }
 

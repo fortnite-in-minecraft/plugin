@@ -27,7 +27,7 @@ public class RoyaleWorlds {
     private static final HashMap<Integer, World> worlds = new HashMap<>();
     public BossbarManager manager;
 
-    public RoyaleWorlds(JavaPlugin plugin) { }
+    public RoyaleWorlds() { }
 
     /**
      * Gets a world from a round number if it exists. Does not create it if it doesn't, instead returning null.
@@ -35,7 +35,7 @@ public class RoyaleWorlds {
      * @return the world or null.
      */
     @Nullable
-    public World getWorld(int roundNum) throws IllegalArgumentException {
+    World getWorld(int roundNum) throws IllegalArgumentException {
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
 
@@ -52,7 +52,7 @@ public class RoyaleWorlds {
     }
 
 
-    public World generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, IOException, ConfigException {
+    public World generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, ConfigException {
         if(sender  != null) sender.sendMessage("LAG time");
         if (roundNum < 1 || roundNum > 7)
             throw new IllegalArgumentException();
@@ -69,30 +69,27 @@ public class RoyaleWorlds {
             throw new ConfigException(worldPathConfigPath);
         }
 
-        World newWorld = new WorldCreator(worldPath)
+        // doPostWorldGenStuff(sender, newWorld);
+        return new WorldCreator(worldPath)
 //                .copy(mainWorld)
                 .generateStructures(true)
+                // TODO: uncomment this in production
 //                .type(WorldType.LARGE_BIOMES)
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
-
-        // doPostWorldGenStuff(sender, newWorld);
-        return newWorld;
     }
 
-    public void doPostWorldGenStuff(CommandSender sender, World newWorld, int roundNum){
+    public void doPostWorldGenStuff(World newWorld, int roundNum){
         if(manager != null) manager.deleteBar();
         manager = new BossbarManager(roundNum, "the round ends");
-        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException e){}
-        if (sender != null) {
-//            sender.sendMessage("World generation started. You will be notified when it is complete.");
-        }
+        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException ignored){}
+        //            sender.sendMessage("World generation started. You will be notified when it is complete.");
 
         setUpWorldBorder(newWorld);
 
 
         try {
             LootChest.installLootTables(newWorld, null);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
 
@@ -105,7 +102,7 @@ public class RoyaleWorlds {
 
         plugin.getConfig().set("state.currentRound", roundNum);
 
-        MinecraftRoyale.currentRound = new Round((MinecraftRoyale) plugin, new Time(0, 0, 0l, plugin.getConfig().getLong("timeConfig.roundDuration"), 0l), newWorld, () -> setUpWorldBorder(newWorld, true));
+        MinecraftRoyale.currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), newWorld, () -> setUpWorldBorder(newWorld, true));
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
         MinecraftRoyale.currentRound.checkStatus();
 
@@ -117,25 +114,21 @@ public class RoyaleWorlds {
         for(Player player : Bukkit.getOnlinePlayers()){
             plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", true);
         }
-        try{if(plugin.runner != null)plugin.runner.cancel();}catch(IllegalStateException e){}
+        try{if(plugin.runner != null)plugin.runner.cancel();}catch(IllegalStateException ignored){}
         plugin.runner = new BukkitRunnable() {
             @Override
             public void run() {
-                plugin.currentRound.autosaveStatus();
+                MinecraftRoyale.currentRound.autosaveStatus();
             }
         };
         plugin.runner.runTaskTimer(plugin, 1, 10);
 
         Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
-        plugin.appender.roundInfo(roundNum, " is starting");
+        MinecraftRoyale.appender.roundInfo(roundNum, " is starting");
         plugin.getConfig().set("state.isInProgress", true);
     }
 
-    public void generateWorld(int roundNum) throws IllegalArgumentException, IOException, ConfigException {
-        generateWorld(roundNum, null);
-    }
-
-    public void setUpWorldBorder(int world) {
+    void setUpWorldBorder(int world) {
         World w = getWorld(world);
         if(w == null){
             throw new IllegalArgumentException();
@@ -143,7 +136,7 @@ public class RoyaleWorlds {
         setUpWorldBorder(w);
     }
 
-    public void setUpWorldBorder(@Nonnull World world) {
+    void setUpWorldBorder(@Nonnull World world) {
         setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("worldBorder.startDistanceTime"));
     }
 
@@ -151,14 +144,14 @@ public class RoyaleWorlds {
         if(secondRound){
             plugin.getLogger().info("secondRound true");
             Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
-            plugin.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), "\'s worldborder is shrinking for the final time");
+            MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), "\'s worldborder is shrinking for the final time");
             setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
         }else{
             setUpWorldBorder(world);
         }
     }
 
-    public void setUpWorldBorder(@Nonnull World world, int firstDist, int secondDistance, long time){
+    private void setUpWorldBorder(@Nonnull World world, int firstDist, int secondDistance, long time){
         WorldBorder border = world.getWorldBorder();
         border.setCenter(0, 0);
         border.setCenter(0, 0);
@@ -175,7 +168,7 @@ public class RoyaleWorlds {
         return getRandomLocation(world, 0);
     }
 
-    public static Location getRandomLocation(@Nonnull World world, @Nonnull int numTimesRetried) {
+    private static Location getRandomLocation(@Nonnull World world, int numTimesRetried) {
         Random rand = new Random();
         int wbSize = (int)(world.getWorldBorder().getSize() * 0.75);
         int x = rand.nextInt(wbSize) - (wbSize / 2);

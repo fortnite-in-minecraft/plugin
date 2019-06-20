@@ -77,7 +77,7 @@ public class WorldCommandExecutor implements CommandExecutor {
                     plugin.getLogger().warning("Could not find world: world" + newRoundNum);
                     sender.sendMessage(ChatColor.RED + "Could not find the next world! Is the world corrupted?");
                 }else {
-                    minecraftRoyale.royaleWorlds.doPostWorldGenStuff(sender, w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
+                    minecraftRoyale.royaleWorlds.doPostWorldGenStuff(w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
                 }
                 return true;
             }
@@ -250,11 +250,9 @@ public class WorldCommandExecutor implements CommandExecutor {
                 try {
                     minecraftRoyale.royaleWorlds.generateWorld(worldNum, sender);
                     return true;
-                } catch (FileNotFoundException|ConfigException e) {
+                } catch (ConfigException e) {
                     sender.sendMessage(e.getMessage());
                     minecraftRoyale.getLogger().severe(e.getMessage());
-                } catch (IOException e) {
-                    Bukkit.getLogger().throwing("oh", "no", e);
                 }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: invalid round");

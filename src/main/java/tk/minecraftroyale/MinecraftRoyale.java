@@ -140,7 +140,7 @@ public class MinecraftRoyale extends JavaPlugin {
         appender.logLine("Enabled!");
 
         saveDefaultConfig();
-        royaleWorlds = new RoyaleWorlds(this);
+        royaleWorlds = new RoyaleWorlds();
 
         if(getConfig().getBoolean("state.isInProgress")) {
             World currentWorld = MinecraftRoyale.getCurrentWorld();
@@ -256,7 +256,7 @@ public class MinecraftRoyale extends JavaPlugin {
                                         lootChest.place();
                                         Bukkit.getLogger().info(lootChest.getCommandResponse());
                                     }
-                                } catch (IOException | ConfigException e) {
+                                } catch (ConfigException e) {
                                     e.printStackTrace();
                                 }
                             }
