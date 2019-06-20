@@ -177,7 +177,6 @@ public class RoyaleWorlds {
     public static Location getRandomLocation(@Nonnull World world, @Nonnull int numTimesRetried) {
         Random rand = new Random();
         int wbSize = (int)(world.getWorldBorder().getSize() * 0.75);
-        plugin.getLogger().info("world " + world.getName() + " spawning inside of " + wbSize);
         int x = rand.nextInt(wbSize) - (wbSize / 2);
         int z = rand.nextInt(wbSize) - (wbSize / 2);
 
@@ -191,9 +190,7 @@ public class RoyaleWorlds {
         // Make sure it's actually a safe location, by checking if the block above it is air, and
         // making sure the block itself isn't lava (surface lava pools are annoying).
         // also avoid oceans because they are disadvantageous.
-        plugin.getLogger().info("block at " + location + " has a type of " + world.getBlockAt(location).getType().name());
         if((world.getBlockAt(oneBlockBelow).getType() == Material.WATER || world.getBlockAt(oneBlockBelow).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) && numTimesRetried < 100) {
-            plugin.getLogger().info("location bad: " + location.clone().add(0, 1, 0));
             // Recurse to try again. When a safe location is found, it will resolve up the stack and be returned from the initial call.
             return getRandomLocation(world, numTimesRetried + 1);
         }
