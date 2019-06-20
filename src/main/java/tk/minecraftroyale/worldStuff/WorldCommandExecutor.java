@@ -55,6 +55,10 @@ public class WorldCommandExecutor implements CommandExecutor {
             }catch(NumberFormatException e){
                 sender.sendMessage("Error: invalid coordinates");
             }
+        }else if (cmd.getName().equalsIgnoreCase("randomtp")) {
+            if(!(sender instanceof Player)) return false;
+            ((Player) sender).teleport(RoyaleWorlds.getRandomLocation(((Player) sender).getWorld()));
+            return true;
         }else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
             File configFile = new File(plugin.getDataFolder(), "config.yml");
             //noinspection ResultOfMethodCallIgnored

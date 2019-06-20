@@ -22,7 +22,7 @@ import java.util.Random;
 
 public class RoyaleWorlds {
 
-    private final MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+    private static final MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
     private static final HashMap<Integer, World> worlds = new HashMap<>();
     public BossbarManager manager;
 
@@ -170,9 +170,14 @@ public class RoyaleWorlds {
 
     }
 
-    public static Location getRandomLocation(@Nonnull World world) {
+    public static Location getRandomLocation(@Nonnull World world){
+        return getRandomLocation(world, 0);
+    }
+
+    public static Location getRandomLocation(@Nonnull World world, @Nonnull int numTimesRetried) {
         Random rand = new Random();
-        int wbSize = (int) world.getWorldBorder().getSize();
+        int wbSize = (int)(world.getWorldBorder().getSize() * 0.75);
+        plugin.getLogger().info("world " + world.getName() + " spawning inside of " + wbSize);
         int x = rand.nextInt(wbSize) - (wbSize / 2);
         int z = rand.nextInt(wbSize) - (wbSize / 2);
 
@@ -181,17 +186,23 @@ public class RoyaleWorlds {
 
         // Get the location at the top
         Location location = world.getHighestBlockAt(x, z).getLocation();
+        Location oneBlockBelow = location.clone().add(0, -1, 0);
 
         // Make sure it's actually a safe location, by checking if the block above it is air, and
         // making sure the block itself isn't lava (surface lava pools are annoying).
         // also avoid oceans because they are disadvantageous.
-        if (world.getBlockAt(location).getType() == Material.WATER || world.getBlockAt(location).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) {
-
+        plugin.getLogger().info("block at " + location + " has a type of " + world.getBlockAt(location).getType().name());
+        if((world.getBlockAt(oneBlockBelow).getType() == Material.WATER || world.getBlockAt(oneBlockBelow).getType() == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) && numTimesRetried < 100) {
+            plugin.getLogger().info("location bad: " + location.clone().add(0, 1, 0));
             // Recurse to try again. When a safe location is found, it will resolve up the stack and be returned from the initial call.
-            return getRandomLocation(world);
+            return getRandomLocation(world, numTimesRetried + 1);
         }
 
-        return location;
+        if(numTimesRetried == 100){
+            plugin.getLogger().warning("Could not find valid location in world " + world.getName());
+        }
+
+        return location.add(0, 1, 0);
 
         // Max's code; left for reference
 //        Location finalLoc = null;

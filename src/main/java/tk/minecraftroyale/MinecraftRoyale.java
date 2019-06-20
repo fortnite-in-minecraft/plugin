@@ -3,6 +3,7 @@ package tk.minecraftroyale;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -26,6 +27,8 @@ import tk.minecraftroyale.game.Round;
 
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import javax.annotation.Nonnull;
 
@@ -209,6 +212,7 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("addlootchest")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("addlootchests")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("endround")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("randomtp")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
 
         // Set the command executor for all commands that have been implemented with the new system
@@ -243,26 +247,32 @@ public class MinecraftRoyale extends JavaPlugin {
                     getLogger().info("Generating worlds");
                     for(int i = 1; i <= 7; i ++) {
                         World w = Bukkit.getWorld("world" + i);
-                        if (w == null) {
-                            try {
-                                w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
-                                w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
-                                int num = plugin.getConfig().getInt("gameSettings.numLootChests");
-                                Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
-                                for(int i2 = 0 ; i2 < num; i2++) {
-                                    getLogger().info("Spawning new loot chest");
-                                    LootChest lootChest = new LootChest(w);
-                                    lootChest.place();
-                                    Bukkit.getLogger().info(lootChest.getCommandResponse());
+                        if (w == null){
+                            if(Files.isDirectory(Paths.get(Bukkit.getWorldContainer().getPath(), "world" + i))){
+                                // the world needs to be loaded but is still there
+                                w = Bukkit.createWorld(new WorldCreator("world" + i));
+                            }else{
+                                // the world is absent entirely
+                                try {
+                                    w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
+                                    w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
+                                    int num = plugin.getConfig().getInt("gameSettings.numLootChests");
+                                    Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
+                                    for (int i2 = 0; i2 < num; i2++) {
+                                        getLogger().info("Spawning new loot chest");
+                                        LootChest lootChest = new LootChest(w);
+                                        lootChest.place();
+                                        Bukkit.getLogger().info(lootChest.getCommandResponse());
+                                    }
+                                } catch (IOException | ConfigException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (IOException | ConfigException e) {
-                                e.printStackTrace();
                             }
                         }
                         if(w != null) w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
                     }
                     getLogger().info("Done generating worlds");
-                    getConfig().set("hasGeneratedWorlds", true);
+//                    getConfig().set("hasGeneratedWorlds", true);
                     saveConfig();
                 }
             }

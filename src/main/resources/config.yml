@@ -1,4 +1,4 @@
-hasGeneratedWorlds: true
+hasGeneratedWorlds: false
 jsonlog: "../socket"
 logMessagesBlacklist:
   - "[Matrix] Enabling Matrix"
