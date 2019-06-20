@@ -1,6 +1,7 @@
 package tk.minecraftroyale.worldStuff;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -65,9 +66,15 @@ public class WorldCommandExecutor implements CommandExecutor {
             if (MinecraftRoyale.getCurrentWorld() == null) {
                 return false;
             }else{
-
-                World w = Bukkit.getWorld("world" + (plugin.getConfig().getInt("state.currentRound") + 1));
-                minecraftRoyale.royaleWorlds.doPostWorldGenStuff(sender, w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
+                int newRoundNum = plugin.getConfig().getInt("state.currentRound") + 1;
+                plugin.getLogger().info("newRoundNum: " + newRoundNum);
+                World w = Bukkit.getWorld("world" + newRoundNum);
+                if(w == null){
+                    plugin.getLogger().warning("Could not find world: world" + newRoundNum);
+                    sender.sendMessage(ChatColor.RED + "Could not find the next world! Is the world corrupted?");
+                }else {
+                    minecraftRoyale.royaleWorlds.doPostWorldGenStuff(sender, w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
+                }
                 return true;
             }
         }else if (cmd.getName().equalsIgnoreCase("endround")) {

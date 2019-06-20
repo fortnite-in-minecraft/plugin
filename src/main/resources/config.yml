@@ -1,3 +1,4 @@
+hasGeneratedWorlds: true
 jsonlog: "../socket"
 logMessagesBlacklist:
   - "[Matrix] Enabling Matrix"
@@ -40,13 +41,13 @@ worlds:
     seed: 2070558
     generatorName: ampliflied
 worldBorder:
-  startDistance: 2500
-  startDistanceTime: 500
-  secondDistance: 500
-  finalDistance: 250
+  startDistance: 250 #0
+  startDistanceTime: 50 #0
+  secondDistance: 50 #0
+  finalDistance: 25 #0
 timeConfig:
-  wborderShrinkPart2: 750
-  roundEnd: 1000
+  wborderShrinkPart2: 75 #0
+  roundEnd: 100 #0
 gameSettings:
   # isInProgress: false#
   # currentRound: 0#

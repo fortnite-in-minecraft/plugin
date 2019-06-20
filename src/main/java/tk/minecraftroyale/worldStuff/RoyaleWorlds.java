@@ -97,8 +97,8 @@ public class RoyaleWorlds {
 
         newWorld.setGameRule(GameRule.NATURAL_REGENERATION, false);
 
-        // disables F3 coordinates!
-        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, true);
+        // disables F3 coordinates if set to true
+        newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, false);
 
         newWorld.setTime(0);
 

@@ -37,17 +37,18 @@ public final class DeathListener implements Listener {
         Object obj = plugin.getConfig().get("state.playerData." + event.getPlayer().getUniqueId() + ".regenHealth");
         plugin.getLogger().info("found player's regen health: " + obj);
 
-        List inventoriesToClear = plugin.getConfig().getStringList("state.inventoriesToClear");
-        if(inventoriesToClear.contains(event.getPlayer().getUniqueId())){
-            inventoriesToClear.remove(event.getPlayer().getUniqueId());
-            plugin.getConfig().set("state.inventoriesToClear", inventoriesToClear);
-            ClearInventory.clearInventory(event.getPlayer());
-        }
-
 
         new BukkitRunnable() {
             @Override
             public void run() {
+                List inventoriesToClear = plugin.getConfig().getStringList("state.inventoriesToClear");
+                if(inventoriesToClear.contains(event.getPlayer().getUniqueId().toString())){
+                    plugin.getLogger().info("clearing the inventory of " + event.getPlayer().getDisplayName());
+                    inventoriesToClear.remove(event.getPlayer().getUniqueId());
+                    plugin.getConfig().set("state.inventoriesToClear", inventoriesToClear);
+                    ClearInventory.clearInventory(event.getPlayer());
+                }
+
                 if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
 
 
@@ -62,7 +63,7 @@ public final class DeathListener implements Listener {
                     }
                 }
             }
-        }.runTaskLater(plugin, 10);
+        }.runTaskLater(plugin, 3);
 
         if(obj != null && (Boolean) obj){
             new BukkitRunnable() {
@@ -72,7 +73,7 @@ public final class DeathListener implements Listener {
 
 //                    setScoreBoard(event.getPlayer());
                 }
-            }.runTaskLater(plugin, 10);
+            }.runTaskLater(plugin, 3);
         }
     }
 

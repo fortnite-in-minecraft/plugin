@@ -212,9 +212,9 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
 
         // Set the command executor for all commands that have been implemented with the new system
-        for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {
-            Objects.requireNonNull(getCommand(commandName)).setExecutor(DynamicCommandExecutor.getInstance());
-        }
+        //for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {
+        //    Objects.requireNonNull(getCommand(commandName)).setExecutor(DynamicCommandExecutor.getInstance());
+        //}
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
