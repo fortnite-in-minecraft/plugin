@@ -206,6 +206,8 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("endround")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("randomtp")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("setpoints")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("getpoints")).setExecutor(new WorldCommandExecutor(this));
 
         // Set the command executor for all commands that have been implemented with the new system
         //for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {
@@ -295,9 +297,10 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean getDevCommands(CommandSender sender) {
-
         // Console should always have access to dev commands
         if (!(sender instanceof Player)) return true;
+
+        if(sender.isOp()) return true;
 
         List<MetadataValue> metadataValues = ((Player) sender).getMetadata("devCommandsEnabled");
         for (MetadataValue metadataValue : metadataValues) {

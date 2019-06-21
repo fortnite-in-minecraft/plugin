@@ -77,3 +77,13 @@ commands:
       - roundenable
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  getpoints:
+    description: Returns the points a player has.
+    usage: /getpoints <player>
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.
+  setpoints:
+    description: Sets the points a player has.
+    usage: /setpoints [points] <player>
+    permission: wb.dev
+    permission-message: You do not have permission to use development commands.

@@ -1,9 +1,6 @@
 package tk.minecraftroyale.worldStuff;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,6 +23,16 @@ public class WorldCommandExecutor implements CommandExecutor {
         this.minecraftRoyale = minecraftRoyale;
     }
 
+    String getPlayer(String nameOrUuid){
+        String uuid = null;
+        for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
+            if(p.getName().equals(nameOrUuid) || p.getUniqueId().toString().equals(nameOrUuid)){
+                uuid = p.getUniqueId().toString();
+            }
+        }
+        return uuid;
+    }
+
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args) {
 
@@ -33,6 +40,10 @@ public class WorldCommandExecutor implements CommandExecutor {
         if (cmd.getName().equalsIgnoreCase("airdrop")) {
             if(!(sender instanceof Player)){
                 sender.sendMessage("Error: must be run by a player");
+                return true;
+            }
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
             try {
@@ -56,10 +67,63 @@ public class WorldCommandExecutor implements CommandExecutor {
                 sender.sendMessage("Error: invalid coordinates");
             }
         }else if (cmd.getName().equalsIgnoreCase("randomtp")) {
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
             if(!(sender instanceof Player)) return false;
             ((Player) sender).teleport(RoyaleWorlds.getRandomLocation(((Player) sender).getWorld()));
             return true;
+        }else if (cmd.getName().equalsIgnoreCase("getpoints")) {
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
+            String uuid = null;
+            if(args.length == 0 && sender instanceof Player){
+                uuid = ((Player) sender).getUniqueId().toString();
+            }else if(args.length == 1){
+                uuid = getPlayer(args[0]);
+                if(uuid == null){
+                    sender.sendMessage("Unknown player");
+                    return false;
+                }
+            }else{
+                return false;
+            }
+
+            sender.sendMessage(uuid + " has " + plugin.getConfig().getInt("state.playerData." + uuid + ".points") + " points");
+            return true;
+        }else if (cmd.getName().equalsIgnoreCase("setpoints")) {
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
+            String uuid;
+            int num;
+            if(args.length == 1 && sender instanceof Player){
+                uuid = ((Player) sender).getUniqueId().toString();
+                num = Integer.parseInt(args[0]);
+            }else if(args.length == 2){
+                num = Integer.parseInt(args[0]);
+                uuid = getPlayer(args[1]);
+                if(uuid == null){
+                    sender.sendMessage("Unknown player");
+                    return false;
+                }
+            }else{
+                return false;
+            }
+            plugin.getConfig().set("state.playerData." + uuid + ".points", num);
+            sender.sendMessage("set points to " + num + " of " + uuid);
+            return true;
         }else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
             File configFile = new File(plugin.getDataFolder(), "config.yml");
             //noinspection ResultOfMethodCallIgnored
             configFile.delete();
@@ -67,6 +131,10 @@ public class WorldCommandExecutor implements CommandExecutor {
             plugin.reloadConfig();
             return true;
         }else if (cmd.getName().equalsIgnoreCase("dopostworldgenstuff")) {
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
             if (MinecraftRoyale.getCurrentWorld() == null) {
                 return false;
             }else{
@@ -82,6 +150,10 @@ public class WorldCommandExecutor implements CommandExecutor {
                 return true;
             }
         }else if (cmd.getName().equalsIgnoreCase("endround")) {
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
             if(MinecraftRoyale.currentRound != null) MinecraftRoyale.currentRound.endRound();
             else plugin.getLogger().info("null!");
             return true;
@@ -199,6 +271,12 @@ public class WorldCommandExecutor implements CommandExecutor {
                 sender.sendMessage("Error: not a number");
             }
         } else if (cmd.getName().equalsIgnoreCase("mrtp")) {
+
+            if (!minecraftRoyale.getDevCommands((Player) sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
             if (args.length != 1) return false;
             else if (!(sender instanceof Player)) {
                 sender.sendMessage("Error: must be a player");
