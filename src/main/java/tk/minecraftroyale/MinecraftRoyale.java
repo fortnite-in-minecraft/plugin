@@ -208,6 +208,7 @@ public class MinecraftRoyale extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("dopostworldgenstuff")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("setpoints")).setExecutor(new WorldCommandExecutor(this));
         Objects.requireNonNull(this.getCommand("getpoints")).setExecutor(new WorldCommandExecutor(this));
+        Objects.requireNonNull(this.getCommand("unkill")).setExecutor(new WorldCommandExecutor(this));
 
         // Set the command executor for all commands that have been implemented with the new system
         //for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {

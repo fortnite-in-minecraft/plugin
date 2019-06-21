@@ -15,6 +15,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
 
 public class WorldCommandExecutor implements CommandExecutor {
     private final MinecraftRoyale minecraftRoyale;
@@ -94,6 +95,30 @@ public class WorldCommandExecutor implements CommandExecutor {
             }
 
             sender.sendMessage(uuid + " has " + plugin.getConfig().getInt("state.playerData." + uuid + ".points") + " points");
+            return true;
+        }else if (cmd.getName().equalsIgnoreCase("unkill")) {
+            if (!MinecraftRoyale.getDevCommands(sender)) {
+                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                return true;
+            }
+
+            String uuid;
+            if(args.length == 1){
+                uuid = getPlayer(args[0]);
+                if(uuid == null){
+                    sender.sendMessage("Unknown player");
+                    return false;
+                }
+            }else{
+                return false;
+            }
+
+            if(Bukkit.getPlayer(uuid) != null && Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline()){
+                Objects.requireNonNull(Bukkit.getPlayer(uuid)).kickPlayer("Rejoin to respawn");
+            }
+
+            plugin.getConfig().set("state.playerData." + uuid + ".isDead", false);
+            sender.sendMessage(uuid + " can now join the game");
             return true;
         }else if (cmd.getName().equalsIgnoreCase("setpoints")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
