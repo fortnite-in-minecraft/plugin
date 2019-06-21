@@ -1,17 +1,37 @@
 package tk.minecraftroyale;
 
 import com.google.gson.JsonPrimitive;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JSONFileAppender {
     public JSONFileAppender(){
-
     }
 
+    public void startGame(){
+        String str = "[\"startGame\", {}]";
+        process(str);
+    }
+
+    // takes a ArrayList of ArrayList[OfflinePlayer player, int points]
+    public void endGame(ArrayList<ArrayList<Object>> playersAndTheirPoints){
+        ArrayList<String> scoreData = new ArrayList<>();
+        for(List playerData : playersAndTheirPoints){
+            OfflinePlayer p = ((OfflinePlayer) playerData.get(0));
+            scoreData.add("[" + new JsonPrimitive(p.getName() + " (" + p.getUniqueId().toString() + ")") + ", " + new JsonPrimitive((int) playerData.get(1)) + "]");
+        }
+        String str = "[\"endGame\", {\"scoreData\": [" + String.join(",", scoreData) + "]}]";
+        Bukkit.getLogger().info(str);
+        process(str);
+    }
     public void logLine(String line){
         // i'm sorry
         String str = "[\"logLine\", {\"line\": " + new JsonPrimitive(line) + "}]";

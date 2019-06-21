@@ -170,6 +170,7 @@ public class WorldCommandExecutor implements CommandExecutor {
                     plugin.getLogger().warning("Could not find world: world" + newRoundNum);
                     sender.sendMessage(ChatColor.RED + "Could not find the next world! Is the world corrupted?");
                 }else {
+
                     minecraftRoyale.royaleWorlds.doPostWorldGenStuff(w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
                 }
                 return true;

@@ -119,6 +119,7 @@ public class MinecraftRoyale extends JavaPlugin {
         }else if(roundNumber >= 1 && roundNumber <= 7 && Bukkit.getWorld("world" + roundNumber) != null){
             return Bukkit.getWorld("world" + roundNumber);
         }else{
+            Bukkit.getLogger().warning("Could not find round-based world");
             List<World> worlds = Bukkit.getWorlds();
             worlds.sort(ageComparator);
             World finalWorld = (World) worlds.stream().filter(w -> !w.getName().contains("nether") && !w.getName().contains("end")).toArray()[0];
@@ -140,22 +141,6 @@ public class MinecraftRoyale extends JavaPlugin {
         appender.logLine("Enabled!");
 
         saveDefaultConfig();
-        royaleWorlds = new RoyaleWorlds();
-
-        if(getConfig().getBoolean("state.isInProgress")) {
-            World currentWorld = MinecraftRoyale.getCurrentWorld();
-            currentRound = new Round(this, new Time(0, 0, 0L, this.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
-            currentRound.checkStatus();
-            try{if(runner != null)runner.cancel();}catch(IllegalStateException ignored){}
-            runner = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    currentRound.autosaveStatus();
-                }
-            };
-            runner.runTaskTimer(this, 1, 10);
-        }
-
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
         Team team = board.registerNewTeam("teamname");
@@ -212,7 +197,8 @@ public class MinecraftRoyale extends JavaPlugin {
 
         // Set the command executor for all commands that have been implemented with the new system
         //for (String commandName : DynamicCommandExecutor.getInstance().getRegisteredCommandNames()) {
-        //    Objects.requireNonNull(getCommand(commandName)).setExecutor(DynamicCommandExecutor.getInstance());
+        //    Objects.requireNonNull(getCommand(commandName)).setExecutor(/--
+        //    +DynamicCommandExecutor.getInstance());
         //}
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
@@ -250,11 +236,10 @@ public class MinecraftRoyale extends JavaPlugin {
                                 // the world is absent entirely
                                 try {
                                     w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
-                                    w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
                                     int num = plugin.getConfig().getInt("gameSettings.numLootChests");
                                     Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
                                     for (int i2 = 0; i2 < num; i2++) {
-                                        getLogger().info("Spawning new loot chest");
+                                        getLogger().info("Spawning a new loot chest");
                                         LootChest lootChest = new LootChest(w);
                                         lootChest.place();
                                         Bukkit.getLogger().info(lootChest.getCommandResponse());
@@ -264,14 +249,35 @@ public class MinecraftRoyale extends JavaPlugin {
                                 }
                             }
                         }
-                        if(w != null) w.getWorldBorder().setSize(getConfig().getLong("worldBorder.startDistance"));
+                        if(w != null){
+                            long size = getConfig().getLong("worldBorder.startDistance");
+//                            if(w.getWorldBorder().getSize() < size) w.getWorldBorder().setSize(size);
+                        }
                     }
                     getLogger().info("Done generating worlds");
 //                    getConfig().set("hasGeneratedWorlds", true);
                     saveConfig();
                 }
-            }
 
+
+
+                royaleWorlds = new RoyaleWorlds();
+
+                if(getConfig().getBoolean("state.isInProgress")) {
+                    World currentWorld = MinecraftRoyale.getCurrentWorld();
+                    currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
+                    currentRound.checkStatus();
+                    try{if(runner != null)runner.cancel();}catch(IllegalStateException ignored){}
+                    runner = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            currentRound.autosaveStatus();
+                        }
+                    };
+                    runner.runTaskTimer(plugin, 1, 10);
+                }
+
+            }
         }.runTaskLater(this, 2);
     }
 

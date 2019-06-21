@@ -117,7 +117,7 @@ public class Round {
         MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
         try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException ignored){}
 
-        ArrayList mostPoints = new ArrayList();
+        ArrayList<Object> mostPoints = new ArrayList<>();
         // mostPoints[0] = int maxPoints
         // mostPoints[1..] = OfflinePlayer winningPlayers
         for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
@@ -176,6 +176,15 @@ public class Round {
             plugin.getConfig().set("state.isInProgress", false);
             MinecraftRoyale.currentRound = null;
             plugin.getConfig().set("state.currentRound", 0);
+
+            ArrayList<ArrayList<Object>> data = new ArrayList<>();
+            for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
+                ArrayList<Object> l = new ArrayList<>();
+                l.add(p);
+                l.add(plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".points"));
+                data.add(l);
+            }
+            MinecraftRoyale.appender.endGame(data);
         }else{
             currentRound ++;
             plugin.getLogger().info("currentRound " + currentRound);

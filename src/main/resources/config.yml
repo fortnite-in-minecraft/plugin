@@ -49,8 +49,8 @@ timeConfig:
   wborderShrinkPart2: 75 #0
   roundEnd: 100 #0
 gameSettings:
-  # isInProgress: false#
-  # currentRound: 0#
+  isInProgress: false
+  currentRound: 0
   numLootChests: 40
   healthRegen: 2
   points:
