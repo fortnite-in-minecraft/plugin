@@ -2,6 +2,7 @@ package tk.minecraftroyale.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -57,9 +58,15 @@ public final class DeathListener implements Listener {
                     event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                 }else{
                     event.getPlayer().spigot().respawn();
-                    if(!plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined")){
-                        event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
-                        plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
+                    if(plugin.getConfig().getBoolean("state.isInProgress")) {
+                        if (!plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined")) {
+
+                            event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+
+                            plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
+                        }
+                    }else{
+                        event.getPlayer().teleport(MinecraftRoyale.getCurrentWorld().getHighestBlockAt(0, 0).getLocation());
                     }
                 }
             }
