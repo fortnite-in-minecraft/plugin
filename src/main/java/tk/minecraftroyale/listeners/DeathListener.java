@@ -50,7 +50,9 @@ public final class DeathListener implements Listener {
                     ClearInventory.clearInventory(event.getPlayer());
                 }
 
-                if(plugin.royaleWorlds.manager != null) plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+                if(plugin.royaleWorlds != null && plugin.royaleWorlds.manager != null) {
+                    plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
+                }
 
 
                 if(plugin.getConfig().getBoolean("state.isInProgress") && plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){

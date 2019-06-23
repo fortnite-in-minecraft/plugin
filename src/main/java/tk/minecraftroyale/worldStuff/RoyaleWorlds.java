@@ -19,6 +19,7 @@ import tk.minecraftroyale.game.Round;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 public class RoyaleWorlds {
@@ -70,10 +71,27 @@ public class RoyaleWorlds {
         }
 
         // doPostWorldGenStuff(sender, newWorld);
+        World.Environment env = World.Environment.NORMAL;
+
+        if(Objects.equals(plugin.getConfig().getString("worlds.world" + roundNum + ".environment"), "THE_END")){
+            env = World.Environment.THE_END;
+        }else if(Objects.equals(plugin.getConfig().getString("worlds.world" + roundNum + ".environment"), "NETHER")){
+            env = World.Environment.NETHER;
+        }
+
+        plugin.getLogger().info("Using environment " + env);
+
+        String generator = plugin.getConfig().getString("worlds.world" + roundNum + ".generator");
+        if(generator == null){
+            generator = "DEFAULT";
+        }
+
         return new WorldCreator(worldPath)
+                .environment(env)
+                .type(Objects.requireNonNull(WorldType.getByName(generator)))
 //                .copy(mainWorld)
                 .generateStructures(true)
-                // TODO: uncomment this in production
+                // TODO: uncomment this in production???
 //                .type(WorldType.LARGE_BIOMES)
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
     }

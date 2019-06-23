@@ -223,6 +223,8 @@ public class MinecraftRoyale extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
+                royaleWorlds = new RoyaleWorlds();
+
                 MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
                 if(!getConfig().getBoolean("hasGeneratedWorlds")){
                     getLogger().info("Generating worlds");
@@ -230,11 +232,14 @@ public class MinecraftRoyale extends JavaPlugin {
                         World w = Bukkit.getWorld("world" + i);
                         if (w == null){
                             if(Files.isDirectory(Paths.get(Bukkit.getWorldContainer().getPath(), "world" + i))){
+
+                                getLogger().info("Loading world " + i);
                                 // the world needs to be loaded but is still there
                                 w = Bukkit.createWorld(new WorldCreator("world" + i));
                             }else{
                                 // the world is absent entirely
                                 try {
+                                    getLogger().info("Creating world " + i);
                                     w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
                                     int num = plugin.getConfig().getInt("gameSettings.numLootChests");
                                     Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
@@ -250,7 +255,7 @@ public class MinecraftRoyale extends JavaPlugin {
                             }
                         }
                         if(w != null){
-                            long size = getConfig().getLong("worldBorder.startDistance");
+//                            long size = getConfig().getLong("worldBorder.startDistance");
 //                            if(w.getWorldBorder().getSize() < size) w.getWorldBorder().setSize(size);
                         }
                     }
@@ -260,8 +265,6 @@ public class MinecraftRoyale extends JavaPlugin {
                 }
 
 
-
-                royaleWorlds = new RoyaleWorlds();
 
                 if(getConfig().getBoolean("state.isInProgress")) {
                     World currentWorld = MinecraftRoyale.getCurrentWorld();
@@ -283,9 +286,11 @@ public class MinecraftRoyale extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        handler.interrupt();
-        if(royaleWorlds.manager != null) royaleWorlds.manager.deleteBar();
-        royaleWorlds.manager = null;
+        if(handler != null) handler.interrupt();
+        if(royaleWorlds != null && royaleWorlds.manager != null) royaleWorlds.manager.deleteBar();
+        if (royaleWorlds != null) {
+            royaleWorlds.manager = null;
+        }
         for(Player p : Bukkit.getOnlinePlayers()){
             p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 

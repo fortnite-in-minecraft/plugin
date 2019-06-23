@@ -12,42 +12,50 @@ logMessagesOfInterest:
 worlds:
   # mesa
   world1:
+    # the better seed is in a comment
     path: "world1"
+    # -671686628
     seed: 102043410
   # plains
   world2:
     path: "world2"
     seed: 1164102382
+    # 1248421
   # jungle
   world3:
     path: "world3"
-    seed: -400391389
+    seed: -888289981
+    # -400391389
   # ice spike
   world4:
     path: "world4"
-    seed: -1766999811
+    seed: 527517686
+    # -1766999811
   # sky island
   world5:
     path: "world5"
     seed: 1337420
-    enviornment: THE_END
+    environment: THE_END
   # island
   world6:
     path: "world6"
-    seed: -1712572161
+#    old seed: -1712572161
+    seed: -888289981
+    # -400391389
   # extreme hills AMPLIFIED
   world7:
     path: "world7"
-    seed: 2070558
+    seed: -141571315
+    # 2070558
     generatorName: ampliflied
 worldBorder:
   startDistance: 250 #0
-  startDistanceTime: 50 #0
+  startDistanceTime: 5 #00
   secondDistance: 50 #0
   finalDistance: 25 #0
 timeConfig:
-  wborderShrinkPart2: 75 #0
-  roundEnd: 100 #0
+  wborderShrinkPart2: 7 #50
+  roundEnd: 10 #00
 gameSettings:
   isInProgress: false
   currentRound: 0
