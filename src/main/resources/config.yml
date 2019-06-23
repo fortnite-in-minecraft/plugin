@@ -41,13 +41,14 @@ worlds:
     path: "world6"
 #    old seed: -1712572161
     seed: -888289981
+    generator: AMPLIFIED
     # -400391389
   # extreme hills AMPLIFIED
   world7:
     path: "world7"
     seed: -141571315
     # 2070558
-    generatorName: ampliflied
+    generator: AMPLIFIED
 worldBorder:
   startDistance: 250 #0
   startDistanceTime: 5 #00
