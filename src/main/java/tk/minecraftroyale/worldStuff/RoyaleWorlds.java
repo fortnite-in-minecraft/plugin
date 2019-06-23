@@ -86,7 +86,7 @@ public class RoyaleWorlds {
             generator = "DEFAULT";
         }
 
-        return new WorldCreator(worldPath)
+        World world = new WorldCreator(worldPath)
                 .environment(env)
                 .type(Objects.requireNonNull(WorldType.getByName(generator)))
 //                .copy(mainWorld)
@@ -94,6 +94,13 @@ public class RoyaleWorlds {
                 // TODO: uncomment this in production???
 //                .type(WorldType.LARGE_BIOMES)
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
+
+        long size = plugin.getConfig().getLong("worldBorder.startDistance");
+        if (world != null) {
+            world.getWorldBorder().setSize(size);
+        }
+
+        return world;
     }
 
     public void doPostWorldGenStuff(World newWorld, int roundNum){

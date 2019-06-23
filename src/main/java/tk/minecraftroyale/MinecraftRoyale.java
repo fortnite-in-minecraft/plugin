@@ -255,8 +255,9 @@ public class MinecraftRoyale extends JavaPlugin {
                             }
                         }
                         if(w != null){
-//                            long size = getConfig().getLong("worldBorder.startDistance");
-//                            if(w.getWorldBorder().getSize() < size) w.getWorldBorder().setSize(size);
+                            long size = getConfig().getLong("worldBorder.startDistance");
+                            plugin.getLogger().info("for world " + i + " the wborder's size is " + w.getWorldBorder().getSize() + " compared to a start distance of " + size);
+                            if(w.getWorldBorder().getSize() < size) w.getWorldBorder().setSize(size);
                         }
                     }
                     getLogger().info("Done generating worlds");
