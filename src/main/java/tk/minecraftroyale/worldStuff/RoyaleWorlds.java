@@ -80,11 +80,6 @@ public class RoyaleWorlds {
             env = World.Environment.NETHER;
         }
 
-        String enviornment = plugin.getConfig().getString("worlds.world" + roundNum + ".generator");
-        if(enviornment == null){
-            enviornment = "NORMAL";
-        }
-
         plugin.getLogger().info("Using environment " + env);
 
         String type = plugin.getConfig().getString("worlds.world" + roundNum + ".generator");
