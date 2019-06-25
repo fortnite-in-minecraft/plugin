@@ -3,6 +3,7 @@ package tk.minecraftroyale.listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -107,6 +108,8 @@ public final class DeathListener implements Listener {
         }
 
         plugin.getConfig().set("state.playerData." + victim.getUniqueId().toString() + ".isDead", true);
+
+
         plugin.saveConfig();
         new BukkitRunnable() {
             @Override

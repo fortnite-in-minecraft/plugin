@@ -26,7 +26,7 @@ public class WorldCommandExecutor implements CommandExecutor {
 
     private String getPlayer(String nameOrUuid){
         String uuid = null;
-        for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
+        for(OfflinePlayer p : minecraftRoyale.getAllPlayers()){
             if(Objects.equals(p.getName(), nameOrUuid) || p.getUniqueId().toString().equals(nameOrUuid)){
                 uuid = p.getUniqueId().toString();
             }
@@ -49,7 +49,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             }
             try {
                 Player player = (Player) sender;
-
+                sender.sendMessage(args.length + "");
                 Airdrop drop;
                 if (args.length == 0) {
                     drop = new Airdrop(((Player) sender).getWorld());

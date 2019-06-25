@@ -36,7 +36,7 @@ public class Round {
     }
 
     public void teleportAllToRoundWorld() {
-        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+        for (OfflinePlayer offlinePlayer : plugin.getAllPlayers()) {
             if (offlinePlayer.getPlayer() != null) {
                 offlinePlayer.getPlayer().teleport(RoyaleWorlds.getRandomLocation(world));
             }  //                PlayerLoginListener.addLoginCallback(offlinePlayer, (player) -> player.teleport(RoyaleWorlds.getRandomLocation(world)));
@@ -120,7 +120,7 @@ public class Round {
         ArrayList<Object> mostPoints = new ArrayList<>();
         // mostPoints[0] = int maxPoints
         // mostPoints[1..] = OfflinePlayer winningPlayers
-        for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
+        for(OfflinePlayer p : plugin.getAllPlayers()) {
             plugin.getLogger().info("getting data for " + p.getUniqueId());
             int points = plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".points");
             if(mostPoints.size() < 2){
@@ -178,7 +178,7 @@ public class Round {
             plugin.getConfig().set("state.currentRound", 0);
 
             ArrayList<ArrayList<Object>> data = new ArrayList<>();
-            for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
+            for(OfflinePlayer p : plugin.getAllPlayers()){
                 ArrayList<Object> l = new ArrayList<>();
                 l.add(p);
                 l.add(plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".points"));

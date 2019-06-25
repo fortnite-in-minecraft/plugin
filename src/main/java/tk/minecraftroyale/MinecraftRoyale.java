@@ -1,9 +1,6 @@
 package tk.minecraftroyale;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -78,7 +75,7 @@ public class MinecraftRoyale extends JavaPlugin {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for(OfflinePlayer possiblyOfflinePlayer : Bukkit.getOfflinePlayers()){
+                    for(OfflinePlayer possiblyOfflinePlayer : getAllPlayers()){
                         System.out.println("got offline player " + possiblyOfflinePlayer.getUniqueId() );
                         JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().set("state.playerData." + possiblyOfflinePlayer.getUniqueId() + ".regenHealth", true);
                         JavaPlugin.getPlugin(MinecraftRoyale.class).saveConfig();
@@ -128,6 +125,15 @@ public class MinecraftRoyale extends JavaPlugin {
         }
     }
 
+    public List<OfflinePlayer> getAllPlayers(){
+        List<OfflinePlayer> list = new ArrayList<OfflinePlayer>();
+        for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
+            Object theThing = this.getConfig().get("state.playerData." + p.getUniqueId().toString() + ".isDead");
+            if(theThing != null) list.add(p);
+        }
+        return list;
+    }
+
     public BukkitRunnable runner;
 
     @Override
@@ -167,7 +173,7 @@ public class MinecraftRoyale extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                for(OfflinePlayer player : getAllPlayers()) {
 //                    if(!team.hasEntry()) team.addEntry(p.getDisplayName());
 
                     Score score = pointsObjective.getScore(Objects.requireNonNull(player.getName()));
@@ -221,6 +227,8 @@ public class MinecraftRoyale extends JavaPlugin {
 
         setupMidnight();
 
+
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -241,6 +249,8 @@ public class MinecraftRoyale extends JavaPlugin {
                                 // the world is absent entirely
                                 try {
                                     getLogger().info("Creating world " + i);
+
+
                                     w = royaleWorlds.generateWorld(i, Bukkit.getConsoleSender());
                                     int num = plugin.getConfig().getInt("gameSettings.numLootChests");
                                     Bukkit.getLogger().info("adding " + plugin.getConfig().getInt("gameSettings.numLootChests") + " loot chests...");
@@ -284,6 +294,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
             }
         }.runTaskLater(this, 2);
+
     }
 
     @Override

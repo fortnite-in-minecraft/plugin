@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import tk.minecraftroyale.BossbarManager;
@@ -86,19 +87,23 @@ public class RoyaleWorlds {
 
         plugin.getLogger().info("Using environment " + env);
 
-        String generator = plugin.getConfig().getString("worlds.world" + roundNum + ".generator");
-        if(generator == null){
-            generator = "DEFAULT";
+        String type = plugin.getConfig().getString("worlds.world" + roundNum + ".generator");
+        if(type == null){
+            type = "DEFAULT";
         }
 
-        World world = new WorldCreator(worldPath)
+        WorldCreator gen = new WorldCreator(worldPath)
+//                .generator("minecraft:the_end")
                 .environment(env)
-                .type(Objects.requireNonNull(WorldType.getByName(generator)))
+                .type(Objects.requireNonNull(WorldType.getByName(type)))
+//                .generatorSettings("{\"useCaves\":true,\"useStrongholds\":true,\"useVillages\":true,\"useMineShafts\":true,\"useTemples\":true,\"useRavines\":true,\"useMonuments\":true,\"useMansions\":true,\"useLavaOceans\":false,\"useWaterLakes\":true,\"useLavaLakes\":true,\"useDungeons\":true,\"fixedBiome\":-3,\"biomeSize\":4,\"seaLevel\":63,\"riverSize\":4,\"waterLakeChance\":4,\"lavaLakeChance\":80,\"dungeonChance\":8,\"dirtSize\":33,\"dirtCount\":10,\"dirtMinHeight\":0,\"dirtMaxHeight\":255,\"gravelSize\":33,\"gravelCount\":8,\"gravelMinHeight\":0,\"gravelMaxHeight\":255,\"graniteSize\":33,\"graniteCount\":10,\"graniteMinHeight\":0,\"graniteMaxHeight\":80,\"dioriteSize\":33,\"dioriteCount\":10,\"dioriteMinHeight\":0,\"dioriteMaxHeight\":80,\"andesiteSize\":33,\"andesiteCount\":10,\"andesiteMinHeight\":0,\"andesiteMaxHeight\":80,\"coalSize\":17,\"coalCount\":20,\"coalMinHeight\":0,\"coalMaxHeight\":128,\"ironSize\":9,\"ironCount\":20,\"ironMinHeight\":0,\"ironMaxHeight\":64,\"goldSize\":9,\"goldCount\":2,\"goldMinHeight\":0,\"goldMaxHeight\":32,\"redstoneSize\":8,\"redstoneCount\":8,\"redstoneMinHeight\":0,\"redstoneMaxHeight\":16,\"diamondSize\":8,\"diamondCount\":1,\"diamondMinHeight\":0,\"diamondMaxHeight\":16,\"lapisSize\":7,\"lapisCount\":1,\"lapisMinHeight\":0,\"lapisMaxHeight\":32,\"coordinateScale\":3000,\"heightScale\":6000,\"mainNoiseScaleX\":80,\"mainNoiseScaleY\":160,\"mainNoiseScaleZ\":80,\"depthNoiseScaleX\":200,\"depthNoiseScaleZ\":200,\"depthNoiseScaleExponent\":0.5,\"biomeDepthWeight\":1,\"biomeDepthOffset\":0,\"biomeScaleWeight\":1,\"biomeScaleOffset\":1,\"lowerLimitScale\":512,\"upperLimitScale\":250,\"baseSize\":8.5,\"stretchY\":10,\"lapisCenterHeight\":16,\"lapisSpread\":16}")
+//                .generatorSettings("{\"chunk_generator\":{\"options\": {\"type\": \"minecraft:floating_islands\"}}}")
 //                .copy(mainWorld)
                 .generateStructures(true)
                 // TODO: uncomment this in production???
 //                .type(WorldType.LARGE_BIOMES)
-                .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed")).createWorld();
+                .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed"));
+        World world = gen.createWorld();
 
         long size = plugin.getConfig().getLong("worldBorder.startDistance");
         if (world != null) {
@@ -136,7 +141,7 @@ public class RoyaleWorlds {
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
         MinecraftRoyale.currentRound.checkStatus();
 
-        for(OfflinePlayer player : Bukkit.getOfflinePlayers()){
+        for(OfflinePlayer player : plugin.getAllPlayers()){
             plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".isDead", false);
             plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", false);
         }
