@@ -163,6 +163,11 @@ public class WorldCommandExecutor implements CommandExecutor {
             if (MinecraftRoyale.getCurrentWorld() == null) {
                 return false;
             }else{
+                for(OfflinePlayer player : Bukkit.getOnlinePlayers()){
+                    plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".isDead", false);
+                    plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", false);
+                }
+
                 int newRoundNum = plugin.getConfig().getInt("state.currentRound") + 1;
                 plugin.getLogger().info("newRoundNum: " + newRoundNum);
                 World w = Bukkit.getWorld("world" + newRoundNum);
@@ -170,7 +175,6 @@ public class WorldCommandExecutor implements CommandExecutor {
                     plugin.getLogger().warning("Could not find world: world" + newRoundNum);
                     sender.sendMessage(ChatColor.RED + "Could not find the next world! Is the world corrupted?");
                 }else {
-
                     minecraftRoyale.royaleWorlds.doPostWorldGenStuff(w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
                 }
                 return true;

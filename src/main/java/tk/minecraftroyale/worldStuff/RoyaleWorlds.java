@@ -115,7 +115,7 @@ public class RoyaleWorlds {
 
     public void doPostWorldGenStuff(World newWorld, int roundNum){
         if(manager != null) manager.deleteBar();
-        manager = new BossbarManager(roundNum, "the round ends");
+        manager = new BossbarManager(roundNum, "Round duration");
         try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException ignored){}
         //            sender.sendMessage("World generation started. You will be notified when it is complete.");
 
@@ -129,11 +129,12 @@ public class RoyaleWorlds {
 
 
         newWorld.setGameRule(GameRule.NATURAL_REGENERATION, false);
+        newWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 
         // disables F3 coordinates if set to true
         newWorld.setGameRule(GameRule.REDUCED_DEBUG_INFO, false);
 
-        newWorld.setTime(0);
+        newWorld.setTime(6000);
 
         plugin.getConfig().set("state.currentRound", roundNum);
 

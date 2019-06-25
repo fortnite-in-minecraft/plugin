@@ -12,7 +12,7 @@ public class BossbarManager {
     public BossbarManager(int round, String message) {
 
         Bukkit.getLogger().info("adding bar " + round);
-        theBar = Bukkit.createBossBar("Round #" + round + ": Time until " + message, BarColor.RED, BarStyle.SOLID);
+        theBar = Bukkit.createBossBar("Round #" + round + ": " + message, BarColor.RED, BarStyle.SOLID);
         theBar.setVisible(true);
         for(Player p : Bukkit.getOnlinePlayers()){
             addPlayer(p);

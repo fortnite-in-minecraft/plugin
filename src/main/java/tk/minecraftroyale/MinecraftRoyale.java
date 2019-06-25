@@ -128,7 +128,7 @@ public class MinecraftRoyale extends JavaPlugin {
     public List<OfflinePlayer> getAllPlayers(){
         List<OfflinePlayer> list = new ArrayList<OfflinePlayer>();
         for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
-            Object theThing = this.getConfig().get("state.playerData." + p.getUniqueId().toString() + ".isDead");
+            Object theThing = this.getConfig().get("state.playerData." + p.getUniqueId().toString() + ".hasJoined");
             if(theThing != null) list.add(p);
         }
         return list;
