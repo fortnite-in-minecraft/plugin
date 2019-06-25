@@ -21,6 +21,7 @@ import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 import java.util.List;
 
 import static org.bukkit.Bukkit.getLogger;
+import static org.bukkit.Bukkit.getServer;
 
 @SuppressWarnings("unused")
 public final class DeathListener implements Listener {
@@ -57,7 +58,7 @@ public final class DeathListener implements Listener {
 
 
                 if(plugin.getConfig().getBoolean("state.isInProgress") && plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
-                    plugin.getLogger().info("kicking a player that is not already dead");
+                    plugin.getLogger().info("kicking a player that is already dead");
                     event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                 }else{
                     event.getPlayer().spigot().respawn();
@@ -69,7 +70,8 @@ public final class DeathListener implements Listener {
                             plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
                         }
                     }else{
-                        event.getPlayer().teleport(MinecraftRoyale.getCurrentWorld().getHighestBlockAt(0, 0).getLocation());
+                        event.getPlayer().teleport(getServer().getWorlds().get(0).getHighestBlockAt(0, 0).getLocation());
+                        ClearInventory.clearInventory(event.getPlayer());
                     }
                 }
             }
