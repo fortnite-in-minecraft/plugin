@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.minecraftroyale.ClearInventory;
 import tk.minecraftroyale.exceptions.ConfigException;
 import tk.minecraftroyale.loot.Airdrop;
 import tk.minecraftroyale.loot.LootChest;
@@ -163,9 +164,10 @@ public class WorldCommandExecutor implements CommandExecutor {
             if (MinecraftRoyale.getCurrentWorld() == null) {
                 return false;
             }else{
-                for(OfflinePlayer player : Bukkit.getOnlinePlayers()){
+                for(Player player : Bukkit.getOnlinePlayers()){
                     plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".isDead", false);
                     plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", false);
+                    ClearInventory.clearInventory(player);
                 }
 
                 int newRoundNum = plugin.getConfig().getInt("state.currentRound") + 1;

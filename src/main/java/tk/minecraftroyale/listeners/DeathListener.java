@@ -99,10 +99,18 @@ public final class DeathListener implements Listener {
             String path = "state.playerData." + killer.getUniqueId() + ".points";
             plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
             int oldPoints = plugin.getConfig().getInt(path);
-            int newPoints = oldPoints + plugin.getConfig().getInt("gameSettings.points.normal");
-            MinecraftRoyale.appender.pointChange(victim.getDisplayName(), victim.getUniqueId().toString(), oldPoints, newPoints, event.getDeathMessage());
+            int normalPoints = plugin.getConfig().getInt("gameSettings.points.normal");
+            int bonusPoints = 0;
+            int potentialBonusPointsForKillingSomeoneWhoHasMorePoints = plugin.getConfig().getInt("gameSettings.points.bonus.killingSomeoneWhoHasMorePoints");
 
-            // TODO: add points based on who has the most
+            // add points for killing someone who has more points than you
+            if(oldPoints < plugin.getConfig().getInt("state.playerData." + victim.getUniqueId() + ".points")){
+                bonusPoints += potentialBonusPointsForKillingSomeoneWhoHasMorePoints;
+            }
+
+
+            int newPoints = oldPoints + normalPoints + bonusPoints;
+            MinecraftRoyale.appender.pointChange(victim.getDisplayName(), victim.getUniqueId().toString(), oldPoints, newPoints, event.getDeathMessage());
 
             plugin.getConfig().set(path, newPoints);
         }

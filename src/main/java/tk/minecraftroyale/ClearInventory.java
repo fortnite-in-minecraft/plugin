@@ -11,6 +11,7 @@ public class ClearInventory {
         clearStatusEffects(player);
         resetHealth(player);
         clearEnderchest(player);
+        resetHunger(player);
         resetXP(player);
     }
 
