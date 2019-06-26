@@ -28,9 +28,9 @@ public class BossbarManager {
     public void addPlayer(Player player){
         if(theBar != null && !theBar.getPlayers().contains(player)){
             theBar.addPlayer(player);
-            Bukkit.getLogger().info("adding player to bossbar");
+//            Bukkit.getLogger().info("adding player to bossbar");
         }
-        Bukkit.getLogger().info("adding player to bossbar " + (theBar != null) + " " + !theBar.getPlayers().contains(player));
+//        Bukkit.getLogger().info("adding player to bossbar " + (theBar != null) + " " + !theBar.getPlayers().contains(player));
     }
 
     public void setProgress(double progress){

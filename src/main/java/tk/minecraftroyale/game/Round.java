@@ -1,20 +1,20 @@
 package tk.minecraftroyale.game;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Contract;
 import tk.minecraftroyale.ClearInventory;
 import tk.minecraftroyale.MinecraftRoyale;
 import tk.minecraftroyale.scheduler.Time;
 import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Round {
 
@@ -24,15 +24,16 @@ public class Round {
     private Runnable wborderShrinkPart2Callback;
     private HashMap<String, Long> unixSecondsThatTheThingWasStartedAt;
     private HashMap<String, Long> secondsLeftThatTheThingWasStartedAt;
+    private HashMap<String, BukkitTask> taskHolder;
 
     @Contract(pure = true)
-    public Round(MinecraftRoyale plugin, Time length, World world, Runnable wborderShrinkPart2Callback) {
+    public Round(MinecraftRoyale plugin, Time length, World world) {
         this.plugin = plugin;
         this.length = length;
         this.world = world;
-        this.wborderShrinkPart2Callback = wborderShrinkPart2Callback;
         unixSecondsThatTheThingWasStartedAt = new HashMap<>();
         secondsLeftThatTheThingWasStartedAt = new HashMap<>();
+        taskHolder = new HashMap<>();
     }
 
     public void teleportAllToRoundWorld() {
@@ -45,17 +46,21 @@ public class Round {
     }
 
     public void checkStatus(){
-        checkGeneric("roundEnd", this::endRound);
-        checkGeneric("wborderShrinkPart2", () -> wborderShrinkPart2Callback.run());
+        checkGeneric("roundEnd");
+        checkGeneric("wborderShrinkPart2");
     }
 
     public void autosaveStatus(){
+        if(MinecraftRoyale.currentRound != this){
+            throw new IllegalStateException("Bad round loop!");
+        }
+
         autosaveGeneric("roundEnd");
         autosaveGeneric("wborderShrinkPart2");
     }
 
     @SuppressWarnings("Duplicates")
-    private void checkGeneric(String nameOfTheThingToCheck, Runnable callback){
+    private void checkGeneric(String nameOfTheThingToCheck){
         MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
         FileConfiguration config = plugin.getConfig();
 
@@ -75,13 +80,24 @@ public class Round {
         plugin.getLogger().info("checkGeneric: " + nameOfTheThingToCheck + " secondsLeft " + secondsLeft + ", now " + now + ", durationOfTheThing " + durationOfTheThing + ", timer " +  timer);
         unixSecondsThatTheThingWasStartedAt.put(nameOfTheThingToCheck, now);
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                callback.run();
-            }
+        if(taskHolder.get(nameOfTheThingToCheck) != null){
+            plugin.getLogger().warning("Duplicate callback runnable!!!");
+        }else{
 
-        }.runTaskLater(plugin, timer * 20);
+            BukkitTask run = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if(Objects.equals(nameOfTheThingToCheck, "roundEnd")){
+                        endRound();
+                    }else{
+                        plugin.royaleWorlds.setUpWorldBorder(world, true);
+                    }
+                }
+
+            }.runTaskLater(plugin, timer * 20);
+            taskHolder.put(nameOfTheThingToCheck, run);
+            plugin.getLogger().info(ChatColor.GREEN + "Running " + nameOfTheThingToCheck + " in " + timer + " seconds");
+        }
 
 
         autosaveGeneric(nameOfTheThingToCheck);
@@ -101,7 +117,7 @@ public class Round {
             config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
 
 
-            //plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
+//            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
             plugin.saveConfig();
 
 
@@ -113,15 +129,23 @@ public class Round {
     }
 
     public void endRound(){
-        plugin.getLogger().info("world name " + world.getName());
+        plugin.getLogger().info("Ending round: world name " + world.getName());
+        plugin.getLogger().info(Arrays.toString(new Throwable().getStackTrace()));
         MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
-        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException ignored){}
+        try{
+            if(plugin.runner != null){
+                plugin.getLogger().info("Cancelling runner...3");
+                plugin.runner.cancel();
+            }
+        }catch(IllegalStateException e){
+            plugin.getLogger().info("Couldn't cancel runner...3 " + e.toString());
+        }
 
         ArrayList<Object> mostPoints = new ArrayList<>();
         // mostPoints[0] = int maxPoints
         // mostPoints[1..] = OfflinePlayer winningPlayers
         for(OfflinePlayer p : plugin.getAllPlayers()) {
-            plugin.getLogger().info("getting data for " + p.getUniqueId());
+//            plugin.getLogger().info("getting data for " + p.getUniqueId());
             int points = plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".points");
             if(mostPoints.size() < 2){
                 mostPoints.add(points);
@@ -149,7 +173,7 @@ public class Round {
         int maxPoints = (int) mostPoints.get(0);
         mostPoints.remove(0);
 
-        plugin.getLogger().info("Winning points: " + maxPoints);
+//        plugin.getLogger().info("Winning points: " + maxPoints);
         String str = String.valueOf(
                 mostPoints.stream().reduce((a, b) -> "" + a + ", " + ((OfflinePlayer) b).getName())
                         .get()
@@ -166,6 +190,9 @@ public class Round {
 
         secondsLeftThatTheThingWasStartedAt.clear();
         unixSecondsThatTheThingWasStartedAt.clear();
+        taskHolder.get("roundEnd").cancel();
+        taskHolder.get("wborderShrinkPart2").cancel();
+        taskHolder.clear();
         plugin.getConfig().set("secondsLeft.roundEnd", 0);
         plugin.getConfig().set("secondsLeft.wborderShrinkPart2", 0);
 

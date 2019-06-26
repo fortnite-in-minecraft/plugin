@@ -133,8 +133,13 @@ public class WorldCommandExecutor implements CommandExecutor {
                 uuid = ((Player) sender).getUniqueId().toString();
                 num = Integer.parseInt(args[0]);
             }else if(args.length == 2){
-                num = Integer.parseInt(args[0]);
+                try {
+                    num = Integer.parseInt(args[0]);
+                }catch(NumberFormatException e){
+                    return false;
+                }
                 uuid = getPlayer(args[1]);
+
                 if(uuid == null){
                     sender.sendMessage("Unknown player");
                     return false;

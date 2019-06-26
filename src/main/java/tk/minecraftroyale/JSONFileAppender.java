@@ -29,7 +29,6 @@ public class JSONFileAppender {
             scoreData.add("[" + new JsonPrimitive(p.getName() + " (" + p.getUniqueId().toString() + ")") + ", " + new JsonPrimitive((int) playerData.get(1)) + "]");
         }
         String str = "[\"endGame\", {\"scoreData\": [" + String.join(",", scoreData) + "]}]";
-        Bukkit.getLogger().info(str);
         process(str);
     }
     public void logLine(String line){
@@ -63,7 +62,7 @@ public class JSONFileAppender {
     }
 
     private void process(String str){
-        System.out.println(str);
+//        System.out.println(str);
         String filePath = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getString("jsonlog");
         if(filePath == null) filePath = "jsonlog.txt";
         File file = new File(filePath);

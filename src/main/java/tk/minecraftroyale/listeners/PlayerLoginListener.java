@@ -38,6 +38,6 @@ public class PlayerLoginListener implements Listener {
                 loginCallbacks.remove(uuid);
             }
         }
-        Bukkit.getLogger().info("onLogin took " + ((nanoTime() - startTime) / 1000000d) + "ms");
+//        Bukkit.getLogger().info("onLogin took " + ((nanoTime() - startTime) / 1000000d) + "ms");
     }
 }

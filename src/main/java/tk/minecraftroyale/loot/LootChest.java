@@ -114,7 +114,7 @@ public class LootChest {
             if(entry.isDirectory()) {
                 Paths.get(basePath.toString(), entry.getName()).toFile().mkdirs();
             }else{
-                System.out.println("Unzipping: " + entry.getName());
+//                System.out.println("Unzipping: " + entry.getName());
 
                 int size;
                 byte[] buffer = new byte[2048];

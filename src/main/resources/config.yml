@@ -49,13 +49,13 @@ worlds:
     # 2070558
     generator: AMPLIFIED
 worldBorder:
-  startDistance: 250 #0
-  startDistanceTime: 90 #0
-  secondDistance: 50 #0
-  finalDistance: 25 #0
+  startDistance: 25 #00
+  startDistanceTime: 10 # 900
+  secondDistance: 5 #00
+  finalDistance: 2 #50
 timeConfig:
-  wborderShrinkPart2: 150 #0
-  roundEnd: 180 #0
+  wborderShrinkPart2: 20 # 1500
+  roundEnd: 30 # 1800
 gameSettings:
   isInProgress: false
   currentRound: 0

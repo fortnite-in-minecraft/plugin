@@ -19,6 +19,7 @@ import tk.minecraftroyale.game.Round;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
@@ -111,7 +112,14 @@ public class RoyaleWorlds {
     public void doPostWorldGenStuff(World newWorld, int roundNum){
         if(manager != null) manager.deleteBar();
         manager = new BossbarManager(roundNum, "Round duration");
-        try{if(plugin.runner != null) plugin.runner.cancel();}catch(IllegalStateException ignored){}
+        try{
+            if(plugin.runner != null){
+                plugin.getLogger().info("Cancelling runner...1");
+                plugin.runner.cancel();
+            }
+        }catch(IllegalStateException e){
+            plugin.getLogger().info("Couldn't cancel runner...1 " + e.toString());
+        }
         //            sender.sendMessage("World generation started. You will be notified when it is complete.");
 
         setUpWorldBorder(newWorld);
@@ -133,9 +141,8 @@ public class RoyaleWorlds {
 
         plugin.getConfig().set("state.currentRound", roundNum);
 
-        MinecraftRoyale.currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), newWorld, () -> setUpWorldBorder(newWorld, true));
+        MinecraftRoyale.currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), newWorld);
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
-        MinecraftRoyale.currentRound.checkStatus();
 
         for(OfflinePlayer player : plugin.getAllPlayers()){
             plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".isDead", false);
@@ -145,18 +152,35 @@ public class RoyaleWorlds {
         for(Player player : Bukkit.getOnlinePlayers()){
             plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", true);
         }
-        try{if(plugin.runner != null)plugin.runner.cancel();}catch(IllegalStateException ignored){}
+        try{
+            if(plugin.runner != null){
+                plugin.getLogger().info("Cancelling runner...2");
+                plugin.runner.cancel();
+            }
+        }catch(IllegalStateException e){
+            plugin.getLogger().info("Couldn't cancel runner...2 " + e.toString());
+        }
+
+        Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
+        plugin.getLogger().info(Arrays.toString(new Throwable().getStackTrace()));
+
+        MinecraftRoyale.appender.roundInfo(roundNum, " is starting");
+        plugin.getConfig().set("state.isInProgress", true);
+
+
+        plugin.getLogger().info(ChatColor.GOLD + "Save the config!");
+        try {Thread.sleep(1000);} catch (InterruptedException ignored) {}
+
+        MinecraftRoyale.currentRound.checkStatus();
+
+        plugin.getLogger().info("Starting autosave timer #1");
         plugin.runner = new BukkitRunnable() {
             @Override
             public void run() {
                 MinecraftRoyale.currentRound.autosaveStatus();
             }
         };
-        plugin.runner.runTaskTimer(plugin, 1, 10);
-
-        Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
-        MinecraftRoyale.appender.roundInfo(roundNum, " is starting");
-        plugin.getConfig().set("state.isInProgress", true);
+        plugin.runner.runTaskTimer(plugin, 1, 20);
     }
 
     void setUpWorldBorder(int world) {
@@ -173,7 +197,6 @@ public class RoyaleWorlds {
 
     public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
         if(secondRound){
-            plugin.getLogger().info("secondRound true");
             Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
             MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), "\'s worldborder is shrinking for the final time");
             setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
@@ -189,7 +212,7 @@ public class RoyaleWorlds {
         border.setWarningTime(30); // 30 second warning
         border.setWarningDistance(15);
         border.setDamageBuffer(1);
-        plugin.getLogger().info("set wborder to " + firstDist + ", " + secondDistance + " after " + time + " seconds in world " + world.getName());
+        plugin.getLogger().info("setting the worldborder to " + firstDist + ", " + secondDistance + " in " + time + " seconds in world " + world.getName());
         border.setSize(firstDist);
         border.setSize(secondDistance, time);
 
@@ -215,7 +238,7 @@ public class RoyaleWorlds {
         // Make sure it's actually a safe location, by checking if the block above it is air, and
         // making sure the block itself isn't lava (surface lava pools are annoying).
         // also avoid oceans because they are disadvantageous.
-        plugin.getLogger().info("type " + world.getBlockAt(oneBlockBelow).getType().name());
+//        plugin.getLogger().info("type " + world.getBlockAt(oneBlockBelow).getType().name());
         @NotNull Material material = world.getBlockAt(oneBlockBelow).getType();
         if((material == Material.TALL_SEAGRASS || material == Material.SEAGRASS || material == Material.KELP || material == Material.KELP_PLANT || material == Material.WATER || material == Material.LAVA || world.getBlockAt(location).getRelative(BlockFace.UP).getType() != Material.AIR) && numTimesRetried < 100) {
             // Recurse to try again. When a safe location is found, it will resolve up the stack and be returned from the initial call.

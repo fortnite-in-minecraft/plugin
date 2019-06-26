@@ -130,7 +130,7 @@ public class MinecraftRoyale extends JavaPlugin {
         for(OfflinePlayer p : Bukkit.getOfflinePlayers()){
             Object theThing = this.getConfig().get("state.playerData." + p.getUniqueId().toString() + ".hasJoined");
             if(theThing != null){
-                this.getLogger().info("getAllPlayers: " + p.getName());
+//                this.getLogger().info("getAllPlayers: " + p.getName());
                 list.add(p);
             }
         }
@@ -283,16 +283,24 @@ public class MinecraftRoyale extends JavaPlugin {
 
                 if(getConfig().getBoolean("state.isInProgress")) {
                     World currentWorld = MinecraftRoyale.getCurrentWorld();
-                    currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld, () -> royaleWorlds.setUpWorldBorder(currentWorld, true));
+                    currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld);
                     currentRound.checkStatus();
-                    try{if(runner != null)runner.cancel();}catch(IllegalStateException ignored){}
+                    try{
+                        if(runner != null){
+                            plugin.getLogger().info("Cancelling runner...");
+                            runner.cancel();
+                        }
+                    }catch(IllegalStateException e){
+                        plugin.getLogger().info("Couldn't cancel runner... " + e.toString());
+                    }
+                    plugin.getLogger().info("Starting autosave timer #2");
                     runner = new BukkitRunnable() {
                         @Override
                         public void run() {
                             currentRound.autosaveStatus();
                         }
                     };
-                    runner.runTaskTimer(plugin, 1, 10);
+                    runner.runTaskTimer(plugin, 1, 20);
                 }
 
             }
