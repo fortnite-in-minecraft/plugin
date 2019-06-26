@@ -1,6 +1,9 @@
 package tk.minecraftroyale;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,7 +22,6 @@ import tk.minecraftroyale.scheduler.Time;
 import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 import tk.minecraftroyale.worldStuff.WorldCommandExecutor;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;

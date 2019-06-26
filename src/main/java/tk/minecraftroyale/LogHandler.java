@@ -3,14 +3,15 @@ package tk.minecraftroyale;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
-import java.util.logging.LogRecord;
 
 
 public class LogHandler extends Thread {
-    String x = null;
-    Boolean keepReading = false;
+    private Boolean keepReading = false;
 
     LogHandler() {
     }
@@ -22,6 +23,7 @@ public class LogHandler extends Thread {
             File file = new File("logs/latest.log");
             FileReader fileReader = new FileReader("logs/latest.log");
             reader = new BufferedReader(fileReader);
+            //noinspection ResultOfMethodCallIgnored
             reader.skip (file.length());
         } catch (IOException e) {
             e.printStackTrace();
@@ -31,6 +33,7 @@ public class LogHandler extends Thread {
 
         while (keepReading) {
             try {
+                assert reader != null;
                 line = reader.readLine();
 
                 if (line == null) {

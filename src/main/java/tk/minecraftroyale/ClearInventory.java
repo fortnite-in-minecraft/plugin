@@ -4,10 +4,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
+import java.util.Objects;
+
 public class ClearInventory {
     public static void clearInventory(Player player){
         emptyInventory(player);
-        resetAdvancements(player);
+//        resetAdvancements(player);
         clearStatusEffects(player);
         resetHealth(player);
         clearEnderchest(player);
@@ -19,9 +21,9 @@ public class ClearInventory {
         player.getInventory().clear();
     }
 
-    private static void resetAdvancements(Player player){
-        // this is currently not possible!
-    }
+//    private static void resetAdvancements(Player player){
+//        // this is currently not possible!
+//    }
 
     private static void clearStatusEffects(Player player){
         for (PotionEffect effect : player.getActivePotionEffects())
@@ -29,7 +31,7 @@ public class ClearInventory {
     }
 
     private static void resetHealth(Player player){
-        double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double maxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
         player.setHealth(maxHealth);
     }
 

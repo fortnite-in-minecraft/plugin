@@ -1,9 +1,7 @@
 package tk.minecraftroyale;
 
 import com.google.gson.JsonPrimitive;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JSONFileAppender {
-    public JSONFileAppender(){
+    JSONFileAppender(){
     }
 
     public void startGame(){
@@ -51,7 +49,7 @@ public class JSONFileAppender {
         pointChange(playerName, playerUid, oldPointVal, newPointVal, cause, "");
     }
 
-    public void pointChange(String playerName, String playerUid, int oldPointVal, int newPointVal, String cause, String bonus){
+    private void pointChange(String playerName, String playerUid, int oldPointVal, int newPointVal, String cause, String bonus){
         String str = "[\"pointChange\",  {player: {user: " + new JsonPrimitive(playerName) + ", uid: " + new JsonPrimitive(playerUid) + "}, oldPointValue: " + new JsonPrimitive(oldPointVal) + ", newPointValue: " + new JsonPrimitive(newPointVal) + ", cause: {type: " + new JsonPrimitive(cause) + ", bonus: " + new JsonPrimitive(bonus) + "}}]";
         process(str);
     }

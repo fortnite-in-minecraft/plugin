@@ -7,16 +7,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.minecraftroyale.ClearInventory;
+import tk.minecraftroyale.MinecraftRoyale;
 import tk.minecraftroyale.exceptions.ConfigException;
 import tk.minecraftroyale.loot.Airdrop;
 import tk.minecraftroyale.loot.LootChest;
-import tk.minecraftroyale.MinecraftRoyale;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.UUID;
 
 public class WorldCommandExecutor implements CommandExecutor {
     private final MinecraftRoyale minecraftRoyale;
@@ -182,6 +181,7 @@ public class WorldCommandExecutor implements CommandExecutor {
                     plugin.getLogger().warning("Could not find world: world" + newRoundNum);
                     sender.sendMessage(ChatColor.RED + "Could not find the next world! Is the world corrupted?");
                 }else {
+                    MinecraftRoyale.appender.startGame();
                     minecraftRoyale.royaleWorlds.doPostWorldGenStuff(w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
                 }
                 return true;
