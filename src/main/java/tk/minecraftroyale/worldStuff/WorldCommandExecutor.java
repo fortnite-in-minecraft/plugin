@@ -39,7 +39,7 @@ public class WorldCommandExecutor implements CommandExecutor {
 
         JavaPlugin plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
         if (cmd.getName().equalsIgnoreCase("airdrop")) {
-            if(!(sender instanceof Player)){
+            if (!(sender instanceof Player)) {
                 sender.sendMessage("Error: must be run by a player");
                 return true;
             }
@@ -58,69 +58,69 @@ public class WorldCommandExecutor implements CommandExecutor {
                             Integer.parseInt(args[0]),
                             player.getWorld().getHighestBlockYAt(Integer.parseInt(args[0]), Integer.parseInt(args[1])),
                             Integer.parseInt(args[1])));
-                }else{
+                } else {
                     return false;
                 }
 
                 drop.place();
                 return true;
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 sender.sendMessage("Error: invalid coordinates");
             }
-        }else if (cmd.getName().equalsIgnoreCase("randomtp")) {
+        } else if (cmd.getName().equalsIgnoreCase("randomtp")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
-            if(!(sender instanceof Player)) return false;
+            if (!(sender instanceof Player)) return false;
             ((Player) sender).teleport(RoyaleWorlds.getRandomLocation(((Player) sender).getWorld()));
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("getpoints")) {
+        } else if (cmd.getName().equalsIgnoreCase("getpoints")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
 
             String uuid;
-            if(args.length == 0 && sender instanceof Player){
+            if (args.length == 0 && sender instanceof Player) {
                 uuid = ((Player) sender).getUniqueId().toString();
-            }else if(args.length == 1){
+            } else if (args.length == 1) {
                 uuid = getPlayer(args[0]);
-                if(uuid == null){
+                if (uuid == null) {
                     sender.sendMessage("Unknown player");
                     return false;
                 }
-            }else{
+            } else {
                 return false;
             }
 
             sender.sendMessage(uuid + " has " + plugin.getConfig().getInt("state.playerData." + uuid + ".points") + " points");
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("unkill")) {
+        } else if (cmd.getName().equalsIgnoreCase("unkill")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
 
             String uuid;
-            if(args.length == 1){
+            if (args.length == 1) {
                 uuid = getPlayer(args[0]);
-                if(uuid == null){
+                if (uuid == null) {
                     sender.sendMessage("Unknown player");
                     return false;
                 }
-            }else{
+            } else {
                 return false;
             }
 
-            if(Bukkit.getPlayer(uuid) != null && Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline()){
+            if (Bukkit.getPlayer(uuid) != null && Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline()) {
                 Objects.requireNonNull(Bukkit.getPlayer(uuid)).kickPlayer("Rejoin to respawn");
             }
 
             plugin.getConfig().set("state.playerData." + uuid + ".isDead", false);
             sender.sendMessage(uuid + " can now join the game");
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("setpoints")) {
+        } else if (cmd.getName().equalsIgnoreCase("setpoints")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
@@ -128,28 +128,28 @@ public class WorldCommandExecutor implements CommandExecutor {
 
             String uuid;
             int num;
-            if(args.length == 1 && sender instanceof Player){
+            if (args.length == 1 && sender instanceof Player) {
                 uuid = ((Player) sender).getUniqueId().toString();
                 num = Integer.parseInt(args[0]);
-            }else if(args.length == 2){
+            } else if (args.length == 2) {
                 try {
                     num = Integer.parseInt(args[0]);
-                }catch(NumberFormatException e){
+                } catch (NumberFormatException e) {
                     return false;
                 }
                 uuid = getPlayer(args[1]);
 
-                if(uuid == null){
+                if (uuid == null) {
                     sender.sendMessage("Unknown player");
                     return false;
                 }
-            }else{
+            } else {
                 return false;
             }
             plugin.getConfig().set("state.playerData." + uuid + ".points", num);
             sender.sendMessage("set points to " + num + " of " + uuid);
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
+        } else if (cmd.getName().equalsIgnoreCase("resetconfig")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
@@ -160,15 +160,15 @@ public class WorldCommandExecutor implements CommandExecutor {
             plugin.saveDefaultConfig();
             plugin.reloadConfig();
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("dopostworldgenstuff")) {
+        } else if (cmd.getName().equalsIgnoreCase("dopostworldgenstuff")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
             if (MinecraftRoyale.getCurrentWorld() == null) {
                 return false;
-            }else{
-                for(Player player : Bukkit.getOnlinePlayers()){
+            } else {
+                for (Player player : Bukkit.getOnlinePlayers()) {
                     plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".isDead", false);
                     plugin.getConfig().set("state.playerData." + player.getUniqueId().toString() + ".hasJoined", false);
                     ClearInventory.clearInventory(player);
@@ -177,25 +177,25 @@ public class WorldCommandExecutor implements CommandExecutor {
                 int newRoundNum = plugin.getConfig().getInt("state.currentRound") + 1;
                 plugin.getLogger().info("newRoundNum: " + newRoundNum);
                 World w = Bukkit.getWorld("world" + newRoundNum);
-                if(w == null){
+                if (w == null) {
                     plugin.getLogger().warning("Could not find world: world" + newRoundNum);
                     sender.sendMessage(ChatColor.RED + "Could not find the next world! Is the world corrupted?");
-                }else {
+                } else {
                     MinecraftRoyale.appender.startGame();
                     minecraftRoyale.royaleWorlds.doPostWorldGenStuff(w, Math.max(plugin.getConfig().getInt("state.currentRound"), 1));
                 }
                 return true;
             }
-        }else if (cmd.getName().equalsIgnoreCase("endround")) {
+        } else if (cmd.getName().equalsIgnoreCase("endround")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
-            if(MinecraftRoyale.currentRound != null) MinecraftRoyale.currentRound.endRound();
+            if (MinecraftRoyale.currentRound != null) MinecraftRoyale.currentRound.endRound();
             else plugin.getLogger().info("null!");
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
-            if(!(sender instanceof Player)){
+        } else if (cmd.getName().equalsIgnoreCase("addlootchest")) {
+            if (!(sender instanceof Player)) {
                 sender.sendMessage("Error: must be run by a player");
                 return true;
             }
@@ -211,14 +211,14 @@ public class WorldCommandExecutor implements CommandExecutor {
                     lootChest.place();
                     sender.sendMessage(lootChest.getCommandResponse());
                     return true;
-                }else{
+                } else {
                     return false;
                 }
-            }catch(Error e){
+            } catch (Error e) {
                 e.printStackTrace();
             }
-        }else if (cmd.getName().equalsIgnoreCase("addlootchests")) {
-            if(!(sender instanceof Player)){
+        } else if (cmd.getName().equalsIgnoreCase("addlootchests")) {
+            if (!(sender instanceof Player)) {
                 sender.sendMessage("Error: must be run by a player");
                 return true;
             }
@@ -233,7 +233,7 @@ public class WorldCommandExecutor implements CommandExecutor {
                     try {
                         int num = Integer.parseInt(args[0]);
                         sender.sendMessage("adding " + num + " loot chests...");
-                        for(int i = 0 ; i < num ; i++) {
+                        for (int i = 0; i < num; i++) {
                             LootChest lootChest = new LootChest(((Player) sender).getWorld());
                             lootChest.place();
                             sender.sendMessage(lootChest.getCommandResponse());
@@ -242,55 +242,55 @@ public class WorldCommandExecutor implements CommandExecutor {
                     } catch (NumberFormatException e) {
                         sender.sendMessage("Error: not a number");
                     }
-                }else{
+                } else {
                     return false;
                 }
-            }catch(Error e){
+            } catch (Error e) {
                 e.printStackTrace();
             }
-        }else if (cmd.getName().equalsIgnoreCase("installloottables")) {
-             if(!(sender instanceof Player)){
-                 sender.sendMessage("Error: must be ran by a player");
-                 return true;
-             }
+        } else if (cmd.getName().equalsIgnoreCase("installloottables")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Error: must be ran by a player");
+                return true;
+            }
 
             if (!MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
 
-             try {
-                 LootChest.installLootTables(((Player) sender).getWorld(), sender);
-             }catch(IOException e){
-                 e.printStackTrace();
-                 sender.sendMessage("Internal I/O error");
-                 return true;
-             }
-             sender.sendMessage("installed loot tables");
-             return true;
-        }else if(cmd.getName().equalsIgnoreCase("setupwborder")) {
+            try {
+                LootChest.installLootTables(((Player) sender).getWorld(), sender);
+            } catch (IOException e) {
+                e.printStackTrace();
+                sender.sendMessage("Internal I/O error");
+                return true;
+            }
+            sender.sendMessage("installed loot tables");
+            return true;
+        } else if (cmd.getName().equalsIgnoreCase("setupwborder")) {
             if (sender instanceof Player && !MinecraftRoyale.getDevCommands(sender)) {
                 sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
 
             try {
-                if(args.length > 0) {
+                if (args.length > 0) {
                     minecraftRoyale.royaleWorlds.setUpWorldBorder(Integer.parseInt(args[0]));
-                }else{
+                } else {
                     if (sender instanceof Player) {
                         minecraftRoyale.royaleWorlds.setUpWorldBorder(((Player) sender).getWorld());
-                    }else{
+                    } else {
                         return false;
                     }
                 }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: not a number");
-            } catch(IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 sender.sendMessage("Error: not found");
             }
             return true;
-        }else if (cmd.getName().equalsIgnoreCase("loadworld")) {
+        } else if (cmd.getName().equalsIgnoreCase("loadworld")) {
             if (args.length != 1) return false;
             else if (sender instanceof Player) {
                 if (!MinecraftRoyale.getDevCommands(sender)) {
@@ -325,7 +325,8 @@ public class WorldCommandExecutor implements CommandExecutor {
             try {
                 int worldNum = Integer.parseInt(args[0]);
 
-                if (worldNum < 1 || worldNum > 7) throw new NumberFormatException(); // Transfers control to the catch block
+                if (worldNum < 1 || worldNum > 7)
+                    throw new NumberFormatException(); // Transfers control to the catch block
 
                 World world = minecraftRoyale.royaleWorlds.getWorld(worldNum);
 
@@ -339,7 +340,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             } catch (NumberFormatException e) {
                 World w = Bukkit.getWorld(args[0]);
                 if (w == null) {
-                    sender.sendMessage("Error: world \"" + args[0] +  "\" not found");
+                    sender.sendMessage("Error: world \"" + args[0] + "\" not found");
                     return true;
                 }
 
@@ -352,7 +353,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             if (args.length != 1) return false;
 
             if (sender instanceof Player && !MinecraftRoyale.getDevCommands(sender)) {
-                sender.sendMessage("You do not have development commands enabled. Please use /toggledevcommands to enable them.");
+                sender.sendMessage(ChatColor.RED + "You do not have development commands enabled. Please use /toggledevcommands to enable them.");
                 return true;
             }
 
@@ -370,8 +371,10 @@ public class WorldCommandExecutor implements CommandExecutor {
             } catch (NumberFormatException e) {
                 sender.sendMessage("Error: invalid round");
             }
+        } else if (cmd.getName().equalsIgnoreCase("getwborder")) {
+            sender.sendMessage(ChatColor.GREEN + "The world border is " + ((int) MinecraftRoyale.getCurrentWorld().getWorldBorder().getSize()) + " blocks wide");
+            return true;
         }
-
         return false;
     }
 }

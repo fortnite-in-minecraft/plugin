@@ -93,3 +93,18 @@ commands:
     usage: /setpoints [points] <player>
     permission: wb.dev
     permission-message: You do not have permission to use development commands.
+  getwborder:
+    description: Get the current size of the world border. Note that this is a measurement of the width of the border, NOT its distance from (0, 0)
+    usage: /getwborder
+    permission: getwborder
+    permission-message: You do not have permission to get the world border.
+    aliases:
+      - getworldborder
+      - wbordersize
+      - worldbordersize
+      - wborder
+permissions:
+  getwborder:
+    description: Allows you to get the world border.
+    default: true
+
