@@ -168,8 +168,8 @@ public class RoyaleWorlds {
         plugin.getConfig().set("state.isInProgress", true);
 
 
-        plugin.getLogger().info(ChatColor.GOLD + "Save the config!");
-        try {Thread.sleep(1000);} catch (InterruptedException ignored) {}
+//        plugin.getLogger().info(ChatColor.GOLD + "Save the config!");
+//        try {Thread.sleep(1000);} catch (InterruptedException ignored) {}
 
         MinecraftRoyale.currentRound.checkStatus();
 

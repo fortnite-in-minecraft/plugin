@@ -59,12 +59,13 @@ timeConfig:
 gameSettings:
   isInProgress: false
   currentRound: 0
-  numLootChests: 40
+  numLootChests: 500
   healthRegen: 2
   points:
     normal: 10
     bonus:
       killingSomeoneWhoHasMorePoints: 5
+    lootChestOpen: 1
 probability:
   # 1/n
   airdrop: 60
