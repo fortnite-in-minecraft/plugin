@@ -208,7 +208,7 @@ public class Round {
             for(OfflinePlayer p : plugin.getAllPlayers()){
                 ArrayList<Object> l = new ArrayList<>();
                 l.add(p);
-                l.add(plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".points"));
+                l.add(plugin.getConfig().getInt("state.playerData." + p.getUniqueId() + ".gamePoints"));
                 data.add(l);
             }
             MinecraftRoyale.appender.endGame(data);
