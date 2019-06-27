@@ -2,8 +2,6 @@ package tk.minecraftroyale.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -40,6 +38,7 @@ public final class DeathListener implements Listener {
         Object obj = plugin.getConfig().get("state.playerData." + event.getPlayer().getUniqueId() + ".regenHealth");
         plugin.getLogger().info("found player's regen health: " + obj);
 
+        plugin.getConfig().get("state.playerData." + event.getPlayer().getUniqueId().toString() + ".name", event.getPlayer().getDisplayName());
 
         new BukkitRunnable() {
             @Override
@@ -56,23 +55,24 @@ public final class DeathListener implements Listener {
                     plugin.royaleWorlds.manager.addPlayer(event.getPlayer());
                 }
 
+                boolean isInProgress = plugin.getConfig().getBoolean("state.isInProgress");
+                boolean hasJoined = plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined");
+                boolean isDead = plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId().toString() + ".isDead");
 
-                if(plugin.getConfig().getBoolean("state.isInProgress") && plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId().toString() + ".isDead")){
-                    plugin.getLogger().info("kicking a player that is already dead");
-                    event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
-                }else{
-                    event.getPlayer().spigot().respawn();
-                    if(plugin.getConfig().getBoolean("state.isInProgress")) {
-                        if (!plugin.getConfig().getBoolean("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined")) {
+                if(event.getPlayer().isDead()) event.getPlayer().spigot().respawn();
 
-                            event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+                if(isInProgress){
+                    if(!hasJoined || !event.getPlayer().getWorld().getName().equals(MinecraftRoyale.getCurrentWorld().getName())){
+                        event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
 
-                            plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
-                        }
-                    }else{
-                        event.getPlayer().teleport(getServer().getWorlds().get(0).getHighestBlockAt(0, 0).getLocation());
-                        ClearInventory.clearInventory(event.getPlayer());
+                        plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
+                    }else if(isDead){
+                        plugin.getLogger().info(event.getPlayer().getDisplayName() + " is already dead");
+                        event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                     }
+                }else{
+                    event.getPlayer().teleport(getServer().getWorlds().get(0).getHighestBlockAt(0, 0).getLocation());
+                    ClearInventory.clearInventory(event.getPlayer());
                 }
             }
         }.runTaskLater(plugin, 3);
