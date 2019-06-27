@@ -112,7 +112,8 @@ public final class DeathListener implements Listener {
 
 
             int newPoints = oldPoints + normalPoints + bonusPoints;
-            MinecraftRoyale.appender.pointChange(victim.getDisplayName(), victim.getUniqueId().toString(), oldPoints, newPoints, event.getDeathMessage());
+            MinecraftRoyale.appender.pointChange(killer.getDisplayName(), killer.getUniqueId().toString(), oldPoints, newPoints, event.getDeathMessage());
+            killer.sendMessage(ChatColor.GREEN + "You got " + (normalPoints + bonusPoints) + " for killing " + victim.getDisplayName());
 
             plugin.getConfig().set(path, newPoints);
         }

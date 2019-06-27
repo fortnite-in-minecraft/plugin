@@ -240,6 +240,31 @@ public class MinecraftRoyale extends JavaPlugin {
                 royaleWorlds = new RoyaleWorlds();
 
                 MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
+
+                plugin.getLogger().info("Checking setting up round...");
+                if(plugin.getConfig().getBoolean("state.isInProgress")) {
+                    plugin.getLogger().info("Setting up round...");
+                    World currentWorld = MinecraftRoyale.getCurrentWorld();
+                    currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld);
+                    currentRound.checkStatus();
+                    try{
+                        if(runner != null){
+                            plugin.getLogger().info("Cancelling runner...");
+                            runner.cancel();
+                        }
+                    }catch(IllegalStateException e){
+                        plugin.getLogger().info("Couldn't cancel runner... " + e.toString());
+                    }
+                    plugin.getLogger().info("Starting autosave timer #2");
+                    runner = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            currentRound.autosaveStatus();
+                        }
+                    };
+                    runner.runTaskTimer(plugin, 1, 20);
+                }
+
                 if(!getConfig().getBoolean("hasGeneratedWorlds")){
                     getLogger().info("Generating worlds");
                     for(int i = 1; i <= 7; i ++) {
@@ -279,30 +304,6 @@ public class MinecraftRoyale extends JavaPlugin {
                     getLogger().info("Done generating worlds");
 //                    getConfig().set("hasGeneratedWorlds", true);
                     saveConfig();
-                }
-
-
-
-                if(getConfig().getBoolean("state.isInProgress")) {
-                    World currentWorld = MinecraftRoyale.getCurrentWorld();
-                    currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld);
-                    currentRound.checkStatus();
-                    try{
-                        if(runner != null){
-                            plugin.getLogger().info("Cancelling runner...");
-                            runner.cancel();
-                        }
-                    }catch(IllegalStateException e){
-                        plugin.getLogger().info("Couldn't cancel runner... " + e.toString());
-                    }
-                    plugin.getLogger().info("Starting autosave timer #2");
-                    runner = new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            currentRound.autosaveStatus();
-                        }
-                    };
-                    runner.runTaskTimer(plugin, 1, 20);
                 }
 
             }
