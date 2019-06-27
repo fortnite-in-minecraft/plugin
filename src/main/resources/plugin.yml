@@ -1,7 +1,7 @@
 name: MinecraftRoyale
 main: tk.minecraftroyale.MinecraftRoyale
 version: 1.0-SNAPSHOT
-api-version: 1.13
+api-version: "1.13"
 commands:
   toggledevcommands:
     description: Enables the use of development / debugging commands.
