@@ -52,7 +52,7 @@ worldBorder:
   startDistance: 2500
   startDistanceTime: 900
   secondDistance: 500
-  finalDistance: 250
+  finalDistance: 50
 timeConfig:
   wborderShrinkPart2: 1500
   roundEnd: 1800
