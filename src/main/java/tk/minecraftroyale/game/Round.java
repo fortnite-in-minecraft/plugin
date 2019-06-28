@@ -11,7 +11,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Contract;
 import tk.minecraftroyale.ClearInventory;
 import tk.minecraftroyale.MinecraftRoyale;
-import tk.minecraftroyale.scheduler.Time;
 import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 
 import java.util.*;
@@ -174,7 +173,7 @@ public class Round {
 
 //        plugin.getLogger().info("Winning points: " + maxPoints);
         String str = String.valueOf(
-                mostPoints.stream().reduce((a, b) -> "" + a + ", " + ((OfflinePlayer) b).getName())
+                mostPoints.stream().reduce((a, b) -> "" + ((OfflinePlayer) a).getName() + ", " + ((OfflinePlayer) b).getName())
                         .get()
         );
         Bukkit.broadcastMessage("WINNERS: " + str);
