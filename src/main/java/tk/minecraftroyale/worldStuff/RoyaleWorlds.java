@@ -39,7 +39,7 @@ public class RoyaleWorlds {
      */
     @Nullable
     World getWorld(int roundNum) throws IllegalArgumentException {
-        if (roundNum < 1 || roundNum > 7)
+        if (roundNum < 1 || roundNum > plugin.getConfig().getInt("gameSettings.numWorlds"))
             throw new IllegalArgumentException();
 
         World world;
@@ -57,7 +57,7 @@ public class RoyaleWorlds {
 
     public World generateWorld(int roundNum, @Nullable CommandSender sender) throws IllegalArgumentException, ConfigException {
         if(sender  != null) sender.sendMessage("LAG time");
-        if (roundNum < 1 || roundNum > 7)
+        if (roundNum < 1 || roundNum > plugin.getConfig().getInt("gameSettings.numWorlds"))
             throw new IllegalArgumentException();
 
 //        World mainWorld = plugin.getServer().getWorld("world");
@@ -192,13 +192,13 @@ public class RoyaleWorlds {
     }
 
     void setUpWorldBorder(@Nonnull World world) {
-        setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("worldBorder.startDistanceTime"));
+        setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("timeconfig.startDistance"));
     }
 
     public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
         if(secondRound){
             Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
-            MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), "\'s worldborder is shrinking for the final time");
+            MinecraftRoyale.appender.roundInfo(Integer.parseInt(world.getName().substring(5)), "\'s worldborder is shrinking for the final time");
             setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
         }else{
             setUpWorldBorder(world);
@@ -215,7 +215,6 @@ public class RoyaleWorlds {
         plugin.getLogger().info("setting the worldborder to " + firstDist + ", " + secondDistance + " in " + time + " seconds in world " + world.getName());
         border.setSize(firstDist);
         border.setSize(secondDistance, time);
-
     }
 
     public static Location getRandomLocation(@Nonnull World world){

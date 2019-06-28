@@ -115,7 +115,7 @@ public class MinecraftRoyale extends JavaPlugin {
         Bukkit.getLogger().info("current roundNumber " + roundNumber);
         if(roundNumber == 0 && Bukkit.getWorld("world") != null){
             return Bukkit.getWorld("world");
-        }else if(roundNumber >= 1 && roundNumber <= 7 && Bukkit.getWorld("world" + roundNumber) != null){
+        }else if(roundNumber >= 1 && roundNumber <= JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.numWorlds") && Bukkit.getWorld("world" + roundNumber) != null){
             return Bukkit.getWorld("world" + roundNumber);
         }else{
             Bukkit.getLogger().warning("Could not find round-based world");
@@ -268,7 +268,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
                 if(!getConfig().getBoolean("hasGeneratedWorlds")){
                     getLogger().info("Generating worlds");
-                    for(int i = 1; i <= 7; i ++) {
+                    for(int i = 1; i <= plugin.getConfig().getInt("gameSettings.numWorlds"); i ++) {
                         World w = Bukkit.getWorld("world" + i);
                         if (w == null){
                             if(Files.isDirectory(Paths.get(Bukkit.getWorldContainer().getPath(), "world" + i))){

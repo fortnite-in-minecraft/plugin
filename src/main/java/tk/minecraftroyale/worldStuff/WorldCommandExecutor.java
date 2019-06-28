@@ -325,7 +325,7 @@ public class WorldCommandExecutor implements CommandExecutor {
             try {
                 int worldNum = Integer.parseInt(args[0]);
 
-                if (worldNum < 1 || worldNum > 7)
+                if (worldNum < 1 || worldNum > plugin.getConfig().getInt("gameSettings.numWorlds"))
                     throw new NumberFormatException(); // Transfers control to the catch block
 
                 World world = minecraftRoyale.royaleWorlds.getWorld(worldNum);
@@ -359,7 +359,7 @@ public class WorldCommandExecutor implements CommandExecutor {
 
             try {
                 int worldNum = Integer.parseInt(args[0]);
-                if (worldNum < 1 || worldNum > 7) throw new NumberFormatException();
+                if (worldNum < 1 || worldNum > plugin.getConfig().getInt("gameSettings.numWorlds")) throw new NumberFormatException();
 
                 try {
                     minecraftRoyale.royaleWorlds.generateWorld(worldNum, sender);

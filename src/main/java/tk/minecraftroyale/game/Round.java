@@ -131,7 +131,7 @@ public class Round {
     public void endRound(){
         plugin.getLogger().info("Ending round: world name " + world.getName());
         plugin.getLogger().info(Arrays.toString(new Throwable().getStackTrace()));
-        MinecraftRoyale.appender.roundInfo(Character.getNumericValue(world.getName().charAt(5)), " is ending");
+        MinecraftRoyale.appender.roundInfo(Integer.parseInt(world.getName().substring(5)), " is ending");
         try{
             if(plugin.runner != null){
                 plugin.getLogger().info("Cancelling runner...3");
@@ -198,7 +198,7 @@ public class Round {
 
         plugin.getServer().broadcastMessage("GAME (round) OVER");
         int currentRound = Integer.parseInt(MinecraftRoyale.currentRound.getWorld().getName().substring(5));
-        if(currentRound == 7){
+        if(currentRound == plugin.getConfig().getInt("gameSettings.numWorlds")){
             plugin.getLogger().info("GAME OVER!!!");
             plugin.getConfig().set("state.isInProgress", false);
             MinecraftRoyale.currentRound = null;
