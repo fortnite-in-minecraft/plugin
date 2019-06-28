@@ -23,7 +23,6 @@ public class Round {
     private Time length;
     private World world;
     private MinecraftRoyale plugin;
-    private Runnable wborderShrinkPart2Callback;
     private HashMap<String, Long> unixSecondsThatTheThingWasStartedAt;
     private HashMap<String, Long> secondsLeftThatTheThingWasStartedAt;
     private HashMap<String, BukkitTask> taskHolder;
