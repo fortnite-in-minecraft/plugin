@@ -45,12 +45,8 @@ public class JSONFileAppender {
         process(str);
     }
 
-    public void pointChange(String playerName, String playerUid, int oldPointVal, int newPointVal, String cause) {
-        pointChange(playerName, playerUid, oldPointVal, newPointVal, cause, "");
-    }
-
-    private void pointChange(String playerName, String playerUid, int oldPointVal, int newPointVal, String cause, String bonus){
-        String str = "[\"pointChange\",  {player: {user: " + new JsonPrimitive(playerName) + ", uid: " + new JsonPrimitive(playerUid) + "}, oldPointValue: " + new JsonPrimitive(oldPointVal) + ", newPointValue: " + new JsonPrimitive(newPointVal) + ", cause: {type: " + new JsonPrimitive(cause) + ", bonus: " + new JsonPrimitive(bonus) + "}}]";
+    public void pointChange(String playerName, String playerUid, int oldPointVal, int newPointVal, String cause){
+        String str = "[\"pointChange\",  {\"player\": {\"user\": " + new JsonPrimitive(playerName) + ", \"uid\": " + new JsonPrimitive(playerUid) + "}, \"oldPointValue\": " + new JsonPrimitive(oldPointVal) + ", \"newPointValue\": " + new JsonPrimitive(newPointVal) + ", \"cause\": " + new JsonPrimitive(cause) + "}]";
         process(str);
     }
 
@@ -60,7 +56,7 @@ public class JSONFileAppender {
     }
 
     private void process(String str){
-//        System.out.println(str);
+        System.out.println(str);
         String filePath = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getString("jsonlog");
         if(filePath == null) filePath = "jsonlog.txt";
         File file = new File(filePath);

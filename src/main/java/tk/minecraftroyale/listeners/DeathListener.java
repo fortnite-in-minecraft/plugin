@@ -47,7 +47,7 @@ public final class DeathListener implements Listener {
             Chest block = (Chest) event.getBlock().getState();
             if(block.getLootTable() != null){
                 String key = block.getLootTable().getKey().toString();
-                Player player = (Player)  event.getPlayer();
+                Player player = event.getPlayer();
                 if(key.equals("minecraftroyale:loot_chest")){
                     int pointsToAdd = plugin.getConfig().getInt("gameSettings.points.lootChestOpen");
                     addPoints(player, pointsToAdd, player.getDisplayName() + " opened a loot chest");
