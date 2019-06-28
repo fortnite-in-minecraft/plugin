@@ -2,12 +2,15 @@ package tk.minecraftroyale.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,6 +31,45 @@ public final class DeathListener implements Listener {
     public void onPvp(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player && !plugin.getConfig().getBoolean("state.isInProgress")){
             event.setCancelled(true);
+        }
+    }
+
+    private void addPoints(Player player, int points, String reason){
+        int oldPoints = plugin.getConfig().getInt("state.playerData." + player.getUniqueId() + ".points");
+        plugin.getConfig().set("state.playerData." + player.getUniqueId() + ".points", oldPoints + points);
+        MinecraftRoyale.appender.pointChange(player.getDisplayName(), player.getUniqueId().toString(), oldPoints, oldPoints + points, reason);
+        player.sendMessage(ChatColor.GREEN + "You got " + (points) + " points because " + reason.replaceAll(player.getDisplayName(), "you"));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockBreak(BlockBreakEvent event) {
+        if(event.getBlock().getState() instanceof Chest){
+            Chest block = (Chest) event.getBlock().getState();
+            if(block.getLootTable() != null){
+                String key = block.getLootTable().getKey().toString();
+                Player player = (Player)  event.getPlayer();
+                if(key.equals("minecraftroyale:loot_chest")){
+                    int pointsToAdd = plugin.getConfig().getInt("gameSettings.points.lootChestOpen");
+                    addPoints(player, pointsToAdd, player.getDisplayName() + " opened a loot chest");
+                }else if(key.equals("minecraftroyale:airdrop")){
+                    int pointsToAdd = plugin.getConfig().getInt("gameSettings.points.airdropOpen");
+                    addPoints(player, pointsToAdd, player.getDisplayName() + " opened an airdrop");
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onChestOpen(InventoryOpenEvent event){
+        if(event.getInventory().getHolder() instanceof Chest){
+            Chest block = (Chest) event.getInventory().getHolder();
+            if((System.currentTimeMillis() - block.getLastFilled()) < 5){
+                Player player = (Player)  event.getPlayer();
+//                int pointsToAdd = plugin.getConfig().getInt("gameSettings.points.lootChestOpen");
+//                addPoints(player, pointsToAdd, player.getDisplayName() + " opened a loot chest");
+                player.sendMessage(ChatColor.RED + "Loot chests and airdrops must be broken instead of opened to receive points.");
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -110,12 +152,7 @@ public final class DeathListener implements Listener {
                 bonusPoints += potentialBonusPointsForKillingSomeoneWhoHasMorePoints;
             }
 
-
-            int newPoints = oldPoints + normalPoints + bonusPoints;
-            MinecraftRoyale.appender.pointChange(killer.getDisplayName(), killer.getUniqueId().toString(), oldPoints, newPoints, event.getDeathMessage());
-            killer.sendMessage(ChatColor.GREEN + "You got " + (normalPoints + bonusPoints) + " for killing " + victim.getDisplayName());
-
-            plugin.getConfig().set(path, newPoints);
+            addPoints(killer, normalPoints + bonusPoints, event.getDeathMessage());
         }
 
         plugin.getConfig().set("state.playerData." + victim.getUniqueId().toString() + ".isDead", true);

@@ -65,7 +65,8 @@ gameSettings:
     normal: 10
     bonus:
       killingSomeoneWhoHasMorePoints: 5
-    lootChestOpen: 1
+    lootChestOpen: 2
+    airdropOpen: 3
 probability:
   # 1/n
   airdrop: 60
