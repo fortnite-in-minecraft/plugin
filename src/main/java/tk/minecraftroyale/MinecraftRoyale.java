@@ -18,7 +18,6 @@ import tk.minecraftroyale.listeners.DeathListener;
 import tk.minecraftroyale.listeners.PlayerLoginListener;
 import tk.minecraftroyale.loot.Airdrop;
 import tk.minecraftroyale.loot.LootChest;
-import tk.minecraftroyale.scheduler.Time;
 import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 import tk.minecraftroyale.worldStuff.WorldCommandExecutor;
 
@@ -112,7 +111,7 @@ public class MinecraftRoyale extends JavaPlugin {
 
     public static World getCurrentWorld() {
         int roundNumber = JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("state.currentRound");
-        Bukkit.getLogger().info("current roundNumber " + roundNumber);
+//        Bukkit.getLogger().info("current roundNumber " + roundNumber);
         if(roundNumber == 0 && Bukkit.getWorld("world") != null){
             return Bukkit.getWorld("world");
         }else if(roundNumber >= 1 && roundNumber <= JavaPlugin.getPlugin(MinecraftRoyale.class).getConfig().getInt("gameSettings.numWorlds") && Bukkit.getWorld("world" + roundNumber) != null){
@@ -144,10 +143,10 @@ public class MinecraftRoyale extends JavaPlugin {
     public static long getGameSetting(String settingPath, String worldName){
         MinecraftRoyale plugin = getPlugin(MinecraftRoyale.class);
         if(plugin.getConfig().get("worlds." + worldName + ".gameSettings." + settingPath) != null){
-            plugin.getLogger().info(worldName + ": using world-specific settings for " + settingPath + " = " + plugin.getConfig().getLong("worlds." + worldName + ".gameSettings." + settingPath));
+//            plugin.getLogger().info(worldName + ": using world-specific settings for " + settingPath + " = " + plugin.getConfig().getLong("worlds." + worldName + ".gameSettings." + settingPath));
             return plugin.getConfig().getLong("worlds." + worldName + ".gameSettings." + settingPath);
         }
-        plugin.getLogger().info(worldName + ": using global settings for " + settingPath + " = " + plugin.getConfig().getLong("gameSettings." + settingPath));
+//        plugin.getLogger().info(worldName + ": using global settings for " + settingPath + " = " + plugin.getConfig().getLong("gameSettings." + settingPath));
         return plugin.getConfig().getLong("gameSettings." + settingPath);
     }
 

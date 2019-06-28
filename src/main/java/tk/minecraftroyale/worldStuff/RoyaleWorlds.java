@@ -1,22 +1,19 @@
 package tk.minecraftroyale.worldStuff;
 
-import javax.annotation.Nonnull;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import tk.minecraftroyale.BossbarManager;
-import tk.minecraftroyale.exceptions.ConfigException;
-
-import org.bukkit.plugin.java.JavaPlugin;
-import tk.minecraftroyale.loot.LootChest;
 import tk.minecraftroyale.MinecraftRoyale;
-import tk.minecraftroyale.scheduler.Time;
+import tk.minecraftroyale.exceptions.ConfigException;
 import tk.minecraftroyale.game.Round;
+import tk.minecraftroyale.loot.LootChest;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -114,6 +111,7 @@ public class RoyaleWorlds {
     public void doPostWorldGenStuff(World newWorld, int roundNum){
         if(manager != null) manager.deleteBar();
         manager = new BossbarManager(roundNum, "Round duration");
+        manager.setProgress(0);
         try{
             if(plugin.runner != null){
                 plugin.getLogger().info("Cancelling runner...1");
@@ -163,7 +161,7 @@ public class RoyaleWorlds {
             plugin.getLogger().info("Couldn't cancel runner...2 " + e.toString());
         }
 
-        Bukkit.broadcastMessage("STARTING NEW ROUND # " + newWorld.getName().substring(5));
+        Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.YELLOW + "Starting new round # " + newWorld.getName().substring(5));
         plugin.getLogger().info(Arrays.toString(new Throwable().getStackTrace()));
 
         MinecraftRoyale.appender.roundInfo(roundNum, " is starting");
@@ -200,7 +198,7 @@ public class RoyaleWorlds {
 
     public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
         if(secondRound){
-            Bukkit.broadcastMessage("The world border is shrinking for the final time!");
+            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.YELLOW + "The world border is shrinking for the final time!");
 
             String worldPath = world.getName();
             MinecraftRoyale.appender.roundInfo(Integer.parseInt(world.getName().substring(5)), "\'s worldborder is shrinking for the final time");

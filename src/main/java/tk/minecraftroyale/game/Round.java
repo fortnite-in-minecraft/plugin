@@ -106,7 +106,7 @@ public class Round {
 
         long now = System.currentTimeMillis() / 1000L;
         if(unixSecondsThatTheThingWasStartedAt == null || unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck) == null){
-            Bukkit.broadcastMessage("the whole game is over.");
+            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.YELLOW + "Game over!");
         }else {
             long secondsAgoWeStarted = now - unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
             long secondsLeftStartedAt = secondsLeftThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
@@ -115,7 +115,7 @@ public class Round {
             config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
 
 
-            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
+//            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
             plugin.saveConfig();
 
 
@@ -176,7 +176,7 @@ public class Round {
                 mostPoints.stream().reduce((a, b) -> "" + ((OfflinePlayer) a).getName() + ", " + ((OfflinePlayer) b).getName())
                         .get()
         );
-        Bukkit.broadcastMessage("WINNERS: " + str);
+        Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.YELLOW + "Round Winners: " + str);
 
         for(Object winner : mostPoints){
             int oldGamePoints = plugin.getConfig().getInt("state.playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints");

@@ -1,6 +1,9 @@
 package tk.minecraftroyale.loot;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.minecraftroyale.MinecraftRoyale;
 
@@ -13,7 +16,7 @@ public class Airdrop extends LootChest {
     Location thisLocation;
     private void announce() {
         // TODO Give players a special compass that points to the nearest airdrop instead of telling them the coordinates
-        Bukkit.broadcastMessage("An airdrop has appeared! Search for it if you dare... " + super.getLocation().getBlockX() + "," + super.getLocation().getBlockY() + "," + super.getLocation().getBlockZ());
+        Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "An airdrop has appeared at the coordinates " + super.getLocation().getBlockX() + ", " + super.getLocation().getBlockY() + ", " + super.getLocation().getBlockZ());
     }
 
     public Airdrop(Location location) {

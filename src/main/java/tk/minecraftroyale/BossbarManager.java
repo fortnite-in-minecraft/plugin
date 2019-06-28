@@ -16,6 +16,8 @@ public class BossbarManager {
         for(Player p : Bukkit.getOnlinePlayers()){
             addPlayer(p);
         }
+
+        theBar.setColor(BarColor.WHITE);
     }
 
     public void deleteBar(){
@@ -33,7 +35,10 @@ public class BossbarManager {
     }
 
     public void setProgress(double progress){
-        Bukkit.getLogger().info("setting progress to " + progress);
-        theBar.setProgress(Math.max(Math.min(progress, 1), 0));
+        if(progress < 0 || progress > 1){
+            throw new IllegalStateException("Progress was " + progress + " expected [0, 1]");
+        }
+//        Bukkit.getLogger().info("setting progress to " + progress);
+        theBar.setProgress(progress);
     }
 }
