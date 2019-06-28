@@ -141,6 +141,14 @@ public class MinecraftRoyale extends JavaPlugin {
 
     public BukkitRunnable runner;
 
+    public static long getGameSetting(String settingPath, String worldName){
+        MinecraftRoyale plugin = getPlugin(MinecraftRoyale.class);
+        if(plugin.getConfig().get("worlds." + worldName + ".gameSettings." + settingPath) != null){
+            return plugin.getConfig().getLong("worlds." + worldName + ".gameSettings." + settingPath);
+        }
+        return plugin.getConfig().getLong("gameSettings." + settingPath);
+    }
+
     @Override
     public void onEnable() {
         //            LootChest.installLootTables(Bukkit.getWorld("world"), null);
@@ -246,7 +254,7 @@ public class MinecraftRoyale extends JavaPlugin {
                 if(plugin.getConfig().getBoolean("state.isInProgress")) {
                     plugin.getLogger().info("Setting up round...");
                     World currentWorld = MinecraftRoyale.getCurrentWorld();
-                    currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), currentWorld);
+                    currentRound = new Round(plugin, new Time(0, 0, 0L, getGameSetting("timeConfig.roundDuration", currentWorld.getName()), 0L), currentWorld);
                     currentRound.checkStatus();
                     try{
                         if(runner != null){
@@ -297,7 +305,7 @@ public class MinecraftRoyale extends JavaPlugin {
                             }
                         }
                         if(w != null){
-                            long size = getConfig().getLong("worldBorder.startDistance");
+                            long size = getGameSetting("worldBorder.startDistance", "world" + i);
                             plugin.getLogger().info("for world " + i + " the wborder's size is " + w.getWorldBorder().getSize() + " compared to a start distance of " + size);
                             if(w.getWorldBorder().getSize() < size) w.getWorldBorder().setSize(size);
                         }

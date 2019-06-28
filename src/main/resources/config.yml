@@ -16,46 +16,50 @@ worlds:
     path: "world1"
     # -671686628
     seed: 102043410
+      finalDistance: 50:
+      startDistanceTime: 90
+      wborderShrinkPart2: 150
+      roundEnd: 180
+    worldBorder:
+      finalDistance: 5
+
   # plains
   world2:
     path: "world2"
     seed: 1164102382
     # 1248421
+
   # jungle
   world3:
     path: "world3"
     seed: -888289981
     # -400391389
+
   # ice spike
   world4:
     path: "world4"
     seed: 527517686
     # -1766999811
-  # ???
+
+  # island
   world5:
     path: "world5"
     seed: 1337420
-  # island
+    # -1712572161
+
+  # jungle amplified
   world6:
     path: "world6"
-#    old seed: -1712572161
     seed: -888289981
     generator: AMPLIFIED
     # -400391389
+
   # extreme hills AMPLIFIED
   world7:
     path: "world7"
     seed: -141571315
     # 2070558
     generator: AMPLIFIED
-worldBorder:
-  startDistance: 2500
-  secondDistance: 500
-  finalDistance: 50
-timeConfig:
-  startDistance: 900
-  wborderShrinkPart2: 1500
-  roundEnd: 1800
 gameSettings:
   numWorlds: 7
   numLootChests: 500
@@ -66,6 +70,14 @@ gameSettings:
       killingSomeoneWhoHasMorePoints: 50
     lootChestOpen: 10
     airdropOpen: 40
+  worldBorder:
+    startDistance: 2500
+    secondDistance: 500
+    finalDistance: 50
+  timeConfig:
+    startDistanceTime: 900
+    wborderShrinkPart2: 1500
+    roundEnd: 1800
 probability:
   # 1/n
   airdrop: 60

@@ -16,6 +16,8 @@ import tk.minecraftroyale.worldStuff.RoyaleWorlds;
 
 import java.util.*;
 
+import static tk.minecraftroyale.MinecraftRoyale.getGameSetting;
+
 public class Round {
 
     private Time length;
@@ -66,7 +68,7 @@ public class Round {
 
         long secondsLeft = config.getLong("secondsLeft." + nameOfTheThingToCheck);
         long now = System.currentTimeMillis() / 1000L;
-        long durationOfTheThing = config.getLong("timeConfig." + nameOfTheThingToCheck);
+        long durationOfTheThing = getGameSetting("timeConfig." + nameOfTheThingToCheck, MinecraftRoyale.getCurrentWorld().toString());
         long timer;
 
         if(secondsLeft > 0){
@@ -113,7 +115,7 @@ public class Round {
             long secondsAgoWeStarted = now - unixSecondsThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
             long secondsLeftStartedAt = secondsLeftThatTheThingWasStartedAt.get(nameOfTheThingToCheck);
             long secondsLeft = secondsLeftStartedAt - secondsAgoWeStarted;
-            long totalTime = config.getLong("timeConfig." + nameOfTheThingToCheck);
+            long totalTime = getGameSetting("timeConfig." + nameOfTheThingToCheck, MinecraftRoyale.getCurrentWorld().getName());
             config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
 
 

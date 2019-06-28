@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 
+import static tk.minecraftroyale.MinecraftRoyale.getGameSetting;
+
 public class RoyaleWorlds {
 
     private static final MinecraftRoyale plugin = JavaPlugin.getPlugin(MinecraftRoyale.class);
@@ -101,7 +103,7 @@ public class RoyaleWorlds {
                 .seed(plugin.getConfig().getLong("worlds.world" + roundNum + ".seed"));
         World world = gen.createWorld();
 
-        long size = plugin.getConfig().getLong("worldBorder.startDistance");
+        long size = getGameSetting("worldBorder.startDistance", worldPath);
         if (world != null) {
             world.getWorldBorder().setSize(size);
         }
@@ -141,7 +143,7 @@ public class RoyaleWorlds {
 
         plugin.getConfig().set("state.currentRound", roundNum);
 
-        MinecraftRoyale.currentRound = new Round(plugin, new Time(0, 0, 0L, plugin.getConfig().getLong("timeConfig.roundDuration"), 0L), newWorld);
+        MinecraftRoyale.currentRound = new Round(plugin, new Time(0, 0, 0L, getGameSetting("timeConfig.roundDuration", "world" + roundNum), 0L), newWorld);
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
 
         for(OfflinePlayer player : plugin.getAllPlayers()){
@@ -192,14 +194,17 @@ public class RoyaleWorlds {
     }
 
     void setUpWorldBorder(@Nonnull World world) {
-        setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.startDistance"), plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getLong("timeconfig.startDistance"));
+        String worldPath = world.getName();
+        setUpWorldBorder(world, (int) getGameSetting("worldBorder.startDistance", worldPath), (int) getGameSetting("worldBorder.secondDistance", worldPath), (int) getGameSetting("timeConfig.startDistanceTime", worldPath));
     }
 
     public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
         if(secondRound){
             Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
+
+            String worldPath = world.getName();
             MinecraftRoyale.appender.roundInfo(Integer.parseInt(world.getName().substring(5)), "\'s worldborder is shrinking for the final time");
-            setUpWorldBorder(world, plugin.getConfig().getInt("worldBorder.secondDistance"), plugin.getConfig().getInt("worldBorder.finalDistance"), plugin.getConfig().getLong("timeConfig.roundEnd") - plugin.getConfig().getLong("timeConfig.wborderShrinkPart2"));
+            setUpWorldBorder(world, (int) getGameSetting("worldBorder.secondDistance", worldPath), (int) getGameSetting("worldBorder.finalDistance", worldPath), (int) getGameSetting("timeConfig.roundEnd", worldPath) - (int) getGameSetting("timeConfig.wborderShrinkPart2", worldPath));
         }else{
             setUpWorldBorder(world);
         }
