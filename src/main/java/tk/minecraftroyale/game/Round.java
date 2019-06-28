@@ -20,7 +20,6 @@ import static tk.minecraftroyale.MinecraftRoyale.getGameSetting;
 
 public class Round {
 
-    private Time length;
     private World world;
     private MinecraftRoyale plugin;
     private HashMap<String, Long> unixSecondsThatTheThingWasStartedAt;
@@ -28,9 +27,8 @@ public class Round {
     private HashMap<String, BukkitTask> taskHolder;
 
     @Contract(pure = true)
-    public Round(MinecraftRoyale plugin, Time length, World world) {
+    public Round(MinecraftRoyale plugin, World world) {
         this.plugin = plugin;
-        this.length = length;
         this.world = world;
         unixSecondsThatTheThingWasStartedAt = new HashMap<>();
         secondsLeftThatTheThingWasStartedAt = new HashMap<>();
@@ -67,7 +65,7 @@ public class Round {
 
         long secondsLeft = config.getLong("secondsLeft." + nameOfTheThingToCheck);
         long now = System.currentTimeMillis() / 1000L;
-        long durationOfTheThing = getGameSetting("timeConfig." + nameOfTheThingToCheck, MinecraftRoyale.getCurrentWorld().toString());
+        long durationOfTheThing = getGameSetting("timeConfig." + nameOfTheThingToCheck, this.world.getName());
         long timer;
 
         if(secondsLeft > 0){
@@ -118,7 +116,7 @@ public class Round {
             config.set("secondsLeft." + nameOfTheThingToCheck, secondsLeft);
 
 
-//            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
+            plugin.getLogger().info("autosaveGeneric: " + nameOfTheThingToCheck + " secondsAgoWeStarted " + secondsAgoWeStarted + ", secondsLeftStartedAt " + secondsLeftStartedAt + ", secondsLeft " + secondsLeft + ", totalTime " + totalTime);
             plugin.saveConfig();
 
 
@@ -197,7 +195,6 @@ public class Round {
         plugin.getConfig().set("secondsLeft.roundEnd", 0);
         plugin.getConfig().set("secondsLeft.wborderShrinkPart2", 0);
 
-        plugin.getServer().broadcastMessage("GAME (round) OVER");
         int currentRound = Integer.parseInt(MinecraftRoyale.currentRound.getWorld().getName().substring(5));
         if(currentRound == plugin.getConfig().getInt("gameSettings.numWorlds")){
             plugin.getLogger().info("GAME OVER!!!");

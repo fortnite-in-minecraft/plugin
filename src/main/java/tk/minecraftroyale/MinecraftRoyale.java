@@ -144,8 +144,10 @@ public class MinecraftRoyale extends JavaPlugin {
     public static long getGameSetting(String settingPath, String worldName){
         MinecraftRoyale plugin = getPlugin(MinecraftRoyale.class);
         if(plugin.getConfig().get("worlds." + worldName + ".gameSettings." + settingPath) != null){
+            plugin.getLogger().info(worldName + ": using world-specific settings for " + settingPath + " = " + plugin.getConfig().getLong("worlds." + worldName + ".gameSettings." + settingPath));
             return plugin.getConfig().getLong("worlds." + worldName + ".gameSettings." + settingPath);
         }
+        plugin.getLogger().info(worldName + ": using global settings for " + settingPath + " = " + plugin.getConfig().getLong("gameSettings." + settingPath));
         return plugin.getConfig().getLong("gameSettings." + settingPath);
     }
 
@@ -254,7 +256,7 @@ public class MinecraftRoyale extends JavaPlugin {
                 if(plugin.getConfig().getBoolean("state.isInProgress")) {
                     plugin.getLogger().info("Setting up round...");
                     World currentWorld = MinecraftRoyale.getCurrentWorld();
-                    currentRound = new Round(plugin, new Time(0, 0, 0L, getGameSetting("timeConfig.roundDuration", currentWorld.getName()), 0L), currentWorld);
+                    currentRound = new Round(plugin, currentWorld);
                     currentRound.checkStatus();
                     try{
                         if(runner != null){

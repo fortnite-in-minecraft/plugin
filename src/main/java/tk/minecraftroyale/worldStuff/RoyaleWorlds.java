@@ -143,7 +143,7 @@ public class RoyaleWorlds {
 
         plugin.getConfig().set("state.currentRound", roundNum);
 
-        MinecraftRoyale.currentRound = new Round(plugin, new Time(0, 0, 0L, getGameSetting("timeConfig.roundDuration", "world" + roundNum), 0L), newWorld);
+        MinecraftRoyale.currentRound = new Round(plugin, newWorld);
         MinecraftRoyale.currentRound.teleportAllToRoundWorld();
 
         for(OfflinePlayer player : plugin.getAllPlayers()){
@@ -200,7 +200,7 @@ public class RoyaleWorlds {
 
     public void setUpWorldBorder(@Nonnull World world, boolean secondRound) {
         if(secondRound){
-            Bukkit.broadcastMessage("The world border will be shrinking for the final time!");
+            Bukkit.broadcastMessage("The world border is shrinking for the final time!");
 
             String worldPath = world.getName();
             MinecraftRoyale.appender.roundInfo(Integer.parseInt(world.getName().substring(5)), "\'s worldborder is shrinking for the final time");

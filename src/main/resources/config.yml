@@ -16,12 +16,13 @@ worlds:
     path: "world1"
     # -671686628
     seed: 102043410
-      finalDistance: 50:
-      startDistanceTime: 90
-      wborderShrinkPart2: 150
-      roundEnd: 180
-    worldBorder:
-      finalDistance: 5
+    gameSettings:
+      worldBorder:
+        finalDistance: 5
+      timeConfig:
+        startDistanceTime: 90
+        wborderShrinkPart2: 150
+        roundEnd: 180
 
   # plains
   world2:
