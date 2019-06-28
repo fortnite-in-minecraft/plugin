@@ -226,9 +226,4 @@ public class Round {
     private World getWorld() {
         return world;
     }
-
-
-    public Time getLength() {
-        return length;
-    }
 }
