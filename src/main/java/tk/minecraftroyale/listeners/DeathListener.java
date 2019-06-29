@@ -104,15 +104,18 @@ public final class DeathListener implements Listener {
                 if(event.getPlayer().isDead()) event.getPlayer().spigot().respawn();
 
                 if(isInProgress){
-                    if(!hasJoined || !event.getPlayer().getWorld().getName().equals(MinecraftRoyale.getCurrentWorld().getName())){
-                        event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
-
-                        plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
-                    }else if(isDead){
+                    if(isDead){
                         plugin.getLogger().info(event.getPlayer().getDisplayName() + " is already dead");
                         event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
+                    }else if(!hasJoined || !event.getPlayer().getWorld().getName().equals(MinecraftRoyale.getCurrentWorld().getName())){
+                        plugin.getLogger().info("Randomly teleporting " + event.getPlayer().getDisplayName());
+                        event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+                        plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
+                    }else{
+                        plugin.getLogger().info(event.getPlayer().getDisplayName() + " is not dead");
                     }
                 }else{
+                    plugin.getLogger().info("0, 0 ing " + event.getPlayer().getDisplayName());
                     event.getPlayer().teleport(getServer().getWorlds().get(0).getHighestBlockAt(0, 0).getLocation());
                     ClearInventory.clearInventory(event.getPlayer());
                 }
