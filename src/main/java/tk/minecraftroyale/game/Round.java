@@ -37,7 +37,7 @@ public class Round {
     public void teleportAllToRoundWorld() {
         for (OfflinePlayer offlinePlayer : plugin.getAllPlayers()) {
             if (offlinePlayer.getPlayer() != null) {
-                offlinePlayer.getPlayer().teleport(RoyaleWorlds.getRandomLocation(world));
+                RoyaleWorlds.randomlyTeleportPlayer(offlinePlayer.getPlayer(), world);
             }  //                PlayerLoginListener.addLoginCallback(offlinePlayer, (player) -> player.teleport(RoyaleWorlds.getRandomLocation(world)));
 
         }

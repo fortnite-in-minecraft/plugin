@@ -73,7 +73,8 @@ public class WorldCommandExecutor implements CommandExecutor {
                 return true;
             }
             if (!(sender instanceof Player)) return false;
-            ((Player) sender).teleport(RoyaleWorlds.getRandomLocation(((Player) sender).getWorld()));
+            Player player = ((Player) sender).getPlayer();
+            if(player != null) RoyaleWorlds.randomlyTeleportPlayer(player, MinecraftRoyale.getCurrentWorld());
             return true;
         } else if (cmd.getName().equalsIgnoreCase("getpoints")) {
             if (!MinecraftRoyale.getDevCommands(sender)) {

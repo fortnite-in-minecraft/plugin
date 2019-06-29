@@ -268,4 +268,14 @@ public class RoyaleWorlds {
 //        }
 //        return null;
     }
+
+    public static void randomlyTeleportPlayer(@Nonnull Player player, @Nonnull World world){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.teleport(getRandomLocation(world));
+            }
+
+        }.runTaskLater(plugin, 1);
+    }
 }

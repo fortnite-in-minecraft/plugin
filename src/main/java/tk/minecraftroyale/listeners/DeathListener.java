@@ -109,7 +109,7 @@ public final class DeathListener implements Listener {
                         event.getPlayer().kickPlayer("You already died this round. See the discord server for info on the next round.");
                     }else if(!hasJoined || !event.getPlayer().getWorld().getName().equals(MinecraftRoyale.getCurrentWorld().getName())){
                         plugin.getLogger().info("Randomly teleporting " + event.getPlayer().getDisplayName());
-                        event.getPlayer().teleport(RoyaleWorlds.getRandomLocation(MinecraftRoyale.getCurrentWorld()));
+                        RoyaleWorlds.randomlyTeleportPlayer(event.getPlayer(), MinecraftRoyale.getCurrentWorld());
                         plugin.getConfig().set("state.playerData." + event.getPlayer().getUniqueId() + ".hasJoined", true);
                     }else{
                         plugin.getLogger().info(event.getPlayer().getDisplayName() + " is not dead");
