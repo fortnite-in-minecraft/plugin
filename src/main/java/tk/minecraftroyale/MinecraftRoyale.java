@@ -58,11 +58,11 @@ public class MinecraftRoyale extends JavaPlugin {
         next.set(Calendar.MILLISECOND, 0);
         next.set(Calendar.SECOND, 0);
 
-        next.set(Calendar.HOUR_OF_DAY, 12 + 5); // 4:00 AM
-        next.set(Calendar.MINUTE, 17);
-        next.set(Calendar.SECOND, 35);
+        next.set(Calendar.HOUR_OF_DAY, 0);
+        next.set(Calendar.MINUTE, 0);
+        next.set(Calendar.SECOND, 5);
 
-// If it's after 4:00 AM already we need to set the next execution to the next day
+// If it's after 12:00 AM already we need to set the next execution to the next day
         if (now.after(next)) {
             next.add(Calendar.DATE, 1); // Add a day
         }
