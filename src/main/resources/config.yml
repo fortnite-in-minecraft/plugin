@@ -23,6 +23,7 @@ worlds:
         startDistanceTime: 90
         wborderShrinkPart2: 150
         roundEnd: 180
+      gamePointsToAward: 2
 
   # plains
   world2:
@@ -62,6 +63,7 @@ worlds:
     # 2070558
     generator: AMPLIFIED
 gameSettings:
+  gamePointsToAward: 1
   numWorlds: 7
   numLootChests: 500
   healthRegen: 2

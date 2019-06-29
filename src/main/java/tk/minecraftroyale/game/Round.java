@@ -180,7 +180,7 @@ public class Round {
 
         for(Object winner : mostPoints){
             int oldGamePoints = plugin.getConfig().getInt("state.playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints");
-            plugin.getConfig().set("state.playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints", oldGamePoints + 1);
+            plugin.getConfig().set("state.playerData." + ((OfflinePlayer) winner).getUniqueId() + ".gamePoints", oldGamePoints + getGameSetting("gamePointsToAward", world.getName()));
         }
 
         plugin.getConfig().set("state.isInProgress", false);
