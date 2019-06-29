@@ -173,7 +173,23 @@ public class Round {
 
 //        plugin.getLogger().info("Winning points: " + maxPoints);
         String str = String.valueOf(
-                mostPoints.stream().reduce((a, b) -> "" + ((OfflinePlayer) a).getName() + ", " + ((OfflinePlayer) b).getName())
+                mostPoints.stream().reduce((a, b) -> {
+                    String joinString = "";// + ((OfflinePlayer) a).getName() + ", " + ((OfflinePlayer) b).getName();
+                    try{
+                        joinString += ((OfflinePlayer) a).getName();
+                    }catch(ClassCastException e){
+                        joinString += a;
+                    }
+
+                    joinString += ", ";
+
+                    try{
+                        joinString += ((OfflinePlayer) b).getName();
+                    }catch(ClassCastException e){
+                        joinString += b;
+                    }
+                    return joinString;
+                })
                         .get()
         );
         Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.YELLOW + "Round Winners: " + str);
