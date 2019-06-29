@@ -16,14 +16,14 @@ worlds:
     path: "world1"
     # -671686628
     seed: 102043410
-    gameSettings:
-      worldBorder:
-        finalDistance: 5
-      timeConfig:
-        startDistanceTime: 90
-        wborderShrinkPart2: 150
-        roundEnd: 180
-      gamePointsToAward: 2
+#    gameSettings:
+#      worldBorder:
+#        finalDistance: 5
+#      timeConfig:
+#        startDistanceTime: 90
+#        wborderShrinkPart2: 150
+#        roundEnd: 180
+#      gamePointsToAward: 2
 
   # plains
   world2:
@@ -56,12 +56,18 @@ worlds:
     generator: AMPLIFIED
     # -400391389
 
+    gameSettings:
+      gamePointsToAward: 2
+
   # extreme hills AMPLIFIED
   world7:
     path: "world7"
     seed: -141571315
     # 2070558
     generator: AMPLIFIED
+
+    gameSettings:
+      gamePointsToAward: 2
 gameSettings:
   gamePointsToAward: 1
   numWorlds: 7
