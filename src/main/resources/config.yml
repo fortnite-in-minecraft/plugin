@@ -71,7 +71,7 @@ worlds:
 gameSettings:
   gamePointsToAward: 1
   numWorlds: 7
-  numLootChests: 500
+  numLootChests: 200
   healthRegen: 2
   points:
     normal: 100
