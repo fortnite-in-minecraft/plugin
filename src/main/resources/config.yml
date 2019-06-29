@@ -89,7 +89,7 @@ gameSettings:
     roundEnd: 1800
 probability:
   # 1/n
-  airdrop: 60
+  airdrop: 30
 state:
   currentRound: 0
   isInProgress: false
