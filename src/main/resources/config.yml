@@ -79,6 +79,7 @@ gameSettings:
       killingSomeoneWhoHasMorePoints: 50
     lootChestOpen: 10
     airdropOpen: 40
+    deathPenalty: 90
   worldBorder:
     startDistance: 2500
     secondDistance: 500

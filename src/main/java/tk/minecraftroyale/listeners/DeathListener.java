@@ -160,6 +160,12 @@ public final class DeathListener implements Listener {
 
         plugin.getConfig().set("state.playerData." + victim.getUniqueId().toString() + ".isDead", true);
 
+        String path = "state.playerData." + victim.getUniqueId() + ".points";
+        plugin.getLogger().info("had points: " + plugin.getConfig().getInt(path));
+        int oldPoints = plugin.getConfig().getInt(path);
+        int deathPenalty = plugin.getConfig().getInt("gameSettings.points.deathPenalty");
+
+        addPoints(victim, -deathPenalty, event.getDeathMessage());
 
         plugin.saveConfig();
         new BukkitRunnable() {

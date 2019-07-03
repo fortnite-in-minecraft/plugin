@@ -40,7 +40,8 @@ public class ClearInventory {
     }
 
     private static void resetXP(Player player){
-        player.setTotalExperience(0);
+        player.setExp(0);
+        player.setLevel(0);
     }
 
     private static void resetHunger(Player player){
